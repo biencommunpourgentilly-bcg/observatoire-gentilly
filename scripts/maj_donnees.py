@@ -4,15 +4,14 @@
 Source : base Sitadel du ministère de la Transition écologique (SDES), via l'API
 publique DiDo, sans authentification. Les autorisations sont localisées par leurs
 parcelles cadastrales (API Carto de l'IGN), ou à défaut par leur adresse
-(Géoplateforme, Base Adresse Nationale). La végétation de chaque terrain est mesurée
-sur les photos aériennes infrarouges de l'IGN (voir scripts/vegetation.py).
+(Géoplateforme, Base Adresse Nationale). Le script repère aussi les photos aériennes
+de l'IGN disponibles pour Gentilly, utilisées par le site et par le relevé de la pleine terre.
 
 Usage : python scripts/maj_donnees.py
 Produit : data/permis.js (lu par le site), data/permis.json et data/permis.csv
 (téléchargements), en gardant un cache des localisations dans data/cache_geocodage.json.
 
-Python 3.9+, et Pillow pour la mesure de la végétation (pip install pillow) ; sans
-Pillow, le script fonctionne et reprend les mesures déjà enregistrées dans le cache.
+Uniquement la bibliothèque standard de Python 3.9+.
 """
 
 import csv
@@ -453,11 +452,7 @@ def localiser(permis, cache):
         p["contours"] = []
 
 
-# --------------------------------------------------------------------------- Écriture
-
-# --------------------------------------------------------------------------- Végétation (pleine terre)
-
-METHODE_VEGETATION = "ndvi-otsu-1"
+# --------------------------------------------------------------------------- Photos aériennes
 
 def photos_couleur(cache):
     """Photos aériennes en couleurs naturelles couvrant Gentilly (pour le site et le relevé),
@@ -488,133 +483,13 @@ def photos_couleur(cache):
     return cache["photos_couleur"]
 
 
-def photos_disponibles(cache, lon, lat, vegetation):
-    """Années pour lesquelles l'IGN publie une photo infrarouge couvrant Gentilly."""
-    connues = {ph["annee"]: ph for ph in cache.get("photos", [])}
-    for annee in range(2012, dt.date.today().year + 1):
-        if annee in connues:
-            continue
-        irc = next((c for c in (f"ORTHOIMAGERY.ORTHOPHOTOS.IRC.{annee}", f"ORTHOIMAGERY.ORTHOPHOTOS.IRC-EXPRESS.{annee}")
-                    if vegetation.disponible(c, lon, lat)), None)
-        if not irc:
-            continue
-        couleur = next((c for c in (f"ORTHOIMAGERY.ORTHOPHOTOS{annee}", f"ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.{annee}")
-                        if vegetation.disponible(c, lon, lat)), None)
-        connues[annee] = {"annee": annee, "irc": irc, "couleur": couleur}
-    cache["photos"] = [connues[a] for a in sorted(connues)]
-    return cache["photos"]
-
-
-def mesurer_vegetation(permis, cache, commune):
-    """Surface végétalisée de chaque parcelle et de la commune, pour chaque photo disponible."""
-    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-    try:
-        import vegetation
-    except ImportError:
-        print("  Pillow absent (pip install pillow) : végétation reprise du cache uniquement.", file=sys.stderr)
-        return [ph for ph in cache.get("photos", []) if ph.get("seuil") is not None]
-    lon, lat = 2.3445, 48.8155
-    if cache.get("vegetation_methode") != METHODE_VEGETATION:  # méthode changée : on remesure tout
-        for cle in ("vegetation", "vegetation_commune", "photos"):
-            cache.pop(cle, None)
-        cache["vegetation_methode"] = METHODE_VEGETATION
-    photos = photos_disponibles(cache, lon, lat, vegetation)
-    if commune:
-        for ph in photos:
-            if ph.get("seuil") is None:
-                ph["seuil"] = vegetation.seuil_otsu(commune, ph["irc"])
-                print(f"  photo {ph['annee']} : seuil de végétation {ph['seuil']}")
-    photos = [ph for ph in photos if ph.get("seuil") is not None]
-    par_parcelle = cache.setdefault("vegetation", {})
-    contours = {c["parcelle"]: c for p in permis for c in p.get("contours", [])}
-    for ph in photos:
-        an = str(ph["annee"])
-        a_faire = [k for k in contours if an not in par_parcelle.get(k, {})]
-        if a_faire:
-            print(f"  photo {an} : {len(a_faire)} parcelles à mesurer")
-        for k in a_faire:
-            res = vegetation.mesurer(contours[k], ph["irc"], ph["seuil"])
-            if res:
-                par_parcelle.setdefault(k, {})[an] = list(res)
-        if commune and an not in cache.setdefault("vegetation_commune", {}):
-            res = vegetation.mesurer(commune, ph["irc"], ph["seuil"], z=vegetation.Z_COMMUNE)
-            if res:
-                cache["vegetation_commune"][an] = list(res)
-    return photos
-
-
-def bilan_vegetation(permis, cache, photos):
-    """Végétation de chaque autorisation avant le projet et sur la dernière photo, et bilan commun."""
-    par_parcelle = cache.get("vegetation", {})
-    annees = [ph["annee"] for ph in photos]
-    derniere = annees[-1] if annees else None
-    terrains = {}  # parcelle -> photo « avant » la plus ancienne parmi les projets réalisés
-    projets = []
-    for p in permis:
-        parcs = [c["parcelle"] for c in p.get("contours", [])]
-        serie, surface = {}, None
-        for an in annees:
-            vals = [par_parcelle.get(k, {}).get(str(an)) for k in parcs]
-            if parcs and all(vals):
-                serie[str(an)] = sum(v[0] for v in vals)
-                surface = sum(v[1] for v in vals)
-        p["vegetation"] = serie or None
-        p["surface_parcelles"] = surface
-        p["veg_bilan"] = None
-        if not serie or not derniere or str(derniere) not in serie:
-            continue
-        ref = int((p["date_autorisation"] or "0000")[:4] or 0)
-        avant = max((an for an in annees if an < ref and str(an) in serie), default=None)
-        limite = f"{derniere}-07-01"
-        realise = p["etat"] != "annule" and p["type"] in ("PC", "DP", "PA") and bool(
-            (p.get("date_chantier") and p["date_chantier"] < limite)
-            or (p.get("date_achevement") and p["date_achevement"] < limite)
-            or (p["etat"] == "termine" and not p.get("date_chantier") and not p.get("date_achevement")))
-        p["veg_bilan"] = {
-            "avant_annee": avant,
-            "avant": serie[str(avant)] if avant else None,
-            "apres_annee": derniere,
-            "apres": serie[str(derniere)],
-            "evolution": serie[str(derniere)] - serie[str(avant)] if avant else None,
-            "realise": realise and avant is not None,
-        }
-        if p["veg_bilan"]["realise"]:
-            projets.append(p["id"])
-            for k in parcs:
-                terrains[k] = min(terrains.get(k, avant), avant)
-    pertes = gains = surface = en_perte = en_gain = 0
-    for k, avant in terrains.items():
-        d = par_parcelle[k][str(derniere)][0] - par_parcelle[k][str(avant)][0]
-        surface += par_parcelle[k][str(derniere)][1]
-        if d < 0:
-            pertes -= d
-            en_perte += 1
-        elif d > 0:
-            gains += d
-            en_gain += 1
-    return {
-        "photos": photos,
-        "derniere_photo": derniere,
-        "commune": cache.get("vegetation_commune", {}),
-        "projets_realises": len(projets),
-        "terrains": len(terrains),
-        "surface_terrains": surface,
-        "pertes": pertes,
-        "gains": gains,
-        "terrains_en_perte": en_perte,
-        "terrains_en_gain": en_gain,
-        "solde": gains - pertes,
-    }
-
-
 # --------------------------------------------------------------------------- Écriture
 
 COLONNES_CSV = [
     "type", "num", "etat", "date_depot", "date_autorisation", "date_chantier", "date_achevement",
     "demandeur", "siren", "adresse", "parcelles", "nature", "logements", "logements_sociaux",
     "surf_hab_creee", "surf_loc_creee", "surface_totale", "bureaux_crees", "bureaux_demolis",
-    "bureaux_transformes", "vegetation_avant_annee", "vegetation_avant_m2", "vegetation_apres_annee",
-    "vegetation_apres_m2", "vegetation_evolution_m2", "niveaux", "grand_projet", "lat", "lon",
+    "bureaux_transformes", "niveaux", "grand_projet", "lat", "lon",
 ]
 
 
@@ -633,8 +508,6 @@ def ecrire(permis, meta, commune):
             plat = dict(p)
             for k, v in (p.get("bureaux") or {}).items():
                 plat[f"bureaux_{k}"] = v
-            for k, v in (p.get("veg_bilan") or {}).items():
-                plat[f"vegetation_{k}" if k.endswith("annee") else f"vegetation_{k}_m2"] = v
             for c in COLONNES_CSV:
                 v = plat.get(c)
                 if isinstance(v, list):
@@ -671,11 +544,9 @@ def main():
         print(f"  contour de la commune indisponible : {e}", file=sys.stderr)
         commune = None
 
-    print("Mesure de la végétation sur les photos infrarouges de l'IGN…")
-    photos = mesurer_vegetation(permis, cache, commune)
-    CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
-    pleine_terre = bilan_vegetation(permis, cache, photos)
     couleur = photos_couleur(cache)
+    for cle in ("vegetation", "vegetation_commune", "vegetation_methode", "photos"):
+        cache.pop(cle, None)  # anciennes mesures automatiques de la végétation, abandonnées
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
 
     millesime = max(m for _, m in fichiers.values())
@@ -688,7 +559,6 @@ def main():
         "genere_le": dt.date.today().isoformat(),
         "source_url": URL_DATASET,
         "seuils_grand_projet": {"logements": SEUIL_LOGEMENTS, "surface_m2": SEUIL_SURFACE},
-        "pleine_terre": pleine_terre,
         "photos_couleur": couleur,
     }
     ecrire(permis, meta, commune)

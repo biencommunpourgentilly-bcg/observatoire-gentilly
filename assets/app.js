@@ -58,17 +58,25 @@
   const couleur = (p) => `var(--c-${p.categorie})`;
   const annee = (p) => (p.date_autorisation || "").slice(0, 4);
 
-  // Bureaux et végétation (pleine terre)
-  const PT = META.pleine_terre || null;
-  const SEUIL_VEG = 50; // m² : en dessous, l'écart est dans la marge d'erreur
+  // Bureaux, et relevé collaboratif de la pleine terre (data/releve_pleine_terre.js, produit par scripts/traiter_releve.py)
+  const RELEVE = window.RELEVE_PLEINE_TERRE || null;
+  const PHOTOS = (META.photos_couleur || []).filter((ph) => ph.annee >= 2008);
   const arrondi = (n, pas = 10) => Math.round((n || 0) / pas) * pas;
   const aBureaux = (p) => !!(p.bureaux && (p.bureaux.crees || p.bureaux.demolis || p.bureaux.transformes));
-  const bilanVeg = (p) => (p.veg_bilan && p.veg_bilan.realise ? p.veg_bilan.evolution : null);
-  const perdVeg = (p) => bilanVeg(p) !== null && bilanVeg(p) <= -SEUIL_VEG;
+  const terrainParParcelle = new Map();
+  if (RELEVE) Object.keys(RELEVE.terrains).forEach((cle) => cle.split("+").forEach((k) => terrainParParcelle.set(k, cle)));
+  function releveDe(p) {
+    if (!RELEVE) return null;
+    const cle = (p.parcelles || []).map((k) => terrainParParcelle.get(k)).find(Boolean);
+    return cle ? { cle, ...RELEVE.terrains[cle] } : null;
+  }
+  const construit = (r) => !!(r && ["termine", "chantier"].includes(r.etat_projet));
   PERMIS.forEach((p) => {
     p.bureaux_crees = p.bureaux ? p.bureaux.crees : 0;
-    p.veg_evolution = bilanVeg(p);
+    const r = releveDe(p);
+    p.pt_evolution = construit(r) ? r.evolution_m2 : null;
   });
+  const perdPT = (p) => p.pt_evolution !== null && p.pt_evolution < 0;
   function totauxBureaux() {
     const t = { crees: 0, demolis: 0, transformes: 0, n: 0, habitation: 0 };
     PERMIS.filter((p) => p.etat !== "annule").forEach((p) => {
@@ -112,7 +120,7 @@
 
   // ------------------------------------------------------------------ Filtres partagés
   const annees = [...new Set(PERMIS.map(annee).filter(Boolean))].sort();
-  const THEMES = { bureaux: "Bureaux", vegetation: "Végétation perdue" };
+  const THEMES = { bureaux: "Bureaux", ...(RELEVE ? { pleine_terre: "Pleine terre perdue (relevé)" } : {}) };
   const FILTRES_VIDES = () => ({ texte: "", type: "", categorie: "", theme: "", etat: "", de: annees[0], a: annees[annees.length - 1], gp: false });
   const filtres = FILTRES_VIDES();
 
@@ -130,7 +138,7 @@
       if (filtres.type && p.type !== filtres.type) return false;
       if (filtres.categorie && p.categorie !== filtres.categorie) return false;
       if (filtres.theme === "bureaux" && !aBureaux(p)) return false;
-      if (filtres.theme === "vegetation" && !perdVeg(p)) return false;
+      if (filtres.theme === "pleine_terre" && !perdPT(p)) return false;
       if (filtres.etat && p.etat !== filtres.etat) return false;
       if (filtres.gp && !p.grand_projet) return false;
       const a = annee(p);
@@ -233,7 +241,7 @@
     const tuiles = [
       [nombre(lgts), `logements autorisés depuis ${annees[0]} (hors permis annulés)`],
       [m2(arrondi(B.crees, 100)), `de bureaux autorisés depuis ${annees[0]}`],
-      PT ? [m2(arrondi(PT.pertes)), `de végétation disparus sur ${PT.terrains_en_perte} terrains de projets réalisés`] : null,
+      RELEVE && RELEVE.terrains_construits ? [m2(arrondi(RELEVE.pertes_m2)), `de pleine terre perdus sur les terrains relevés par des habitants`] : null,
       [nombre(gp), "grands projets"],
     ].filter(Boolean);
     document.getElementById("tuiles").innerHTML = tuiles
@@ -244,9 +252,9 @@
     document.getElementById("focus-bureaux").innerHTML =
       `<b>${m2(arrondi(B.crees, 100))}</b> de bureaux autorisés depuis ${annees[0]}` +
       (part ? `, soit l'équivalent de <b>${part} %</b> des surfaces de logement autorisées sur la même période.` : ".");
-    document.getElementById("focus-pleine-terre").innerHTML = PT
-      ? `Sur les terrains des projets réalisés, <b>${m2(arrondi(PT.pertes))}</b> de végétation ont disparu entre ${PT.photos[0].annee} et ${PT.derniere_photo}. Les dossiers de permis disent combien de pleine terre a été perdue : nous les demandons.`
-      : "Les dossiers de permis disent combien de pleine terre est supprimée : nous les demandons.";
+    document.getElementById("focus-pleine-terre").innerHTML = RELEVE && RELEVE.terrains_construits
+      ? `Relevé par ${RELEVE.participants} habitant${RELEVE.participants > 1 ? "s" : ""} sur les photos aériennes : <b>${m2(arrondi(RELEVE.pertes_m2))}</b> de pleine terre perdus sur les terrains des projets construits. Les dossiers de permis donnent les chiffres exacts : nous les demandons.`
+      : "Aucune base publique ne mesure la pleine terre. Avec des habitants, nous la relevons terrain par terrain sur les photos aériennes, et nous demandons à la mairie les chiffres des dossiers de permis.";
     document.getElementById("accueil-couverture").textContent = META.donnees_jusqu_au ? `autorisations jusqu'au ${dateFr(META.donnees_jusqu_au, true)}` : "";
     graphique(actifs);
   }
@@ -453,55 +461,39 @@
   function pagePleineTerre() {
     if (pleineTerreFaite) return;
     pleineTerreFaite = true;
-    if (!PT) {
-      document.getElementById("pt-note").textContent = "Les mesures de végétation ne sont pas encore disponibles.";
-      return;
-    }
-    const premiere = PT.photos[0].annee, derniere = PT.derniere_photo;
+    if (!RELEVE || !RELEVE.terrains_releves) return; // relevé pas encore traité : la page n'affiche que l'explication
     const tuiles = [
-      [m2(arrondi(PT.pertes)), `de végétation disparus sur ${PT.terrains_en_perte} terrains`],
-      [m2(arrondi(PT.gains)), `de végétation apparus sur ${PT.terrains_en_gain} terrains`],
-      [nombre(PT.projets_realises), `projets réalisés entre ${premiere} et ${derniere} étudiés`],
-      [m2(arrondi(PT.surface_terrains, 100)), "de terrains concernés"],
+      [m2(arrondi(RELEVE.pertes_m2)), "de pleine terre perdus sur les terrains des projets construits"],
+      [m2(arrondi(RELEVE.gains_m2)), "de pleine terre créés"],
+      [nombre(RELEVE.terrains_releves), "terrains relevés"],
+      [nombre(RELEVE.participants), `habitant${RELEVE.participants > 1 ? "s" : ""} ayant participé`],
     ];
     document.getElementById("pt-tuiles").innerHTML = tuiles
       .map(([v, l]) => `<div class="tuile"><div class="valeur">${esc(v)}</div><div class="libelle">${esc(l)}</div></div>`).join("");
-
-    const realises = PERMIS.filter((p) => bilanVeg(p) !== null && Math.abs(bilanVeg(p)) >= SEUIL_VEG)
-      .sort((a, b) => bilanVeg(a) - bilanVeg(b));
-    document.getElementById("pt-note").textContent =
-      `Projets réalisés dont la végétation a changé d'au moins ${SEUIL_VEG} m², entre la photo précédant l'autorisation et celle de ${derniere}. ` +
-      `Les plus fortes pertes en haut. Cliquez sur un projet pour voir les photos avant et après.`;
-    barresProjets(document.getElementById("graphique-vegetation"), realises.map((p) => ({
-      id: p.id,
-      valeur: arrondi(bilanVeg(p)),
-      libelle: adresse(p).length > 40 ? adresse(p).slice(0, 39) + "…" : adresse(p),
-      bulle: `<strong>${esc(adresse(p))}</strong>${esc(TYPES[p.type])} accordé le ${dateFr(p.date_autorisation)}<br>` +
-        `Végétation : ${m2(arrondi(p.veg_bilan.avant))} en ${p.veg_bilan.avant_annee} → ${m2(arrondi(p.veg_bilan.apres))} en ${p.veg_bilan.apres_annee}`,
-    })));
-
-    const surveiller = PERMIS.filter((p) => p.veg_bilan && !p.veg_bilan.realise && ["autorise", "commence"].includes(p.etat) && ["PC", "PA"].includes(p.type)
-      && annee(p) >= String(derniere - 1) && p.veg_bilan.apres >= 100)
-      .sort((a, b) => b.veg_bilan.apres - a.veg_bilan.apres);
-    document.getElementById("pt-surveiller-note").textContent =
-      `Projets autorisés dont le chantier n'avait pas commencé lors de la photo de ${derniere}, et dont le terrain portait alors au moins 100 m² de végétation. ` +
-      `Cela ne veut pas dire qu'elle sera détruite : seuls les plans du permis le diront.`;
-    document.getElementById("pt-surveiller").innerHTML = surveiller.length
-      ? surveiller.map((p) => `<li><a class="carte-permis" href="#fiche/${encodeURIComponent(p.id)}" style="--c:var(--c-${p.categorie})">
-        <div class="ligne-haut"><span>${esc(TYPES[p.type])} · ${dateFr(p.date_autorisation)}</span><span>${esc(ETATS[p.etat])}</span></div>
-        <div class="adresse">${esc(adresse(p))}</div>
-        <div class="demandeur">${esc(demandeur(p))}</div>
-        <div class="chiffre-cle">${m2(arrondi(p.veg_bilan.apres))} <small>de végétation en ${derniere} sur ${m2(arrondi(p.surface_parcelles, 10))} de terrain</small></div>
-      </a></li>`).join("")
-      : `<li class="vide">Aucun projet dans ce cas pour le moment.</li>`;
-
-    const c = PT.commune || {};
-    const part = (an) => (c[an] ? Math.round((c[an][0] / c[an][1]) * 100) : null);
-    if (part(premiere) !== null && part(derniere) !== null) {
-      document.getElementById("pt-commune").textContent =
-        `À l'échelle de toute la commune, la part de végétation visible du ciel est de ${part(premiere)} % en ${premiere} et de ${part(derniere)} % en ${derniere} : ` +
-        `ce chiffre global ne dit rien des terrains construits, qui n'en représentent qu'une petite partie. C'est pourquoi il faut regarder terrain par terrain.`;
+    // Un terrain par ligne, rattaché à son autorisation la plus importante
+    const principal = new Map();
+    PERMIS.forEach((p) => {
+      const r = releveDe(p);
+      if (!r || !construit(r) || !r.evolution_m2) return;
+      const m = principal.get(r.cle);
+      if (!m || (p.grand_projet && !m.p.grand_projet)) principal.set(r.cle, { p, r });
+    });
+    const lignes = [...principal.values()].sort((a, b) => a.r.evolution_m2 - b.r.evolution_m2);
+    document.getElementById("pt-resultats").innerHTML = lignes.length ? `<figure class="bloc graphique">
+        <figcaption><h2>Pleine terre perdue ou gagnée, terrain par terrain</h2>
+        <p class="note">Projets construits ou en chantier. Estimations des habitants sur les photos aériennes avant et après le projet (médiane des réponses). Cliquez sur un terrain pour voir sa fiche.</p></figcaption>
+        <div class="legende-graphique"><span><i style="--c:var(--rouge)"></i>Pleine terre perdue</span><span><i style="--c:var(--cyan)"></i>Pleine terre créée</span></div>
+        <div id="graphique-pleine-terre" class="graphique-zone"></div></figure>` : "";
+    if (lignes.length) {
+      barresProjets(document.getElementById("graphique-pleine-terre"), lignes.map(({ p, r }) => ({
+        id: p.id,
+        valeur: arrondi(r.evolution_m2),
+        libelle: adresse(p).length > 40 ? adresse(p).slice(0, 39) + "…" : adresse(p),
+        bulle: `<strong>${esc(adresse(p))}</strong>Pleine terre : ${Math.round(r.part_avant_pct)} % du terrain avant, ${Math.round(r.part_apres_pct)} % après` +
+          `<br>${r.nb_reponses} réponse${r.nb_reponses > 1 ? "s" : ""}${r.desaccord ? " · avis divergents" : ""}`,
+      })));
     }
+    document.getElementById("pt-lien-carte").hidden = !lignes.some(({ r }) => r.evolution_m2 < 0);
   }
 
   // ------------------------------------------------------------------ Carte
@@ -665,10 +657,10 @@
         <td class="num">${p.logements ? nombre(p.logements) : ""}</td>
         <td class="num">${p.surface_totale ? m2(p.surface_totale) : ""}</td>
         <td class="num">${p.bureaux_crees ? m2(p.bureaux_crees) : ""}</td>
-        <td class="num ${p.veg_evolution !== null && p.veg_evolution <= -SEUIL_VEG ? "perte" : ""}">${p.veg_evolution !== null && Math.abs(p.veg_evolution) >= SEUIL_VEG ? `${p.veg_evolution > 0 ? "+" : "−"}${m2(arrondi(Math.abs(p.veg_evolution)))}` : ""}</td>
+        ${RELEVE ? `<td class="num ${perdPT(p) ? "perte" : ""}">${p.pt_evolution ? `${p.pt_evolution > 0 ? "+" : "−"}${m2(arrondi(Math.abs(p.pt_evolution)))}` : ""}</td>` : ""}
         <td>${esc(ETATS[p.etat])}</td>
       </tr>`).join("")
-      : `<tr><td colspan="9" class="vide">Aucune autorisation ne correspond à ces filtres.</td></tr>`;
+      : `<tr><td colspan="${RELEVE ? 9 : 8}" class="vide">Aucune autorisation ne correspond à ces filtres.</td></tr>`;
   }
   document.querySelector("#tableau thead").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-tri]");
@@ -749,29 +741,23 @@
         ${ligne("Solde", `${b.crees - b.demolis - b.transformes >= 0 ? "+" : "−"}${m2(Math.abs(b.crees - b.demolis - b.transformes))}`)}
       </tbody></table></div>`;
     }
-    let vegHtml = "";
-    if (p.vegetation && PT) {
-      const vb = p.veg_bilan;
-      const serie = PT.photos.filter((ph) => p.vegetation[ph.annee] !== undefined);
-      const maxV = Math.max(1, ...serie.map((ph) => p.vegetation[ph.annee]));
+    // Photos aériennes avant / après, et résultat du relevé collaboratif s'il existe
+    const anRef = +(p.date_autorisation || "").slice(0, 4) || 9999;
+    const photoAvant = [...PHOTOS].reverse().find((ph) => ph.annee < anRef);
+    const photoApres = PHOTOS[PHOTOS.length - 1];
+    let ptHtml = "";
+    if ((p.contours || []).length && photoAvant && photoApres && photoAvant !== photoApres) {
+      const r = releveDe(p);
       let phrase = "";
-      if (vb && vb.realise) {
-        const ev = arrondi(vb.evolution);
-        phrase = `Sur ce terrain, la végétation visible est passée de <b>${m2(arrondi(vb.avant))}</b> en ${vb.avant_annee} à <b>${m2(arrondi(vb.apres))}</b> en ${vb.apres_annee}` +
-          (Math.abs(ev) < SEUIL_VEG ? ", soit pratiquement pas de changement." : `, soit <b class="${ev < 0 ? "perte" : "gain"}">${ev < 0 ? "−" : "+"}${m2(Math.abs(ev))}</b>.`);
-      } else if (vb) {
-        phrase = `Le chantier n'avait pas commencé lors de la dernière photo (${vb.apres_annee}) : le terrain portait alors <b>${m2(arrondi(vb.apres))}</b> de végétation.`;
+      if (r && r.part_avant_pct !== null && r.part_apres_pct !== null) {
+        phrase = `<p>Relevé par ${r.nb_reponses} habitant${r.nb_reponses > 1 ? "s" : ""} : environ <b>${Math.round(r.part_avant_pct)} %</b> du terrain en pleine terre avant le projet, <b>${Math.round(r.part_apres_pct)} %</b> après` +
+          (construit(r) && r.evolution_m2 ? `, soit <b class="${r.evolution_m2 < 0 ? "perte" : "gain"}">${r.evolution_m2 < 0 ? "−" : "+"}${m2(Math.abs(arrondi(r.evolution_m2)))}</b>` : "") +
+          `.${r.desaccord ? " Les avis divergent sur ce terrain." : ""}</p>`;
       }
-      vegHtml = `<div class="bloc bloc-theme"><h2>Végétation sur le terrain</h2>
-        <p>${phrase}</p>
-        <div class="serie-veg">${serie.map((ph) => {
-          const v = p.vegetation[ph.annee];
-          return `<div class="serie-ligne"><span class="serie-an">${ph.annee}</span><span class="serie-barre"><i style="width:${(v / maxV) * 100}%"></i></span><span class="serie-val">${m2(arrondi(v))}</span></div>`;
-        }).join("")}</div>
-        ${vb && vb.avant_annee ? `<div class="avant-apres"><figure><div id="carte-avant" class="carte-photo"></div><figcaption>${vb.avant_annee}, avant le projet</figcaption></figure>
-          <figure><div id="carte-apres" class="carte-photo"></div><figcaption>${vb.apres_annee}</figcaption></figure></div>` : ""}
-        <p class="note">Végétation visible du ciel sur les parcelles du projet (${m2(arrondi(p.surface_parcelles))}), mesurée sur les photos infrarouges de l'IGN. Ce n'est pas exactement la pleine terre : un jardin sur dalle compte comme végétation. <a href="#pleine-terre">En savoir plus</a></p>
-      </div>`;
+      ptHtml = `<div class="bloc bloc-theme"><h2>Le terrain avant et après</h2>${phrase}
+        <div class="avant-apres"><figure><div id="carte-avant" class="carte-photo"></div><figcaption>${photoAvant.annee}, avant le projet</figcaption></figure>
+        <figure><div id="carte-apres" class="carte-photo"></div><figcaption>${photoApres.annee}</figcaption></figure></div>
+        <p class="note">Photos aériennes de l'IGN, terrain du projet entouré en blanc. <a href="#pleine-terre">Pourquoi la pleine terre compte</a></p></div>`;
     }
 
     const lies = (p.lies || []).map((i) => PAR_ID.get(i)).filter(Boolean);
@@ -808,7 +794,7 @@
           <div class="bloc"><h2>Calendrier</h2>${etapesHtml}</div>
           ${compHtml}
           ${bureauxHtml}
-          ${vegHtml}
+          ${ptHtml}
           <div class="bloc"><h2>Détails déclarés</h2><table class="details"><tbody>${details}</tbody></table>
             <p class="note" style="margin-top:10px">Chiffres déclarés par le demandeur à la date de l'autorisation initiale, sans les éventuels permis modificatifs.</p></div>
           ${liesHtml}
@@ -828,13 +814,10 @@
     if (carteFiche) { carteFiche.remove(); carteFiche = null; }
     cartesPhotos.forEach((c) => c.remove());
     cartesPhotos = [];
-    const vb = p.veg_bilan;
-    if (vb && vb.avant_annee && PT && typeof L !== "undefined") {
-      const photo = (an) => (META.photos_couleur || []).find((ph) => ph.annee === an);
-      [["carte-avant", vb.avant_annee], ["carte-apres", vb.apres_annee]].forEach(([idCarte, an]) => {
-        if (!photo(an)) return;
+    if (ptHtml && typeof L !== "undefined") {
+      [["carte-avant", photoAvant], ["carte-apres", photoApres]].forEach(([idCarte, ph]) => {
         const c = L.map(idCarte, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false });
-        L.tileLayer(IGN(photo(an).couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: photo(an).zmax }).addTo(c);
+        L.tileLayer(IGN(ph.couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: ph.zmax }).addTo(c);
         const gr = L.featureGroup((p.contours || []).map((geom) => L.geoJSON(geom, { style: { color: "#ffffff", weight: 2.5, fill: false } }))).addTo(c);
         c.fitBounds(gr.getBounds(), { padding: [12, 12], maxZoom: 19 });
         cartesPhotos.push(c);
@@ -899,11 +882,7 @@
   // Textes dépendant de la date des données.
   const maj = META.maj_source ? `Données mises à jour par le ministère le ${dateFr(META.maj_source, true)}, couvrant les autorisations jusqu'au ${dateFr(META.donnees_jusqu_au, true)}.` : "";
   document.getElementById("apropos-maj").textContent = maj;
-  if (PT && PT.photos.length) {
-    const ans = PT.photos.map((ph) => ph.annee);
-    document.getElementById("apropos-photos").textContent = ans.length > 1 ? `${ans.slice(0, -1).join(", ")} et ${ans[ans.length - 1]}` : String(ans[0]);
-  }
-  document.getElementById("pied-maj").textContent = META.genere_le ? `Site actualisé le ${dateFr(META.genere_le, true)}` : "";
+  if (!RELEVE) document.getElementById("th-pleine-terre").remove();
   if (META.seuils_grand_projet) {
     const s = META.seuils_grand_projet;
     document.getElementById("apropos-seuils").textContent =

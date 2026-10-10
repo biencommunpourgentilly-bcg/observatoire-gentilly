@@ -121,7 +121,8 @@ h3 { font-size: 1rem; }
 .bouton:hover { filter: brightness(1.08); }
 
 /* Tuiles de chiffres */
-.tuiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tuiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tuiles:empty { display: none; }
 .tuile { background: var(--surface); border: 1px solid var(--trait); border-top: 4px solid var(--cyan); padding: 16px; }
 .tuile .valeur { font-family: var(--police-titre); font-weight: 900; font-size: 2rem; line-height: 1.1; color: var(--bleu); }
 .tuile .libelle { color: var(--encre-2); font-size: .9rem; margin-top: 4px; }
@@ -147,8 +148,8 @@ h3 { font-size: 1rem; }
 .graphique-zone .cible { fill: transparent; }
 .graphique-zone .barre.survol { fill: var(--cyan); }
 
-#graphique-vegetation { overflow-x: auto; }
-@media (max-width: 760px) { #graphique-vegetation svg { min-width: 720px; } }
+#graphique-pleine-terre { overflow-x: auto; }
+@media (max-width: 760px) { #graphique-pleine-terre svg { min-width: 720px; } }
 .graphique-zone .barre-haut { fill: var(--bleu); }
 .graphique-zone .barre-bas { fill: var(--cyan); }
 .graphique-zone .barre-perte { fill: var(--rouge); }
@@ -183,12 +184,6 @@ h3 { font-size: 1rem; }
 
 /* Fiche : végétation */
 .bloc-theme { border-top: 4px solid var(--cyan); }
-.serie-veg { display: grid; gap: 6px; margin: 12px 0; }
-.serie-ligne { display: grid; grid-template-columns: 44px 1fr 80px; align-items: center; gap: 10px; font-size: .9rem; }
-.serie-an { color: var(--encre-2); font-variant-numeric: tabular-nums; }
-.serie-barre { height: 14px; background: var(--surface-2); }
-.serie-barre i { display: block; height: 100%; background: var(--bleu); }
-.serie-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
 .avant-apres { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 10px; }
 .avant-apres figure { margin: 0; }
 .avant-apres figcaption { font-size: .82rem; color: var(--encre-2); margin-top: 4px; font-weight: 700; }

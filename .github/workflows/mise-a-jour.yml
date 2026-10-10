@@ -17,8 +17,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Installer Pillow (mesure de la végétation)
-        run: pip install pillow
       - name: Télécharger et préparer les données
         run: python scripts/maj_donnees.py
       - name: Enregistrer les changements

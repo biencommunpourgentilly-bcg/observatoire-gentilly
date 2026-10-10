@@ -65,7 +65,7 @@
           <a class="focus-bloc" href="#pleine-terre">
             <span class="focus-titre">Pleine terre</span>
             <span class="focus-texte" id="focus-pleine-terre"></span>
-            <span class="focus-lien">Voir les terrains concernés →</span>
+            <span class="focus-lien">En savoir plus →</span>
           </a>
         </div>
 
@@ -140,30 +140,15 @@
       <div class="conteneur">
         <p class="chapeau">La pleine terre, c'est un sol naturel, sans construction ni dalle en dessous. Elle absorbe la pluie, rafraîchit la ville en été et permet aux grands arbres de pousser. Chaque projet qui construit sur un jardin ou une cour en terre la fait disparaître.</p>
         <div class="tuiles" id="pt-tuiles"></div>
-        <figure class="bloc graphique">
-          <figcaption>
-            <h2>Végétation perdue ou gagnée sur les terrains des projets réalisés</h2>
-            <p class="note" id="pt-note"></p>
-          </figcaption>
-          <div class="legende-graphique">
-            <span><i style="--c:var(--rouge)"></i>Végétation disparue</span>
-            <span><i style="--c:var(--cyan)"></i>Végétation apparue</span>
-          </div>
-          <div id="graphique-vegetation" class="graphique-zone"></div>
-        </figure>
-
-        <h2 class="titre-section">À surveiller : projets autorisés, pas encore réalisés</h2>
-        <p class="note" id="pt-surveiller-note"></p>
-        <ul class="liste-cartes grille" id="pt-surveiller"></ul>
+        <div id="pt-resultats"></div>
 
         <div class="bloc encadre">
-          <h2>Ce que les photos montrent, et ce qu'elles ne montrent pas</h2>
-          <p>Les surfaces sont mesurées sur les photos aériennes infrarouges de l'IGN, où la végétation apparaît en rouge. Elles indiquent la végétation <strong>visible du ciel</strong> sur chaque terrain, avant le projet et sur la dernière photo disponible.</p>
-          <p><strong>Végétation n'est pas pleine terre.</strong> Un jardin planté sur la dalle d'un parking souterrain paraît vert vu du ciel, alors qu'il n'y a plus de pleine terre dessous. Une partie de la végétation « apparue » sur les terrains des nouveaux immeubles peut être dans ce cas. Les vraies surfaces de pleine terre figurent dans les dossiers de permis : c'est pourquoi nous les demandons à la mairie.</p>
-          <p id="pt-commune"></p>
-          <p class="note">Précision : quelques dizaines de mètres carrés par terrain. Les photos n'ont pas toutes été prises à la même saison ni avec la même lumière ; le seuil de détection est recalculé pour chaque photo afin de rendre les années comparables.</p>
+          <h2>Comment la mesurer ?</h2>
+          <p>Aucune base de données publique ne recense la pleine terre. Les photos aériennes vues par un ordinateur ne suffisent pas : un jardin planté sur la dalle d'un parking paraît vert vu du ciel, alors qu'il n'y a plus de sol naturel dessous.</p>
+          <p><strong>Avec des habitants, nous la relevons terrain par terrain.</strong> Pour chaque terrain où un permis a été accordé depuis 2013, plusieurs personnes regardent les photos aériennes de l'IGN avant et après le projet, estiment la part du terrain en pleine terre et dessinent les zones disparues ou créées. Les résultats seront publiés sur cette page.</p>
+          <p><strong>Les chiffres exacts sont dans les dossiers de permis</strong> : plan de masse et respect des règles de pleine terre du plan local d'urbanisme. Nous les demandons à la mairie.</p>
         </div>
-        <p class="lien-carte"><a class="bouton" href="#carte" data-theme="vegetation">Voir les terrains concernés sur la carte</a></p>
+        <p class="lien-carte" id="pt-lien-carte" hidden><a class="bouton" href="#carte" data-theme="pleine_terre">Voir les terrains concernés sur la carte</a></p>
       </div>
     </section>
 
@@ -203,7 +188,7 @@
                 <th scope="col" class="num"><button data-tri="logements">Logements</button></th>
                 <th scope="col" class="num"><button data-tri="surface_totale">Surface créée</button></th>
                 <th scope="col" class="num"><button data-tri="bureaux_crees">Bureaux créés</button></th>
-                <th scope="col" class="num"><button data-tri="veg_evolution">Végétation</button></th>
+                <th scope="col" class="num" id="th-pleine-terre"><button data-tri="pt_evolution">Pleine terre</button></th>
                 <th scope="col"><button data-tri="etat">État</button></th>
               </tr>
             </thead>
@@ -244,9 +229,8 @@
         <h2>Comment sont comptés les bureaux ?</h2>
         <p>Les surfaces de bureaux sont celles déclarées dans les permis : bureaux construits ou créés par transformation, bureaux démolis, et bureaux transformés en autre chose (le plus souvent en logements). Les permis annulés ne sont pas comptés.</p>
 
-        <h2>Comment est mesurée la végétation ?</h2>
-        <p>Pour chaque terrain, nous comptons la surface végétalisée visible sur les photos aériennes infrarouges de l'IGN (<span id="apropos-photos">2014, 2018, 2021 et 2024</span>). Sur ces photos, la végétation vivante apparaît en rouge ; un indice de végétation est calculé pour chaque point de 40 cm de côté. Le seuil est recalculé pour chaque photo sur l'ensemble de la commune, car la lumière et les couleurs varient d'une campagne à l'autre. Le bilan d'un projet compare la photo précédant son autorisation à la dernière photo, uniquement si le chantier avait commencé avant celle-ci.</p>
-        <p>C'est une estimation de la végétation, pas de la pleine terre : un jardin sur dalle compte comme végétation. Le détail du calcul est dans le fichier <code>scripts/vegetation.py</code>.</p>
+        <h2>Comment est mesurée la pleine terre ?</h2>
+        <p>Par un relevé collaboratif : des habitants examinent, terrain par terrain, les photos aériennes de l'IGN prises avant le projet et la plus récente. Ils estiment la part du terrain en pleine terre et peuvent dessiner les zones disparues ou créées. Pour chaque terrain, nous retenons la médiane des réponses et signalons les avis divergents. Ce sont des estimations : les surfaces exactes figurent dans les dossiers de permis.</p>
 
         <h2>Qu'appelle-t-on un « grand projet » ?</h2>
         <p id="apropos-seuils">Un permis de construire d'au moins 10 logements ou 1 000 m² de surface de plancher créée ou transformée, un permis de démolir déposé par une société ou une collectivité, ou un permis d'aménager.</p>
@@ -281,6 +265,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="data/permis.js"></script>
   <script src="data/complements.js"></script>
+  <script src="data/releve_pleine_terre.js"></script>
   <script src="assets/adresses.js"></script>
   <script src="assets/app.js"></script>
 </body>

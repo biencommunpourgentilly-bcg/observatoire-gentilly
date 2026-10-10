@@ -20,7 +20,7 @@ Double-cliquez sur `index.html`. Il s'ouvre dans le navigateur ; une connexion I
 
 ## Mettre à jour les données
 
-- **Sur Windows :** double-cliquez sur `mettre_a_jour.bat`. Il faut que [Python 3](https://www.python.org/downloads/) soit installé ; le fichier installe au besoin Pillow, utilisé pour mesurer la végétation.
+- **Sur Windows :** double-cliquez sur `mettre_a_jour.bat`. Il faut que [Python 3](https://www.python.org/downloads/) soit installé .
 - **En ligne de commande :** `python scripts/maj_donnees.py`
 - **Automatiquement :** une fois le site publié sur GitHub (voir ci-dessous), le fichier `.github/workflows/mise-a-jour.yml` relance la mise à jour le 3 de chaque mois.
 
@@ -36,9 +36,7 @@ Le script télécharge les quatre fichiers Sitadel filtrés sur Gentilly (code I
 ## Bureaux et pleine terre
 
 - **Bureaux :** les surfaces de bureaux créées, démolies et transformées viennent directement des permis (base Sitadel). La page « Bureaux » en fait le bilan depuis 2013.
-- **Pleine terre :** aucune base publique ne donne la pleine terre. Le script `scripts/vegetation.py` mesure donc la végétation visible sur chaque terrain, sur les photos aériennes infrarouges de l'IGN (2014, 2018, 2021, 2024, et les suivantes dès leur publication). Il compare la photo précédant l'autorisation d'un projet à la dernière photo. Le seuil de détection est recalculé pour chaque photo, car la lumière varie d'une campagne à l'autre.
-- **Limite à garder en tête :** la végétation visible n'est pas la pleine terre. Un jardin sur la dalle d'un parking souterrain paraît vert vu du ciel. Les vraies surfaces de pleine terre sont dans les dossiers de permis, à demander à la mairie.
-- La première mesure télécharge environ 2 000 images (quelques minutes). Les résultats sont gardés dans `data/cache_geocodage.json` : les mises à jour suivantes ne mesurent que les nouveaux terrains et les nouvelles photos.
+- **Pleine terre :** aucune base publique ne la donne, et une mesure automatique sur photos aériennes s'est révélée trop imprécise (jardins sur dalle, toitures, ombres). Elle est donc relevée par des habitants (voir ci-dessous). Tant que le relevé n'a pas été traité, la page « Pleine terre » n'affiche que des explications.
 
 ## Relevé collaboratif de la pleine terre
 
@@ -51,7 +49,7 @@ La page `releve-pleine-terre.html` (non reliée au reste du site) permet à plus
 
    `python scripts/traiter_releve.py`
 
-5. Vous obtenez `reponses/synthese-releve.xlsx` (détail par terrain, avis divergents, commentaires) et `data/releve_pleine_terre.js` (résultats anonymes, prêts à être affichés sur le site).
+5. Vous obtenez `reponses/synthese-releve.xlsx` (détail par terrain, avis divergents, commentaires) et `data/releve_pleine_terre.js` (résultats anonymes). Le site affiche automatiquement ces résultats dès que ce fichier est publié : chiffres sur l'accueil, graphique sur la page « Pleine terre », résultat dans chaque fiche, filtre sur la carte.
 
 Si une personne envoie plusieurs fichiers, seul le plus récent compte : chaque envoi contient toutes ses réponses.
 
