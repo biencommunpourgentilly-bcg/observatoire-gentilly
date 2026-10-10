@@ -40,6 +40,21 @@ Le script télécharge les quatre fichiers Sitadel filtrés sur Gentilly (code I
 - **Limite à garder en tête :** la végétation visible n'est pas la pleine terre. Un jardin sur la dalle d'un parking souterrain paraît vert vu du ciel. Les vraies surfaces de pleine terre sont dans les dossiers de permis, à demander à la mairie.
 - La première mesure télécharge environ 2 000 images (quelques minutes). Les résultats sont gardés dans `data/cache_geocodage.json` : les mises à jour suivantes ne mesurent que les nouveaux terrains et les nouvelles photos.
 
+## Relevé collaboratif de la pleine terre
+
+La page `releve-pleine-terre.html` (non reliée au reste du site) permet à plusieurs personnes de relever, terrain par terrain, la part de pleine terre visible sur les photos aériennes avant et après chaque projet, et d'y dessiner au doigt les zones disparues ou créées. Elle fonctionne sur téléphone.
+
+1. Envoyez l'adresse de la page aux participants : `https://<votre-compte>.github.io/observatoire-gentilly/releve-pleine-terre.html`.
+2. Chacun saisit son prénom et relève autant de terrains qu'il veut. Les réponses restent sur son téléphone ou son ordinateur.
+3. Chacun touche « Envoyer » : le fichier part par WhatsApp, e-mail…, ou se télécharge.
+4. Placez tous les fichiers reçus dans le dossier `reponses/` (jamais publié : il contient les prénoms), puis lancez :
+
+   `python scripts/traiter_releve.py`
+
+5. Vous obtenez `reponses/synthese-releve.xlsx` (détail par terrain, avis divergents, commentaires) et `data/releve_pleine_terre.js` (résultats anonymes, prêts à être affichés sur le site).
+
+Si une personne envoie plusieurs fichiers, seul le plus récent compte : chaque envoi contient toutes ses réponses.
+
 ## Ajouter des informations sur un projet
 
 Le fichier `data/complements.js` permet d'ajouter, pour un numéro de permis, un titre, un texte, des photos et des liens. Ces notes s'affichent dans la fiche du projet. La mise à jour automatique ne touche jamais ce fichier. Un exemple commenté se trouve en tête du fichier.

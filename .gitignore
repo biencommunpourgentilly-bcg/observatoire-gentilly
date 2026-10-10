@@ -1,2 +1,4 @@
 __pycache__/
 .claude/
+# Réponses du relevé (contiennent les prénoms des participants) : ne jamais publier
+reponses/

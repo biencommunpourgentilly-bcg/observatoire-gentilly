@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relevé de la pleine terre</title>
+  <meta name="description" content="Relevé collaboratif de la pleine terre sur les terrains des permis de construire de Gentilly, par le Bien Commun pour Gentilly.">
+  <meta name="theme-color" content="#3155a6">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233155a6'/%3E%3Cpath d='M0 32L32 22V32z' fill='%2300c0f3'/%3E%3Cpath d='M8 21V13l8-6 8 6v8h-5v-5h-6v5z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/releve.css">
+</head>
+<body class="releve">
+  <header class="entete">
+    <div class="entete-int">
+      <a class="marque" href="index.html">
+        <span class="marque-titre"><small>Observatoire de l'urbanisme</small><strong>GENTILLY</strong></span>
+        <span class="bloc-marque petit" data-logo><span>Bien Commun</span><span>pour Gentilly</span></span>
+      </a>
+      <span class="progression-entete" id="progression-entete"></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Accueil du relevé -->
+    <section id="ecran-accueil">
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>Relevé de la pleine terre</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> mesurer ensemble, terrain par terrain, la pleine terre gagnée ou perdue.</p>
+        </div>
+      </div>
+      <div class="conteneur texte">
+        <p class="chapeau">Pour chaque terrain où un permis a été accordé depuis 2013, vous voyez une photo aérienne avant le projet et une photo récente. Vous indiquez la part du terrain en pleine terre sur chacune et, si vous le souhaitez, vous dessinez les zones disparues ou créées.</p>
+
+        <div class="bloc aide">
+          <h2>Qu'est-ce qui compte comme pleine terre ?</h2>
+          <ul>
+            <li><strong>Oui :</strong> jardins, pelouses, potagers, massifs, arbres plantés dans le sol, terre nue, friches.</li>
+            <li><strong>Non :</strong> bâtiments, toits (même végétalisés), parkings, cours goudronnées ou dallées, terrasses, allées en dur.</li>
+            <li><strong>Attention aux jardins sur dalle :</strong> au-dessus d'un parking souterrain, une pelouse n'est pas de la pleine terre. Indice : un immeuble neuf avec une cour verte au même niveau qu'une rampe de parking.</li>
+            <li>Un arbre qui dépasse au-dessus d'une cour goudronnée ne compte pas : regardez le sol.</li>
+          </ul>
+        </div>
+
+        <form class="bloc demarrage" id="form-demarrage" onsubmit="return false">
+          <label for="participant"><strong>Votre prénom ou vos initiales</strong> (pour regrouper vos réponses)</label>
+          <input type="text" id="participant" autocomplete="given-name" maxlength="40" required>
+          <fieldset class="choix-liste">
+            <legend><strong>Quels terrains ?</strong></legend>
+            <label><input type="radio" name="liste" value="grands" checked> <span id="lib-grands">Les grands projets d'abord</span></label>
+            <label><input type="radio" name="liste" value="tous"> <span id="lib-tous">Tous les terrains</span></label>
+            <label><input type="radio" name="liste" value="restants"> <span id="lib-restants">Seulement ceux que je n'ai pas encore faits</span></label>
+          </fieldset>
+          <button type="submit" class="bouton" id="bouton-commencer">Commencer</button>
+        </form>
+
+        <div class="bloc" id="bloc-envoi">
+          <h2>Envoyer mes réponses</h2>
+          <p id="resume-reponses">Aucune réponse pour le moment.</p>
+          <p class="note">Vos réponses restent sur cet appareil jusqu'à ce que vous les envoyiez. Vous pouvez faire une partie des terrains, envoyer, puis reprendre plus tard : chaque envoi contient toutes vos réponses.</p>
+          <div class="actions">
+            <button type="button" class="bouton" id="bouton-partager">Envoyer (WhatsApp, e-mail…)</button>
+            <button type="button" class="bouton contour-bleu" id="bouton-telecharger">Télécharger le fichier</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fiche d'un terrain -->
+    <section id="ecran-terrain" hidden>
+      <div class="conteneur large terrain">
+        <div class="terrain-entete">
+          <button type="button" class="lien-bouton" id="retour-accueil">← Accueil du relevé</button>
+          <span class="compteur-terrain" id="compteur-terrain"></span>
+        </div>
+        <h1 id="terrain-titre"></h1>
+        <ul class="terrain-permis" id="terrain-permis"></ul>
+
+        <div class="photos">
+          <figure class="photo">
+            <figcaption><span class="etiquette avant">AVANT</span> <select id="annee-avant" aria-label="Année de la photo avant"></select></figcaption>
+            <div id="carte-avant" class="carte-releve"></div>
+          </figure>
+          <figure class="photo">
+            <figcaption><span class="etiquette apres">APRÈS</span> <select id="annee-apres" aria-label="Année de la photo après"></select></figcaption>
+            <div id="carte-apres" class="carte-releve"></div>
+          </figure>
+        </div>
+        <p class="note">Terrain délimité en jaune : <span id="terrain-surface"></span>. Les deux photos bougent ensemble ; vous pouvez zoomer.</p>
+
+        <div class="questions">
+          <div class="question">
+            <h2>1. Sur la photo AVANT, quelle part du terrain était en pleine terre ?</h2>
+            <div class="choix" data-question="part_avant"></div>
+          </div>
+          <div class="question">
+            <h2>2. Sur la photo APRÈS, quelle part du terrain est en pleine terre ?</h2>
+            <div class="choix" data-question="part_apres"></div>
+          </div>
+          <div class="question">
+            <h2>3. Sur la photo APRÈS, le projet est…</h2>
+            <div class="choix" data-question="etat_projet"></div>
+          </div>
+          <div class="question">
+            <h2>4. Facultatif : dessinez les zones</h2>
+            <p class="note">Touchez « Dessiner », puis touchez la photo pour placer les coins de la zone, et « Terminer ». Une zone <b class="txt-disparue">disparue</b> se dessine plutôt sur la photo avant, une zone <b class="txt-creee">créée</b> sur la photo après.</p>
+            <div class="outils-dessin" id="outils-dessin">
+              <button type="button" class="bouton-dessin disparue" data-type="disparue">Dessiner une pleine terre disparue</button>
+              <button type="button" class="bouton-dessin creee" data-type="creee">Dessiner une pleine terre créée</button>
+            </div>
+            <div class="outils-dessin" id="outils-en-cours" hidden>
+              <span id="consigne-dessin"></span>
+              <button type="button" class="bouton" id="dessin-terminer">Terminer la zone</button>
+              <button type="button" class="lien-bouton" id="dessin-annuler-point">Retirer le dernier point</button>
+              <button type="button" class="lien-bouton" id="dessin-abandonner">Abandonner</button>
+            </div>
+            <ul class="zones" id="liste-zones"></ul>
+          </div>
+          <div class="question">
+            <h2>5. Une remarque ?</h2>
+            <textarea id="commentaire" rows="2" placeholder="Ex. : jardin sur dalle, arbres conservés, photo floue…"></textarea>
+          </div>
+        </div>
+
+        <div class="navigation-terrain">
+          <button type="button" class="bouton contour-bleu" id="precedent">← Précédent</button>
+          <button type="button" class="lien-bouton" id="passer">Passer</button>
+          <button type="button" class="bouton" id="suivant">Suivant →</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="data/permis.js"></script>
+  <script src="assets/adresses.js"></script>
+  <script src="assets/releve.js"></script>
+</body>
+</html>

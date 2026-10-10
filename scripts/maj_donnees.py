@@ -18,6 +18,7 @@ Pillow, le script fonctionne et reprend les mesures déjà enregistrées dans le
 import csv
 import datetime as dt
 import json
+import math
 import pathlib
 import re
 import sys
@@ -458,6 +459,35 @@ def localiser(permis, cache):
 
 METHODE_VEGETATION = "ndvi-otsu-1"
 
+def photos_couleur(cache):
+    """Photos aériennes en couleurs naturelles couvrant Gentilly (pour le site et le relevé),
+    avec leur zoom maximal : les plus anciennes s'arrêtent au niveau 18, les récentes au 19."""
+    connues = {ph["annee"]: ph for ph in cache.get("photos_couleur", [])}
+    lon, lat = 2.3463, 48.8136
+
+    def tuile_existe(couche, z):
+        n = 2 ** z
+        x = int((lon + 180) / 360 * n)
+        y = int((1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n)
+        url = (f"https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER={couche}"
+               f"&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}")
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "observatoire-urbanisme-gentilly/1.0"}), timeout=30):
+                return True
+        except Exception:
+            return False
+
+    for annee in range(2000, dt.date.today().year + 1):
+        if annee in connues:
+            continue
+        for couche in (f"ORTHOIMAGERY.ORTHOPHOTOS{annee}", f"ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.{annee}"):
+            if tuile_existe(couche, 17):
+                connues[annee] = {"annee": annee, "couche": couche, "zmax": 19 if tuile_existe(couche, 19) else 18}
+                break
+    cache["photos_couleur"] = [connues[a] for a in sorted(connues)]
+    return cache["photos_couleur"]
+
+
 def photos_disponibles(cache, lon, lat, vegetation):
     """Années pour lesquelles l'IGN publie une photo infrarouge couvrant Gentilly."""
     connues = {ph["annee"]: ph for ph in cache.get("photos", [])}
@@ -645,6 +675,8 @@ def main():
     photos = mesurer_vegetation(permis, cache, commune)
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
     pleine_terre = bilan_vegetation(permis, cache, photos)
+    couleur = photos_couleur(cache)
+    CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
 
     millesime = max(m for _, m in fichiers.values())
     meta = {
@@ -657,6 +689,7 @@ def main():
         "source_url": URL_DATASET,
         "seuils_grand_projet": {"logements": SEUIL_LOGEMENTS, "surface_m2": SEUIL_SURFACE},
         "pleine_terre": pleine_terre,
+        "photos_couleur": couleur,
     }
     ecrire(permis, meta, commune)
 

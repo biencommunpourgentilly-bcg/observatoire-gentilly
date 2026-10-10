@@ -65,7 +65,54 @@
    "terrains_en_perte": 39,
    "terrains_en_gain": 24,
    "solde": 2181
-  }
+  },
+  "photos_couleur": [
+   {
+    "annee": 2000,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2000",
+    "zmax": 18
+   },
+   {
+    "annee": 2003,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2003",
+    "zmax": 18
+   },
+   {
+    "annee": 2008,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2008",
+    "zmax": 18
+   },
+   {
+    "annee": 2011,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2011",
+    "zmax": 18
+   },
+   {
+    "annee": 2014,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2014",
+    "zmax": 18
+   },
+   {
+    "annee": 2017,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2017",
+    "zmax": 18
+   },
+   {
+    "annee": 2018,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2018",
+    "zmax": 18
+   },
+   {
+    "annee": 2021,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2021",
+    "zmax": 19
+   },
+   {
+    "annee": 2024,
+    "couche": "ORTHOIMAGERY.ORTHOPHOTOS2024",
+    "zmax": 19
+   }
+  ]
  },
  "commune": {
   "type": "Polygon",
@@ -5237,8 +5284,8 @@
    "categorie": "activites",
    "grand_projet": true,
    "lies": [
-    "PC-0940372501011",
-    "PD-0940372602001"
+    "PD-0940372602001",
+    "PC-0940372501011"
    ],
    "lat": 48.81362,
    "lon": 2.346264,

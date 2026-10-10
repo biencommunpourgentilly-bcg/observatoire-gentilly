@@ -1,0 +1,61 @@
+/* Relevé collaboratif de la pleine terre (complète assets/style.css) */
+
+.releve .bandeau { margin-top: -14px; }
+.progression-entete { font-weight: 700; font-size: .9rem; white-space: nowrap; }
+.aide ul { margin: 0; padding-left: 1.2em; }
+.aide li { margin-bottom: .4em; }
+.bloc + .bloc, .bloc + form, form + .bloc { margin-top: 16px; }
+.demarrage { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.demarrage input[type="text"] { font: inherit; padding: 10px 12px; border: 1px solid var(--trait-fort); width: 100%; max-width: 360px; }
+.choix-liste { border: none; padding: 0; margin: 6px 0; display: flex; flex-direction: column; gap: 8px; }
+.choix-liste label { display: flex; gap: 8px; align-items: flex-start; }
+.bouton.contour-bleu { background: var(--blanc); color: var(--bleu); }
+button.bouton { cursor: pointer; }
+button.bouton:disabled { opacity: .45; cursor: default; }
+.lien-bouton { background: none; border: none; color: var(--bleu); font: 700 .95rem var(--police); cursor: pointer; padding: 8px 4px; text-decoration: underline; text-underline-offset: 2px; }
+
+.terrain { padding-top: 12px; }
+.terrain-entete { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.compteur-terrain { color: var(--encre-2); font-weight: 700; font-size: .9rem; }
+.terrain h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); margin: 6px 0 8px; }
+.terrain-permis { list-style: none; padding: 0; margin: 0 0 14px; font-size: .92rem; color: var(--encre-2); }
+.terrain-permis li { padding: 2px 0; }
+
+.photos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.photo { margin: 0; }
+.photo figcaption { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.photo select { font: inherit; font-size: .95rem; padding: 4px 8px; border: 1px solid var(--trait-fort); background: var(--blanc); }
+.etiquette { font-family: var(--police-titre); font-weight: 900; color: var(--blanc); padding: 3px 10px; }
+.etiquette.avant { background: var(--bleu); }
+.etiquette.apres { background: var(--cyan); }
+.carte-releve { height: min(52vh, 460px); background: var(--surface-2); isolation: isolate; cursor: crosshair; }
+@media (max-width: 760px) {
+  .photos { grid-template-columns: 1fr; }
+  .carte-releve { height: 46vh; min-height: 260px; }
+}
+
+.questions { margin-top: 18px; display: grid; gap: 14px; }
+.question { background: var(--surface); border: 1px solid var(--trait); border-left: 5px solid var(--cyan); padding: 14px 16px; }
+.question h2 { font-size: 1.05rem; margin-bottom: 10px; }
+.choix { display: flex; flex-wrap: wrap; gap: 8px; }
+.choix button { font: 700 1rem var(--police); padding: 10px 14px; min-width: 64px; background: var(--blanc); color: var(--bleu); border: 2px solid var(--bleu); cursor: pointer; }
+.choix button[aria-pressed="true"] { background: var(--bleu); color: var(--blanc); }
+.choix button[data-valeur="null"], .choix button[data-valeur="inconnu"] { border-style: dashed; }
+.outils-dessin { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bouton-dessin { font: 700 .95rem var(--police); padding: 10px 14px; border: none; color: var(--blanc); cursor: pointer; }
+.bouton-dessin.disparue { background: var(--rouge); }
+.bouton-dessin.creee { background: #0090b8; }
+#consigne-dessin { flex-basis: 100%; }
+.txt-disparue { color: var(--rouge); }
+.txt-creee { color: #0090b8; }
+.zones { list-style: none; padding: 0; margin: 10px 0 0; }
+.zones li { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.pastille-zone { width: 14px; height: 14px; display: inline-block; }
+.pastille-zone.disparue { background: var(--rouge); }
+.pastille-zone.creee { background: var(--cyan); }
+.question textarea { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--trait-fort); }
+
+.navigation-terrain { position: sticky; bottom: 0; z-index: 900; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: nowrap; background: var(--blanc); border-top: 1px solid var(--trait); padding: 12px 0; margin-top: 16px; }
+@media (max-width: 480px) {
+  .navigation-terrain .bouton { padding: 10px 12px; font-size: .8rem; white-space: nowrap; }
+}

@@ -47,45 +47,7 @@
   }
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  // Adresses Sitadel en majuscules, parfois tronquées → forme lisible (« 9 RUE D ARCUEIL » → « 9 rue d'Arcueil »).
-  const CORRECTIONS = [
-    [/\bPAUL VAILL[A-Z]*(?:[ -]COUT[A-Z]*)?/g, "PAUL VAILLANT-COUTURIER"],
-    [/\bRAYMOND LEFEB[A-Z]*/g, "RAYMOND LEFEBVRE"],
-    [/\bMOULIN DE LA R[A-Z]*/g, "MOULIN DE LA ROCHE"],
-    [/\bARCEUIL\b/g, "ARCUEIL"],
-    [/\b(?:AVENUR|AVENU|AVNUE|AVE|AV)\b\.?/g, "AVENUE"],
-    [/\bBD\b/g, "BOULEVARD"],
-    [/\bIMP\b/g, "IMPASSE"],
-    [/\bR\b(?= )/g, "RUE"],
-    [/\bSTE\b/g, "SAINTE"],
-    [/\bLE LA\b/g, "DE LA"],
-    [/\b(\d+) ?EME\b/g, "$1E"],
-    [/\b(\d+) ?B\b/g, "$1 BIS"],
-    [/\b(\d+) ?T\b/g, "$1 TER"],
-    [/(\d) A (\d)/g, "$1 À $2"],
-    [/\b([DL]) (?=[AEIOUYH])/g, "$1'"],
-  ];
-  const ACCENTS = {
-    PERI: "PÉRI", LENINE: "LÉNINE", FREROT: "FRÉROT", HELENE: "HÉLÈNE", REPUBLIQUE: "RÉPUBLIQUE",
-    PRESIDENT: "PRÉSIDENT", TENINE: "TÉNINE", BENOIT: "BENOÎT", CLEMENT: "CLÉMENT", JAURES: "JAURÈS",
-    ELYSEES: "ÉLYSÉES", REMOND: "RÉMOND", ECU: "ÉCU", ELOI: "ÉLOI", LURCAT: "LURÇAT", ILOT: "ÎLOT",
-    RENE: "RENÉ", VAILLANT: "VAILLANT",
-  };
-  const MINUSCULES = new Set(["rue", "avenue", "boulevard", "place", "allée", "impasse", "chemin", "quai", "sentier", "villa", "passage", "square", "cours", "de", "du", "des", "la", "le", "les", "et", "au", "aux", "en", "sur", "à", "bis", "ter"]);
-  function casse(texte) {
-    if (!texte) return "";
-    let t = String(texte).toUpperCase();
-    CORRECTIONS.forEach(([re, rep]) => (t = t.replace(re, rep)));
-    t = t.replace(/[A-Z]+/g, (mot) => ACCENTS[mot] || mot);
-    t = t
-      .toLowerCase()
-      .replace(/(^|[\s(\-'/])([a-zàâäéèêëîïôöùûüç]+)/g, (m, sep, mot, pos) => {
-        if (pos > 0 && sep !== "-" && MINUSCULES.has(mot)) return sep + mot;
-        if ((mot === "d" || mot === "l") && sep !== "-") return sep + mot;
-        return sep + mot.charAt(0).toUpperCase() + mot.slice(1);
-      });
-    return t.charAt(0).toUpperCase() + t.slice(1);
-  }
+  const casse = window.casseAdresse; // assets/adresses.js
   function adresse(p) {
     const t = casse(p.adresse);
     if (!t) return "Adresse non renseignée";
@@ -868,11 +830,11 @@
     cartesPhotos = [];
     const vb = p.veg_bilan;
     if (vb && vb.avant_annee && PT && typeof L !== "undefined") {
-      const couche = (an) => (PT.photos.find((ph) => ph.annee === an) || {}).couleur;
+      const photo = (an) => (META.photos_couleur || []).find((ph) => ph.annee === an);
       [["carte-avant", vb.avant_annee], ["carte-apres", vb.apres_annee]].forEach(([idCarte, an]) => {
-        if (!couche(an)) return;
+        if (!photo(an)) return;
         const c = L.map(idCarte, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false });
-        L.tileLayer(IGN(couche(an), "image/jpeg"), { maxZoom: 20, maxNativeZoom: 19 }).addTo(c);
+        L.tileLayer(IGN(photo(an).couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: photo(an).zmax }).addTo(c);
         const gr = L.featureGroup((p.contours || []).map((geom) => L.geoJSON(geom, { style: { color: "#ffffff", weight: 2.5, fill: false } }))).addTo(c);
         c.fitBounds(gr.getBounds(), { padding: [12, 12], maxZoom: 19 });
         cartesPhotos.push(c);
@@ -882,8 +844,8 @@
       const f = fonds();
       carteFiche = L.map("fiche-carte", { layers: [f.photo], zoomControl: true, scrollWheelZoom: false });
       const fondsFiche = { "Photo aérienne": f.photo, "Plan IGN": f.plan };
-      ((PT && PT.photos) || []).filter((ph) => ph.couleur).forEach((ph) => {
-        fondsFiche[`Photo ${ph.annee}`] = L.tileLayer(IGN(ph.couleur, "image/jpeg"), { maxZoom: 20, maxNativeZoom: 19, attribution: ATTRIB_IGN });
+      (META.photos_couleur || []).filter((ph) => ph.annee >= 2008).forEach((ph) => {
+        fondsFiche[`Photo ${ph.annee}`] = L.tileLayer(IGN(ph.couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: ph.zmax, attribution: ATTRIB_IGN });
       });
       L.control.layers(fondsFiche, { "Cadastre": f.cadastre }).addTo(carteFiche);
       const groupe = L.featureGroup().addTo(carteFiche);
