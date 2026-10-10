@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Observatoire de l'urbanisme de Gentilly</title>
+  <meta name="description" content="L'Observatoire de l'urbanisme de Gentilly, réalisé par le Bien Commun pour Gentilly : tous les permis de construire, de démolir et d'aménager publiés par l'État depuis 2013.">
+  <meta name="theme-color" content="#3155a6">
+  <!-- Préversion : à retirer lors de la publication officielle, ainsi que robots.txt -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233155a6'/%3E%3Cpath d='M0 32L32 22V32z' fill='%2300c0f3'/%3E%3Cpath d='M8 21V13l8-6 8 6v8h-5v-5h-6v5z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="evitement" href="#contenu">Aller au contenu</a>
+  <header class="entete">
+    <div class="entete-int">
+      <a class="marque" href="#accueil">
+        <span class="marque-titre"><small>Observatoire de l'urbanisme</small><strong>GENTILLY</strong></span>
+        <span class="bloc-marque petit" data-logo><span>Bien Commun</span><span>pour Gentilly</span></span>
+      </a>
+      <button class="menu-bouton" aria-expanded="false" aria-controls="nav">Menu</button>
+      <nav id="nav" class="nav" aria-label="Navigation principale">
+        <a href="#accueil" data-vue="accueil">Accueil</a>
+        <a href="#carte" data-vue="carte">Carte</a>
+        <a href="#bureaux" data-vue="bureaux">Bureaux</a>
+        <a href="#pleine-terre" data-vue="pleine-terre">Pleine terre</a>
+        <a href="#grands-projets" data-vue="grands-projets">Grands projets</a>
+        <a href="#liste" data-vue="liste">Liste</a>
+        <a href="#a-propos" data-vue="a-propos">À propos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <!-- Accueil -->
+    <section class="vue" id="vue-accueil" data-vue="accueil">
+      <div class="heros">
+        <div class="heros-int">
+          <div class="heros-texte">
+            <p class="surtitre">Observatoire de l'urbanisme</p>
+            <h1><span class="avant">Ce qui se construit à</span> <span class="ancre">Gentilly</span></h1>
+            <p class="sous-titre"><span class="pour">POUR</span> suivre chaque permis de construire, de démolir et d'aménager accordé dans notre ville, sur une carte et dans une liste, à partir des données officielles mises à jour chaque mois.</p>
+            <div class="actions">
+              <a class="bouton blanc" href="#carte">Voir la carte</a>
+              <a class="bouton contour" href="#grands-projets">Les grands projets</a>
+            </div>
+          </div>
+          <div class="heros-marque">
+            <span class="bloc-marque grand" data-logo><span>Bien Commun</span><span>pour Gentilly</span></span>
+            <p>Un observatoire réalisé par le Bien Commun pour Gentilly</p>
+          </div>
+        </div>
+      </div>
+      <div class="conteneur sous-heros">
+        <div class="tuiles" id="tuiles"></div>
+
+        <div class="focus">
+          <a class="focus-bloc" href="#bureaux">
+            <span class="focus-titre">Bureaux</span>
+            <span class="focus-texte" id="focus-bureaux"></span>
+            <span class="focus-lien">Voir l'analyse des bureaux →</span>
+          </a>
+          <a class="focus-bloc" href="#pleine-terre">
+            <span class="focus-titre">Pleine terre</span>
+            <span class="focus-texte" id="focus-pleine-terre"></span>
+            <span class="focus-lien">Voir les terrains concernés →</span>
+          </a>
+        </div>
+
+        <div class="grille-accueil">
+          <figure class="bloc graphique">
+            <figcaption>
+              <h2>Logements autorisés chaque année</h2>
+              <p class="note" id="graphique-note"></p>
+            </figcaption>
+            <div id="graphique" class="graphique-zone"></div>
+          </figure>
+          <div class="bloc">
+            <h2>Dernières autorisations</h2>
+            <ul class="liste-cartes compacte" id="dernieres"></ul>
+            <a class="lien-suite" href="#liste">Toutes les autorisations →</a>
+          </div>
+        </div>
+
+        <p class="avertissement">Site réalisé par le Bien Commun pour Gentilly. Ce n'est pas un site de la mairie, et il n'a aucun lien avec les porteurs de projets. Les informations proviennent de la base publique Sitadel de l'État (<span id="accueil-couverture"></span>) et des photos aériennes de l'IGN ; elles peuvent comporter des erreurs ou des retards. <a href="#a-propos">En savoir plus</a>.</p>
+      </div>
+    </section>
+
+    <!-- Carte -->
+    <section class="vue" id="vue-carte" data-vue="carte" hidden>
+      <div class="filtres-zone" data-filtres></div>
+      <div class="carte-mise-en-page">
+        <div id="carte" class="carte" role="region" aria-label="Carte des autorisations"></div>
+        <aside class="carte-liste">
+          <p class="compteur" data-compteur></p>
+          <ul class="liste-cartes compacte" id="carte-liste"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Bureaux -->
+    <section class="vue" id="vue-bureaux" data-vue="bureaux" hidden>
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>Bureaux</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> mesurer la place que prennent les bureaux dans notre ville.</p>
+        </div>
+      </div>
+      <div class="conteneur">
+        <p class="chapeau" id="bureaux-chapeau"></p>
+        <div class="tuiles" id="bureaux-tuiles"></div>
+        <figure class="bloc graphique">
+          <figcaption>
+            <h2>Surfaces de bureaux autorisées chaque année</h2>
+            <p class="note">Au-dessus de la ligne : bureaux créés. En dessous : bureaux démolis ou transformés (souvent en logements). Permis annulés exclus.</p>
+          </figcaption>
+          <div class="legende-graphique">
+            <span><i style="--c:var(--bleu)"></i>Bureaux créés</span>
+            <span><i style="--c:var(--cyan)"></i>Bureaux démolis ou transformés</span>
+          </div>
+          <div id="graphique-bureaux" class="graphique-zone"></div>
+        </figure>
+        <h2 class="titre-section">Les projets de bureaux</h2>
+        <p class="note" id="bureaux-note"></p>
+        <ul class="liste-cartes grille" id="bureaux-liste"></ul>
+        <p class="lien-carte"><a class="bouton" href="#carte" data-theme="bureaux">Voir les bureaux sur la carte</a></p>
+      </div>
+    </section>
+
+    <!-- Pleine terre -->
+    <section class="vue" id="vue-pleine-terre" data-vue="pleine-terre" hidden>
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>Pleine terre</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> suivre ce que deviennent les sols vivants de notre ville.</p>
+        </div>
+      </div>
+      <div class="conteneur">
+        <p class="chapeau">La pleine terre, c'est un sol naturel, sans construction ni dalle en dessous. Elle absorbe la pluie, rafraîchit la ville en été et permet aux grands arbres de pousser. Chaque projet qui construit sur un jardin ou une cour en terre la fait disparaître.</p>
+        <div class="tuiles" id="pt-tuiles"></div>
+        <figure class="bloc graphique">
+          <figcaption>
+            <h2>Végétation perdue ou gagnée sur les terrains des projets réalisés</h2>
+            <p class="note" id="pt-note"></p>
+          </figcaption>
+          <div class="legende-graphique">
+            <span><i style="--c:var(--rouge)"></i>Végétation disparue</span>
+            <span><i style="--c:var(--cyan)"></i>Végétation apparue</span>
+          </div>
+          <div id="graphique-vegetation" class="graphique-zone"></div>
+        </figure>
+
+        <h2 class="titre-section">À surveiller : projets autorisés, pas encore réalisés</h2>
+        <p class="note" id="pt-surveiller-note"></p>
+        <ul class="liste-cartes grille" id="pt-surveiller"></ul>
+
+        <div class="bloc encadre">
+          <h2>Ce que les photos montrent, et ce qu'elles ne montrent pas</h2>
+          <p>Les surfaces sont mesurées sur les photos aériennes infrarouges de l'IGN, où la végétation apparaît en rouge. Elles indiquent la végétation <strong>visible du ciel</strong> sur chaque terrain, avant le projet et sur la dernière photo disponible.</p>
+          <p><strong>Végétation n'est pas pleine terre.</strong> Un jardin planté sur la dalle d'un parking souterrain paraît vert vu du ciel, alors qu'il n'y a plus de pleine terre dessous. Une partie de la végétation « apparue » sur les terrains des nouveaux immeubles peut être dans ce cas. Les vraies surfaces de pleine terre figurent dans les dossiers de permis : c'est pourquoi nous les demandons à la mairie.</p>
+          <p id="pt-commune"></p>
+          <p class="note">Précision : quelques dizaines de mètres carrés par terrain. Les photos n'ont pas toutes été prises à la même saison ni avec la même lumière ; le seuil de détection est recalculé pour chaque photo afin de rendre les années comparables.</p>
+        </div>
+        <p class="lien-carte"><a class="bouton" href="#carte" data-theme="vegetation">Voir les terrains concernés sur la carte</a></p>
+      </div>
+    </section>
+
+    <!-- Grands projets -->
+    <section class="vue" id="vue-grands-projets" data-vue="grands-projets" hidden>
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>Grands projets</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> repérer les opérations qui transforment le plus la ville.</p>
+        </div>
+      </div>
+      <div class="conteneur">
+        <p class="chapeau" id="gp-chapeau"></p>
+        <div class="segments" id="gp-periode" role="group" aria-label="Période"></div>
+        <ul class="liste-cartes grille" id="gp-liste"></ul>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="vue" id="vue-liste" data-vue="liste" hidden>
+      <div class="filtres-zone" data-filtres></div>
+      <div class="conteneur large">
+        <div class="liste-entete">
+          <p class="compteur" data-compteur></p>
+          <div class="telechargements">
+            Télécharger : <a href="data/permis.csv" download>tableur (CSV)</a> · <a href="data/permis.json" download>JSON</a>
+          </div>
+        </div>
+        <div class="table-defile">
+          <table class="tableau" id="tableau">
+            <thead>
+              <tr>
+                <th scope="col"><button data-tri="date_autorisation">Accordée le</button></th>
+                <th scope="col"><button data-tri="adresse">Adresse</button></th>
+                <th scope="col"><button data-tri="type">Type</button></th>
+                <th scope="col"><button data-tri="demandeur">Demandeur</button></th>
+                <th scope="col" class="num"><button data-tri="logements">Logements</button></th>
+                <th scope="col" class="num"><button data-tri="surface_totale">Surface créée</button></th>
+                <th scope="col" class="num"><button data-tri="bureaux_crees">Bureaux créés</button></th>
+                <th scope="col" class="num"><button data-tri="veg_evolution">Végétation</button></th>
+                <th scope="col"><button data-tri="etat">État</button></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fiche -->
+    <section class="vue" id="vue-fiche" data-vue="fiche" hidden>
+      <div class="conteneur" id="fiche"></div>
+    </section>
+
+    <!-- À propos -->
+    <section class="vue" id="vue-a-propos" data-vue="a-propos" hidden>
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>À propos</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> que chaque habitant sache ce qui se construit près de chez lui.</p>
+        </div>
+      </div>
+      <div class="conteneur texte">
+        <p class="chapeau">Cet observatoire est réalisé par le Bien Commun pour Gentilly. Il rassemble les autorisations d'urbanisme que l'État publie en données ouvertes pour notre ville : chacun peut voir où l'on construit, démolit ou aménage, avec des informations vérifiables.</p>
+
+        <h2>D'où viennent les données ?</h2>
+        <p>Toutes les fiches proviennent de la base <a href="https://www.statistiques.developpement-durable.gouv.fr/catalogue?page=dataset&amp;datasetId=6513f0189d7d312c80ec5b5b" target="_blank" rel="noopener">Sitadel</a> du ministère de la Transition écologique (service des données et études statistiques). Elle est alimentée par les communes et les directions départementales, et publiée chaque mois sous Licence Ouverte. <span id="apropos-maj"></span></p>
+        <p>Les autorisations sont placées sur la carte grâce à leurs parcelles cadastrales (<a href="https://apicarto.ign.fr/api/doc/cadastre" target="_blank" rel="noopener">API Carto de l'IGN</a>), ou à défaut grâce à leur adresse (<a href="https://adresse.data.gouv.fr" target="_blank" rel="noopener">Base Adresse Nationale</a>). Les fonds de carte sont ceux de l'IGN (Géoplateforme).</p>
+
+        <h2>Ce que la base contient, et ce qu'elle ne contient pas</h2>
+        <ul>
+          <li><strong>Contient :</strong> les permis de construire et déclarations préalables qui créent au moins un logement ou des surfaces d'activité, les permis de démolir et les permis d'aménager accordés depuis 2013, avec leurs dates, adresses, parcelles, surfaces et nombres de logements.</li>
+          <li><strong>Ne contient pas :</strong> les plans, les images ni les arrêtés ; les demandes en cours d'instruction ou refusées ; les petits travaux sans création de surface (ravalements, clôtures, fenêtres…).</li>
+          <li><strong>Décalage :</strong> une autorisation apparaît en général un à deux mois après la décision. Les dates d'ouverture et d'achèvement de chantier ne sont connues que lorsqu'elles ont été déclarées.</li>
+          <li><strong>Erreurs possibles :</strong> les chiffres sont ceux déclarés par les demandeurs. Ils peuvent évoluer avec des permis modificatifs, qui ne figurent pas dans la base.</li>
+        </ul>
+
+        <h2>Comment sont comptés les bureaux ?</h2>
+        <p>Les surfaces de bureaux sont celles déclarées dans les permis : bureaux construits ou créés par transformation, bureaux démolis, et bureaux transformés en autre chose (le plus souvent en logements). Les permis annulés ne sont pas comptés.</p>
+
+        <h2>Comment est mesurée la végétation ?</h2>
+        <p>Pour chaque terrain, nous comptons la surface végétalisée visible sur les photos aériennes infrarouges de l'IGN (<span id="apropos-photos">2014, 2018, 2021 et 2024</span>). Sur ces photos, la végétation vivante apparaît en rouge ; un indice de végétation est calculé pour chaque point de 40 cm de côté. Le seuil est recalculé pour chaque photo sur l'ensemble de la commune, car la lumière et les couleurs varient d'une campagne à l'autre. Le bilan d'un projet compare la photo précédant son autorisation à la dernière photo, uniquement si le chantier avait commencé avant celle-ci.</p>
+        <p>C'est une estimation de la végétation, pas de la pleine terre : un jardin sur dalle compte comme végétation. Le détail du calcul est dans le fichier <code>scripts/vegetation.py</code>.</p>
+
+        <h2>Qu'appelle-t-on un « grand projet » ?</h2>
+        <p id="apropos-seuils">Un permis de construire d'au moins 10 logements ou 1 000 m² de surface de plancher créée ou transformée, un permis de démolir déposé par une société ou une collectivité, ou un permis d'aménager.</p>
+
+        <h2>Obtenir le dossier complet d'un projet</h2>
+        <p>Une fois la décision prise, le dossier d'un permis (arrêté, notice, plans) est communicable à toute personne qui le demande à la mairie (articles L311-1 et suivants du Code des relations entre le public et l'administration). En l'absence de réponse sous un mois, on peut saisir gratuitement la <a href="https://www.cada.fr" target="_blank" rel="noopener">CADA</a>. Les plans restent protégés par le droit d'auteur de l'architecte : ils peuvent être consultés, pas republiés librement.</p>
+
+        <h2>Données personnelles</h2>
+        <p>La base Sitadel ne publie pas le nom des particuliers : seuls les demandeurs qui sont des sociétés, des associations ou des organismes publics sont nommés. Si une fiche vous concerne et que vous souhaitez qu'elle soit retirée de ce site, écrivez à l'adresse ci-dessous.</p>
+
+        <h2>Réutilisation</h2>
+        <p>Les données Sitadel sont sous <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence/" target="_blank" rel="noopener">Licence Ouverte 2.0</a> : vous pouvez les réutiliser en citant la source. Les fichiers de ce site sont téléchargeables depuis la page <a href="#liste">Toutes les autorisations</a>.</p>
+
+        <h2>Contact</h2>
+        <p>Pour signaler une erreur, apporter un document ou une photo : <span class="a-completer">[adresse de contact à compléter]</span>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <div class="pied-int">
+      <span class="bloc-marque petit" data-logo><span>Bien Commun</span><span>pour Gentilly</span></span>
+      <div>
+        <p><strong>Observatoire de l'urbanisme de Gentilly</strong>, réalisé par le Bien Commun pour Gentilly.</p>
+        <p>Données : Sitadel (ministère de la Transition écologique), IGN, Base Adresse Nationale · <span id="pied-maj"></span> · <a href="#a-propos">À propos et contact</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="infobulle" id="infobulle" role="status" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="data/permis.js"></script>
+  <script src="data/complements.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

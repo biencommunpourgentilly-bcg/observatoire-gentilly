@@ -1,0 +1,336 @@
+/* Observatoire de l'urbanisme de Gentilly — charte graphique du Bien Commun pour Gentilly
+   Palette : bleu roi #3155a6 (aplats, titres), cyan #00c0f3 (éléments graphiques),
+   rouge (avec parcimonie), blanc (texte sur fond bleu, respiration).
+   Typographie : Arial, titres en Arial très gras. Obliques montantes de gauche à droite. */
+
+:root {
+  color-scheme: light;
+  --bleu: #3155a6;
+  --bleu-fonce: #253f7c;
+  --bleu-pale: #eaeff8;
+  --cyan: #00c0f3;
+  --rouge: #e30613;
+  --blanc: #ffffff;
+  --fond: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f3f5fa;
+  --encre: #1b1d24;
+  --encre-2: #4a4f5c;
+  --encre-3: #6a7080;
+  --trait: #dfe3ec;
+  --trait-fort: #c3cad8;
+  --accent: var(--bleu);
+  --accent-fond: var(--bleu-pale);
+  /* Couleurs des catégories sur la carte (palette validée pour les daltonismes) */
+  --c-habitat: #3155a6;
+  --c-activites: #00c0f3;
+  --c-demolition: #e30613;
+  --c-amenagement: #5f6575;
+  --ombre: 0 1px 2px rgba(27, 29, 36, .06), 0 6px 18px rgba(27, 29, 36, .08);
+  --police: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --police-titre: "Arial Black", "Arial Bold", Gadget, Arial, sans-serif;
+  --oblique: 48px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--encre); font: 16px/1.5 var(--police); }
+a { color: var(--bleu); text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--police-titre); font-weight: 900; line-height: 1.05; margin: 0 0 .5em; color: var(--bleu); }
+h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); letter-spacing: -.01em; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1rem; }
+[hidden] { display: none !important; }
+
+.evitement { position: absolute; left: -999px; top: 0; background: var(--blanc); padding: 8px 12px; z-index: 2000; }
+.evitement:focus { left: 8px; }
+
+.conteneur { max-width: 1120px; margin: 0 auto; padding: 32px 16px 48px; }
+.conteneur.large { max-width: 1280px; padding-top: 16px; }
+.conteneur.texte { max-width: 760px; }
+.conteneur.texte h2 { margin-top: 1.8em; }
+.chapeau { font-size: 1.1rem; color: var(--encre-2); max-width: 64ch; margin: 0 0 20px; }
+.note { color: var(--encre-3); font-size: .875rem; margin: 0; }
+.a-completer { background: #fff3c4; color: #5a4300; padding: 0 4px; }
+
+/* ------------------------------------------------------------ Bloc marque
+   « Bien Commun pour Gentilly », toujours incliné (oblique montante). Remplacé
+   automatiquement par assets/logo-bcg.png s'il est présent. */
+.bloc-marque { display: inline-flex; flex-direction: column; align-items: flex-start; transform: rotate(-5deg); transform-origin: left bottom; font-family: var(--police-titre); font-weight: 900; text-transform: uppercase; line-height: 1; }
+.bloc-marque > span { display: block; background: var(--blanc); color: var(--bleu); padding: .18em .4em; }
+.bloc-marque > span + span { background: var(--cyan); color: var(--blanc); margin-left: .9em; margin-top: -.05em; }
+.bloc-marque.petit { font-size: .7rem; }
+.bloc-marque.grand { font-size: clamp(1.4rem, 3.2vw, 2.4rem); }
+.logo-bcg { display: block; height: auto; }
+
+/* ------------------------------------------------------------ En-tête (aplat bleu, bord oblique) */
+.entete { position: sticky; top: 0; z-index: 1000; background: var(--bleu); color: var(--blanc); padding-bottom: 14px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 0 100%); }
+.entete-int { max-width: 1280px; margin: 0 auto; padding: 10px 16px 4px; display: flex; align-items: center; gap: 16px; }
+.marque { display: flex; align-items: center; gap: 18px; color: var(--blanc); text-decoration: none; margin-right: auto; }
+.marque-titre { display: flex; flex-direction: column; line-height: 1; }
+.marque-titre small { font-size: .78rem; letter-spacing: .02em; }
+.marque-titre strong { font-family: var(--police-titre); font-weight: 900; font-size: 1.55rem; letter-spacing: .01em; }
+.entete .bloc-marque.petit { margin-top: 6px; }
+.entete .logo-bcg { height: 40px; width: auto; }
+.nav { display: flex; gap: 2px; flex-wrap: wrap; }
+.nav a { color: var(--blanc); text-decoration: none; padding: 8px 12px; font-weight: 700; font-size: .95rem; border-bottom: 3px solid transparent; }
+.nav a:hover { border-bottom-color: rgba(255, 255, 255, .5); }
+.nav a[aria-current="page"] { border-bottom-color: var(--cyan); }
+.menu-bouton { display: none; }
+@media (max-width: 1140px) {
+  .menu-bouton { display: block; background: none; border: 2px solid var(--blanc); color: var(--blanc); padding: 6px 12px; font: 700 .95rem var(--police); }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--bleu); flex-direction: column; padding: 4px 16px 16px; }
+  .nav.ouvert { display: flex; }
+  .entete { clip-path: none; padding-bottom: 0; }
+  .entete-int { padding-bottom: 10px; }
+}
+@media (max-width: 480px) {
+  .entete .bloc-marque.petit, .entete .logo-bcg { display: none; }
+}
+
+/* ------------------------------------------------------------ Héros d'accueil et bandeaux */
+.heros, .bandeau { background: var(--bleu); color: var(--blanc); clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--oblique)), 0 100%); margin-top: -14px; }
+.heros-int { max-width: 1120px; margin: 0 auto; padding: 56px 16px calc(var(--oblique) + 56px); display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: center; }
+.heros h1, .bandeau h1 { color: var(--blanc); }
+.heros h1 { font-size: clamp(2.6rem, 7vw, 5.6rem); line-height: .95; margin-bottom: 20px; }
+.heros .avant { display: block; font-size: .45em; line-height: 1.1; margin-bottom: .12em; }
+.heros .ancre { display: block; text-transform: uppercase; }
+.surtitre { margin: 0 0 10px; font-weight: 700; font-size: 1.05rem; }
+.heros .sous-titre, .bandeau .sous-titre { font-size: 1.15rem; max-width: 60ch; margin: 0 0 28px; line-height: 1.45; }
+.pour { font-family: var(--police-titre); font-weight: 900; color: var(--cyan); letter-spacing: .02em; }
+.heros-marque { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.heros-marque .logo-bcg { width: 100%; max-width: 340px; }
+.heros-marque p { margin: 0; font-size: .95rem; opacity: .92; }
+.bandeau-int { max-width: 1120px; margin: 0 auto; padding: 40px 16px calc(var(--oblique) + 26px); }
+.bandeau .sous-titre { margin-bottom: 0; }
+.sous-heros { padding-top: 8px; }
+@media (max-width: 860px) {
+  :root { --oblique: 28px; }
+  .heros-int { grid-template-columns: 1fr; padding-top: 40px; }
+  .heros-marque { order: -1; gap: 10px; }
+  .heros-marque p { display: none; }
+  .heros, .bandeau { margin-top: 0; }
+}
+
+/* Boutons */
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.bouton { display: inline-block; padding: 12px 20px; text-decoration: none; font-family: var(--police-titre); font-weight: 900; text-transform: uppercase; font-size: .9rem; letter-spacing: .02em; border: 2px solid var(--bleu); background: var(--bleu); color: var(--blanc); }
+.bouton.blanc { background: var(--blanc); border-color: var(--blanc); color: var(--bleu); }
+.bouton.contour { background: transparent; border-color: var(--blanc); color: var(--blanc); }
+.bouton:hover { filter: brightness(1.08); }
+
+/* Tuiles de chiffres */
+.tuiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tuile { background: var(--surface); border: 1px solid var(--trait); border-top: 4px solid var(--cyan); padding: 16px; }
+.tuile .valeur { font-family: var(--police-titre); font-weight: 900; font-size: 2rem; line-height: 1.1; color: var(--bleu); }
+.tuile .libelle { color: var(--encre-2); font-size: .9rem; margin-top: 4px; }
+@media (max-width: 760px) { .tuiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tuile .valeur { font-size: 1.6rem; } }
+
+.grille-accueil { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .grille-accueil { grid-template-columns: 1fr; } }
+.bloc { background: var(--surface); border: 1px solid var(--trait); padding: 20px; margin: 0; }
+.bloc h2 { margin-bottom: 6px; }
+.lien-suite { display: inline-block; margin-top: 12px; font-weight: 700; text-decoration: none; }
+.avertissement { margin-top: 28px; color: var(--encre-3); font-size: .875rem; max-width: 80ch; }
+
+/* Graphique en barres */
+.graphique figcaption { margin-bottom: 12px; }
+.graphique-zone { position: relative; }
+.graphique-zone svg { display: block; width: 100%; height: auto; overflow: visible; }
+.graphique-zone .grille-ligne { stroke: var(--trait); stroke-width: 1; }
+.graphique-zone .axe { stroke: var(--trait-fort); stroke-width: 1; }
+.graphique-zone text { fill: var(--encre-3); font: 12px var(--police); font-variant-numeric: tabular-nums; }
+.graphique-zone text.valeur-barre { fill: var(--bleu); font-weight: 700; }
+.graphique-zone .barre { fill: var(--bleu); }
+.graphique-zone .barre.partielle { fill: url(#hachures); stroke: var(--bleu); stroke-width: 1.5; }
+.graphique-zone .cible { fill: transparent; }
+.graphique-zone .barre.survol { fill: var(--cyan); }
+
+#graphique-vegetation { overflow-x: auto; }
+@media (max-width: 760px) { #graphique-vegetation svg { min-width: 720px; } }
+.graphique-zone .barre-haut { fill: var(--bleu); }
+.graphique-zone .barre-bas { fill: var(--cyan); }
+.graphique-zone .barre-perte { fill: var(--rouge); }
+.graphique-zone .barre-gain { fill: var(--cyan); }
+.graphique-zone .etiquette-projet { fill: var(--encre); font-size: 12.5px; }
+.graphique-zone .ligne-projet { cursor: pointer; }
+.graphique-zone .ligne-projet:hover .cible { fill: var(--bleu-pale); }
+.graphique-zone .ligne-projet:hover .etiquette-projet { fill: var(--bleu); font-weight: 700; }
+.legende-graphique { display: flex; gap: 16px; flex-wrap: wrap; font-size: .85rem; color: var(--encre-2); margin-bottom: 8px; }
+.legende-graphique span { display: inline-flex; align-items: center; gap: 6px; }
+.legende-graphique i { width: 12px; height: 12px; background: var(--c); display: inline-block; }
+
+/* Encarts « Bureaux » et « Pleine terre » de l'accueil */
+.focus { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.focus-bloc { position: relative; display: flex; flex-direction: column; gap: 10px; background: var(--bleu); color: var(--blanc); text-decoration: none; padding: 24px 24px 22px; clip-path: polygon(0 10px, 100% 0, 100% 100%, 0 100%); }
+.focus-bloc:hover { background: var(--bleu-fonce); }
+.focus-titre { font-family: var(--police-titre); font-weight: 900; font-size: 1.6rem; text-transform: uppercase; line-height: 1; margin-top: 6px; }
+.focus-texte { font-size: 1.02rem; line-height: 1.45; }
+.focus-texte b { color: var(--cyan); font-family: var(--police-titre); font-weight: 900; }
+.focus-lien { font-weight: 700; margin-top: auto; }
+@media (max-width: 760px) { .focus { grid-template-columns: 1fr; } }
+
+.titre-section { margin-top: 36px; }
+.lien-carte { margin: 24px 0 0; }
+.chiffre-cle { font-family: var(--police-titre); font-weight: 900; color: var(--bleu); font-size: 1.35rem; margin-top: 8px; line-height: 1.15; }
+.chiffre-cle small { font-family: var(--police); font-weight: 400; font-size: .85rem; color: var(--encre-2); }
+.encadre { margin-top: 32px; border-left: 5px solid var(--cyan); }
+.encadre p { margin: 0 0 .8em; }
+.perte { color: var(--rouge); }
+.gain { color: #00799b; }
+.tableau td.perte { color: var(--rouge); font-weight: 700; }
+
+/* Fiche : végétation */
+.bloc-theme { border-top: 4px solid var(--cyan); }
+.serie-veg { display: grid; gap: 6px; margin: 12px 0; }
+.serie-ligne { display: grid; grid-template-columns: 44px 1fr 80px; align-items: center; gap: 10px; font-size: .9rem; }
+.serie-an { color: var(--encre-2); font-variant-numeric: tabular-nums; }
+.serie-barre { height: 14px; background: var(--surface-2); }
+.serie-barre i { display: block; height: 100%; background: var(--bleu); }
+.serie-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.avant-apres { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 10px; }
+.avant-apres figure { margin: 0; }
+.avant-apres figcaption { font-size: .82rem; color: var(--encre-2); margin-top: 4px; font-weight: 700; }
+.carte-photo { height: 200px; background: var(--surface-2); }
+@media (max-width: 560px) { .carte-photo { height: 150px; } }
+
+/* Infobulle */
+.infobulle { position: fixed; z-index: 3000; pointer-events: none; background: var(--surface); color: var(--encre); border: 1px solid var(--trait-fort); box-shadow: var(--ombre); padding: 8px 10px; font-size: .85rem; max-width: 260px; }
+.infobulle strong { display: block; color: var(--bleu); }
+
+/* Listes de cartes */
+.liste-cartes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.liste-cartes.grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.carte-permis { display: block; background: var(--surface); border: 1px solid var(--trait); border-left: 5px solid var(--c, var(--trait-fort)); padding: 12px 14px; color: var(--encre); text-decoration: none; height: 100%; }
+.carte-permis:hover, .carte-permis:focus-visible, .carte-permis.actif { border-color: var(--trait-fort); border-left-color: var(--c); box-shadow: var(--ombre); }
+.carte-permis .ligne-haut { display: flex; justify-content: space-between; gap: 8px; color: var(--encre-3); font-size: .8rem; }
+.carte-permis .adresse { font-weight: 700; margin: 2px 0; color: var(--bleu); }
+.carte-permis .demandeur { color: var(--encre-2); font-size: .9rem; }
+.carte-permis .chiffres { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-size: .9rem; }
+.liste-cartes.compacte .carte-permis { padding: 10px 12px; }
+.liste-cartes.grille .carte-permis { padding: 16px; }
+.liste-cartes.grille .adresse { font-family: var(--police-titre); font-weight: 900; font-size: 1.1rem; line-height: 1.15; margin: 4px 0; }
+
+/* Pastilles */
+.pastille { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; font-weight: 700; padding: 3px 8px; background: var(--surface-2); color: var(--encre-2); white-space: nowrap; }
+.pastille .point { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--encre-3)); box-shadow: 0 0 0 1px rgba(27, 29, 36, .35); }
+.pastille.etat-annule { text-decoration: line-through; }
+.pastille.gp { background: var(--bleu); color: var(--blanc); text-transform: uppercase; letter-spacing: .03em; }
+.pastilles { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* Filtres */
+.filtres-zone { background: var(--surface-2); border-bottom: 1px solid var(--trait); }
+.filtres { max-width: 1280px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px 14px; flex-wrap: wrap; align-items: end; }
+.filtres label { display: flex; flex-direction: column; font-size: .75rem; color: var(--encre-2); font-weight: 700; gap: 3px; }
+.filtres input[type="search"], .filtres select { font: inherit; font-size: .9rem; font-weight: 400; color: var(--encre); background: var(--blanc); border: 1px solid var(--trait-fort); padding: 7px 10px; min-width: 0; }
+.filtres input[type="search"] { width: 240px; }
+.filtres .case { flex-direction: row; align-items: center; gap: 6px; font-size: .9rem; color: var(--encre); padding-bottom: 8px; }
+.filtres .reinit { background: none; border: none; color: var(--bleu); font: 700 .9rem var(--police); cursor: pointer; padding: 8px 4px; }
+.legende { display: flex; gap: 12px; flex-wrap: wrap; font-size: .85rem; color: var(--encre-2); align-items: center; padding-bottom: 8px; margin-left: auto; }
+.legende span { display: inline-flex; align-items: center; gap: 6px; }
+.legende i { width: 12px; height: 12px; border-radius: 50%; background: var(--c); display: inline-block; border: 2px solid var(--blanc); box-shadow: 0 0 0 1px rgba(27, 29, 36, .55); }
+.bouton-filtres { display: none; }
+@media (max-width: 700px) {
+  .filtres { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: end; }
+  .filtres input[type="search"] { width: 100%; }
+  .filtres label.recherche { grid-column: 1 / -1; }
+  .bouton-filtres { display: block; justify-self: start; font: 700 .9rem var(--police); background: var(--bleu); color: var(--blanc); border: none; padding: 8px 14px; }
+  .filtres .plus { display: none; }
+  .filtres.ouvert .plus { display: flex; }
+  .filtres select { width: 100%; }
+  .legende { grid-column: 1 / -1; margin-left: 0; gap: 4px 12px; font-size: .8rem; padding-bottom: 4px; }
+}
+
+/* Carte */
+.carte-mise-en-page { display: grid; grid-template-columns: 1fr 360px; height: calc(100vh - 150px); min-height: 520px; }
+.carte { height: 100%; background: var(--surface-2); }
+.carte-liste { overflow-y: auto; border-left: 1px solid var(--trait); padding: 12px; background: var(--surface-2); }
+.compteur { color: var(--encre-2); font-size: .9rem; font-weight: 700; margin: 0 0 10px; }
+@media (max-width: 900px) {
+  .carte-mise-en-page { grid-template-columns: 1fr; height: auto; }
+  .carte { height: 65vh; }
+  .carte-liste { border-left: none; border-top: 1px solid var(--trait); }
+}
+.leaflet-container { font: 14px/1.4 var(--police); }
+.carte, .fiche-carte, .carte-photo { isolation: isolate; } /* les contrôles de la carte restent sous l'en-tête */
+.fond-plan { filter: grayscale(.9) brightness(1.05) contrast(.9); }
+.leaflet-popup-content { margin: 12px 14px; min-width: 220px; }
+.leaflet-popup-content-wrapper { border-radius: 4px; }
+.popup-permis + .popup-permis { border-top: 1px solid var(--trait); margin-top: 8px; padding-top: 8px; }
+.popup-permis .type { color: var(--encre-3); font-size: .8rem; }
+.popup-permis strong { display: block; color: var(--bleu); }
+.popup-permis a { font-weight: 700; }
+
+/* Liste / tableau */
+.liste-entete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.telechargements { font-size: .9rem; color: var(--encre-2); }
+.table-defile { overflow-x: auto; background: var(--surface); border: 1px solid var(--trait); }
+.tableau { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.tableau th, .tableau td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+.tableau th { position: sticky; top: 0; background: var(--bleu); color: var(--blanc); font-size: .8rem; }
+.tableau th button { all: unset; cursor: pointer; font-weight: 700; }
+.tableau th button:focus-visible { outline: 2px solid var(--cyan); }
+.tableau th button::after { content: ""; margin-left: 4px; }
+.tableau th[aria-sort="ascending"] button::after { content: "▲"; font-size: .7em; color: var(--cyan); }
+.tableau th[aria-sort="descending"] button::after { content: "▼"; font-size: .7em; color: var(--cyan); }
+.tableau .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tableau td.date { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tableau tbody tr { cursor: pointer; }
+.tableau tbody tr:hover { background: var(--bleu-pale); }
+.tableau td a { color: var(--bleu); font-weight: 700; text-decoration: none; }
+.tableau td a:hover { text-decoration: underline; }
+.tableau .gp-marque { display: inline-block; background: var(--bleu); color: var(--blanc); font-size: .68rem; font-weight: 700; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+
+/* Segments (choix de période) */
+.segments { display: inline-flex; border: 2px solid var(--bleu); margin-bottom: 20px; }
+.segments button { font: 700 .9rem var(--police); background: var(--blanc); color: var(--bleu); border: none; padding: 7px 14px; cursor: pointer; }
+.segments button + button { border-left: 2px solid var(--bleu); }
+.segments button[aria-pressed="true"] { background: var(--bleu); color: var(--blanc); }
+
+/* Fiche */
+.retour { display: inline-block; margin-bottom: 16px; text-decoration: none; font-weight: 700; }
+.fiche-entete { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.fiche-entete h1 { margin: 0; }
+.fiche-entete .sous-titre { color: var(--encre-2); margin: 0; }
+.fiche-grille { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .fiche-grille { grid-template-columns: 1fr; } }
+.fiche-chiffres { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.fiche-chiffres .tuile .valeur { font-size: 1.5rem; }
+.etapes { list-style: none; padding: 0; margin: 0 0 4px; display: grid; grid-template-columns: repeat(4, 1fr); }
+.etapes li { position: relative; padding: 18px 8px 0 0; font-size: .85rem; color: var(--encre-3); }
+.etapes li::before { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: 2px; background: var(--trait-fort); }
+.etapes li::after { content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--blanc); border: 2px solid var(--trait-fort); }
+.etapes li.fait { color: var(--encre); }
+.etapes li.fait::before { background: var(--cyan); }
+.etapes li.fait::after { background: var(--bleu); border-color: var(--bleu); }
+.etapes li:last-child::before { right: auto; width: 12px; }
+.etapes b { display: block; font-size: .8rem; color: var(--encre-3); }
+.etapes li.fait b { color: var(--bleu); }
+@media (max-width: 560px) { .etapes { grid-template-columns: repeat(2, 1fr); row-gap: 12px; } }
+.details { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.details th, .details td { text-align: left; padding: 7px 0; border-bottom: 1px solid var(--trait); vertical-align: top; }
+.details th { color: var(--encre-2); font-weight: 400; width: 46%; padding-right: 12px; }
+.details td { font-variant-numeric: tabular-nums; }
+.fiche-carte { height: 300px; overflow: hidden; border: 1px solid var(--trait); margin-bottom: 10px; }
+.liens-ext { list-style: none; padding: 0; margin: 0; font-size: .92rem; }
+.liens-ext li { padding: 4px 0; }
+.bloc + .bloc { margin-top: 16px; }
+.complement { border-top: 4px solid var(--cyan); }
+.complement p { margin: 0 0 .8em; }
+.complement figure { margin: 0 0 12px; }
+.complement img { max-width: 100%; display: block; }
+.complement figcaption { font-size: .8rem; color: var(--encre-3); margin-top: 4px; }
+.vide { color: var(--encre-3); padding: 24px 0; }
+
+/* Pied (aplat bleu, bord oblique montant) */
+.pied { background: var(--bleu); color: var(--blanc); clip-path: polygon(0 var(--oblique), 100% 0, 100% 100%, 0 100%); margin-top: 24px; font-size: .88rem; }
+.pied-int { max-width: 1120px; margin: 0 auto; padding: calc(var(--oblique) + 24px) 16px 28px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.pied p { margin: 0 0 4px; }
+.pied a { color: var(--blanc); }
+.pied .logo-bcg { height: 56px; width: auto; }
+
+@media print {
+  .entete, .filtres-zone, .pied, .actions { display: none; }
+  .heros, .bandeau { clip-path: none; }
+}
