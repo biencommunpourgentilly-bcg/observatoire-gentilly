@@ -38,7 +38,11 @@
         if ((mot === "d" || mot === "l") && sep !== "-") return sep + mot;
         return sep + mot.charAt(0).toUpperCase() + mot.slice(1);
       });
-    return t.charAt(0).toUpperCase() + t.slice(1);
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    // Lieu-dit identique à l'adresse (« 9 rue d'Arcueil (9 rue d'Arcueil) ») : inutile de le répéter
+    const m = t.match(/^(.*) \((.*)\)$/);
+    const simple = (x) => x.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
+    return m && simple(m[1]) === simple(m[2]) ? m[1] : t;
   }
   window.casseAdresse = casse;
 })();

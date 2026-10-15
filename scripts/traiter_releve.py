@@ -73,13 +73,24 @@ def surface_dans_terrain(points, polys_terrain, proj):
     return n * PAS_GRILLE ** 2
 
 
-def contours_parcelles():
+def charger_permis():
+    """Contours des parcelles, et état des autorisations selon la base Sitadel."""
     paquet = json.loads((DATA / "permis.json").read_text(encoding="utf-8"))
     contours = {}
     for p in paquet["permis"]:
         for c in p.get("contours") or []:
             contours[c["parcelle"]] = c
-    return contours
+    return contours, {p["id"]: p["etat"] for p in paquet["permis"]}
+
+
+def etat_sitadel(ids, etats):
+    """État du projet d'après Sitadel, quand aucun participant ne l'a indiqué."""
+    connus = [etats.get(i) for i in ids]
+    if "termine" in connus:
+        return "termine"
+    if "commence" in connus:
+        return "chantier"
+    return None
 
 
 # --------------------------------------------------------------------------- Lecture des réponses
@@ -107,7 +118,7 @@ def mediane(valeurs):
     return statistics.median(v) if v else None
 
 
-def synthese(fichiers, contours):
+def synthese(fichiers, contours, etats_permis):
     terrains = {}
     for d in fichiers:
         for r in d.get("reponses", []):
@@ -153,7 +164,8 @@ def synthese(fichiers, contours):
             "pleine_terre_apres_m2": round(m_apres / 100 * surface) if m_apres is not None else None,
             "evolution_m2": round((m_apres - m_avant) / 100 * surface) if None not in (m_avant, m_apres) else None,
             "desaccord": bool(ecarts and max(ecarts) >= SEUIL_DESACCORD),
-            "etat_projet": etats.most_common(1)[0][0] if etats else None,
+            "etat_projet": etats.most_common(1)[0][0] if etats else etat_sitadel(t["permis"], etats_permis),
+            "etat_source": "participants" if etats else "Sitadel",
             "nb_dessins": len(disparues),
             "dessin_disparue_m2": round(statistics.median(disparues)) if disparues else None,
             "dessin_creee_m2": round(statistics.median(creees)) if creees else None,
@@ -170,6 +182,7 @@ COLONNES = [
     ("nb_reponses", "Réponses"), ("part_avant_pct", "Pleine terre avant (%)"), ("part_apres_pct", "Pleine terre après (%)"),
     ("pleine_terre_avant_m2", "Pleine terre avant (m²)"), ("pleine_terre_apres_m2", "Pleine terre après (m²)"),
     ("evolution_m2", "Évolution (m²)"), ("desaccord", "Avis divergents"), ("etat_projet", "Projet sur la photo après"),
+    ("etat_source", "État d'après"),
     ("nb_dessins", "Dessins"), ("dessin_disparue_m2", "Zones dessinées disparues (m²)"), ("dessin_creee_m2", "Zones dessinées créées (m²)"),
     ("commentaires", "Commentaires"),
 ]
@@ -225,7 +238,7 @@ def ecrire_tableur(lignes, fichiers, dossier):
     c = ws.cell(row=total + 1, column=col, value=f'=SUMIF({lettre}2:{lettre}{fin},"<0")')
     c.font = Font(name="Arial", bold=True, color="E30613")
     c.number_format = "#,##0"
-    for col, largeur in enumerate([30, 14, 30, 12, 9, 11, 11, 12, 12, 12, 10, 14, 9, 13, 13, 60], 1):
+    for col, largeur in enumerate([30, 14, 30, 12, 9, 11, 11, 12, 12, 12, 10, 14, 12, 9, 13, 13, 60], 1):
         ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = largeur
     ws.freeze_panes = "B2"
     ws.auto_filter.ref = f"A1:{ws.cell(row=1, column=len(COLONNES)).column_letter}{fin}"
@@ -238,6 +251,7 @@ def ecrire_tableur(lignes, fichiers, dossier):
         wp.append([d.get("participant"), len(d.get("reponses", [])), (d.get("exporte_le") or "")[:16].replace("T", " ")])
     for cell in wp[1]:
         cell.font = Font(name="Arial", bold=True)
+    wb.calculation.fullCalcOnLoad = True  # Excel calcule les totaux à l'ouverture
     chemin = dossier / "synthese-releve.xlsx"
     wb.save(chemin)
     return chemin
@@ -273,7 +287,8 @@ def main():
     fichiers = lire_reponses(dossier)
     if not fichiers:
         sys.exit(f"Aucun fichier de relevé dans {dossier}.")
-    lignes = synthese(fichiers, contours_parcelles())
+    contours, etats_permis = charger_permis()
+    lignes = synthese(fichiers, contours, etats_permis)
     tableur = ecrire_tableur(lignes, fichiers, dossier)
     pub = ecrire_public(lignes, fichiers)
     print(f"{len(fichiers)} participant(s), {len(lignes)} terrain(s) relevé(s).")
