@@ -354,6 +354,9 @@ def main():
         ecrire_commentaires(commentaires)
         print(f"Collecte en ligne : {len(en_ligne)} participant(s), {sum(len(v) for v in commentaires.values())} commentaire(s) publié(s).")
     if not fichiers:
+        if url and cle:
+            print("Aucune réponse pour le moment dans la collecte en ligne.")
+            return
         sys.exit(f"Aucune réponse : ni fichier dans {dossier}, ni collecte en ligne (RELEVE_URL et RELEVE_CLE).")
     contours, etats_permis = charger_permis()
     lignes = synthese(fichiers, contours, etats_permis)
