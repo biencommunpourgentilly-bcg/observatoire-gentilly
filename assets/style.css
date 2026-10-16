@@ -1,4 +1,4 @@
-/* Observatoire de l'urbanisme de Gentilly — charte graphique du Bien Commun pour Gentilly
+/* Observatoire de l'urbanisme de Gentilly — feuille de style
    Palette : bleu roi #3155a6 (aplats, titres), cyan #00c0f3 (éléments graphiques),
    rouge (avec parcimonie), blanc (texte sur fond bleu, respiration).
    Typographie : Arial, titres en Arial très gras. Obliques montantes de gauche à droite. */
@@ -54,16 +54,6 @@ h3 { font-size: 1rem; }
 .note { color: var(--encre-3); font-size: .875rem; margin: 0; }
 .a-completer { background: #fff3c4; color: #5a4300; padding: 0 4px; }
 
-/* ------------------------------------------------------------ Bloc marque
-   « Bien Commun pour Gentilly », toujours incliné (oblique montante). Remplacé
-   automatiquement par assets/logo-bcg.png s'il est présent. */
-.bloc-marque { display: inline-flex; flex-direction: column; align-items: flex-start; transform: rotate(-5deg); transform-origin: left bottom; font-family: var(--police-titre); font-weight: 900; text-transform: uppercase; line-height: 1; }
-.bloc-marque > span { display: block; background: var(--blanc); color: var(--bleu); padding: .18em .4em; }
-.bloc-marque > span + span { background: var(--cyan); color: var(--blanc); margin-left: .9em; margin-top: -.05em; }
-.bloc-marque.petit { font-size: .7rem; }
-.bloc-marque.grand { font-size: clamp(1.4rem, 3.2vw, 2.4rem); }
-.logo-bcg { display: block; height: auto; }
-
 /* ------------------------------------------------------------ En-tête (aplat bleu, bord oblique) */
 .entete { position: sticky; top: 0; z-index: 1000; background: var(--bleu); color: var(--blanc); padding-bottom: 14px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 0 100%); }
 .entete-int { max-width: 1280px; margin: 0 auto; padding: 10px 16px 4px; display: flex; align-items: center; gap: 16px; }
@@ -71,8 +61,6 @@ h3 { font-size: 1rem; }
 .marque-titre { display: flex; flex-direction: column; line-height: 1; }
 .marque-titre small { font-size: .78rem; letter-spacing: .02em; }
 .marque-titre strong { font-family: var(--police-titre); font-weight: 900; font-size: 1.55rem; letter-spacing: .01em; }
-.entete .bloc-marque.petit { margin-top: 6px; }
-.entete .logo-bcg { height: 40px; width: auto; }
 .nav { display: flex; gap: 2px; flex-wrap: wrap; }
 .nav a { color: var(--blanc); text-decoration: none; padding: 8px 12px; font-weight: 700; font-size: .95rem; border-bottom: 3px solid transparent; }
 .nav a:hover { border-bottom-color: rgba(255, 255, 255, .5); }
@@ -85,13 +73,10 @@ h3 { font-size: 1rem; }
   .entete { clip-path: none; padding-bottom: 0; }
   .entete-int { padding-bottom: 10px; }
 }
-@media (max-width: 480px) {
-  .entete .bloc-marque.petit, .entete .logo-bcg { display: none; }
-}
 
 /* ------------------------------------------------------------ Héros d'accueil et bandeaux */
 .heros, .bandeau { background: var(--bleu); color: var(--blanc); clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--oblique)), 0 100%); margin-top: -14px; }
-.heros-int { max-width: 1120px; margin: 0 auto; padding: 56px 16px calc(var(--oblique) + 56px); display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: center; }
+.heros-int { max-width: 1120px; margin: 0 auto; padding: 56px 16px calc(var(--oblique) + 56px); }
 .heros h1, .bandeau h1 { color: var(--blanc); }
 .heros h1 { font-size: clamp(2.6rem, 7vw, 5.6rem); line-height: .95; margin-bottom: 20px; }
 .heros .avant { display: block; font-size: .45em; line-height: 1.1; margin-bottom: .12em; }
@@ -99,17 +84,12 @@ h3 { font-size: 1rem; }
 .surtitre { margin: 0 0 10px; font-weight: 700; font-size: 1.05rem; }
 .heros .sous-titre, .bandeau .sous-titre { font-size: 1.15rem; max-width: 60ch; margin: 0 0 28px; line-height: 1.45; }
 .pour { font-family: var(--police-titre); font-weight: 900; color: var(--cyan); letter-spacing: .02em; }
-.heros-marque { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
-.heros-marque .logo-bcg { width: 100%; max-width: 340px; }
-.heros-marque p { margin: 0; font-size: .95rem; opacity: .92; }
 .bandeau-int { max-width: 1120px; margin: 0 auto; padding: 40px 16px calc(var(--oblique) + 26px); }
 .bandeau .sous-titre { margin-bottom: 0; }
 .sous-heros { padding-top: 8px; }
 @media (max-width: 860px) {
   :root { --oblique: 28px; }
-  .heros-int { grid-template-columns: 1fr; padding-top: 40px; }
-  .heros-marque { order: -1; gap: 10px; }
-  .heros-marque p { display: none; }
+  .heros-int { padding-top: 40px; }
   .heros, .bandeau { margin-top: 0; }
 }
 
@@ -320,10 +300,10 @@ h3 { font-size: 1rem; }
 
 /* Pied (aplat bleu, bord oblique montant) */
 .pied { background: var(--bleu); color: var(--blanc); clip-path: polygon(0 var(--oblique), 100% 0, 100% 100%, 0 100%); margin-top: 24px; font-size: .88rem; }
-.pied-int { max-width: 1120px; margin: 0 auto; padding: calc(var(--oblique) + 24px) 16px 28px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.pied-int { max-width: 1120px; margin: 0 auto; padding: calc(var(--oblique) + 24px) 16px 28px; }
+.pied .signature { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
 .pied p { margin: 0 0 4px; }
 .pied a { color: var(--blanc); }
-.pied .logo-bcg { height: 56px; width: auto; }
 
 @media print {
   .entete, .filtres-zone, .pied, .actions { display: none; }

@@ -889,19 +889,6 @@
       `Un permis de construire d'au moins ${s.logements} logements ou ${nombre(s.surface_m2)} m² de surface de plancher créée ou transformée, un permis de démolir déposé par une société ou une collectivité, ou un permis d'aménager.`;
   }
 
-  // Logo du Bien Commun pour Gentilly : s'il est déposé dans assets/logo-bcg.png, il remplace le bloc typographique.
-  const logo = new Image();
-  logo.onload = () => {
-    document.querySelectorAll("[data-logo]").forEach((bloc) => {
-      const img = document.createElement("img");
-      img.src = logo.src;
-      img.alt = "Bien Commun pour Gentilly";
-      img.className = "logo-bcg";
-      bloc.replaceWith(img);
-    });
-  };
-  logo.src = "assets/logo-bcg.png";
-
   accueil();
   window.addEventListener("hashchange", router);
   router();

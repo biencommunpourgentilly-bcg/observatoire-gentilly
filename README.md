@@ -1,18 +1,12 @@
 # Observatoire de l'urbanisme de Gentilly
 
-Site réalisé par le Bien Commun pour Gentilly, qui recense les permis de construire, de démolir et d'aménager de Gentilly (94) publiés par l'État depuis 2013 : carte, liste filtrable, fiche par autorisation et sélection des grands projets.
+Site réalisé par les membres du Bien Commun pour Gentilly, qui recense les permis de construire, de démolir et d'aménager de Gentilly (94) publiés par l'État depuis 2013 : carte, liste filtrable, fiche par autorisation et sélection des grands projets.
 
-## Charte graphique
+## Habillage
 
-Le site suit la charte du Bien Commun pour Gentilly :
-
-- **Couleurs :** bleu roi `#3155a6` pour les aplats et les titres, cyan `#00c0f3` pour les éléments graphiques, rouge réservé aux démolitions, blanc pour le texte sur fond bleu. Elles sont définies en tête de `assets/style.css`.
-- **Typographie :** Arial, titres en Arial Black.
-- **Obliques montantes** de gauche à droite sous l'en-tête, les bandeaux et au-dessus du pied de page.
-- **Sous-titres** commençant par « POUR » en cyan.
-- **Logo :** déposez le logo BCG sous le nom `assets/logo-bcg.png`, de préférence sur fond transparent. Il remplace alors automatiquement le bloc typographique incliné « Bien Commun pour Gentilly », dans l'en-tête, l'accueil (un tiers de la largeur) et le pied de page.
-
-Les données viennent de la base **Sitadel** du ministère de la Transition écologique, via son [API publique DiDo](https://www.statistiques.developpement-durable.gouv.fr/catalogue?page=dataset&datasetId=6513f0189d7d312c80ec5b5b). Elle est mise à jour chaque mois, sans inscription, sous Licence Ouverte.
+- **Couleurs :** bleu roi `#3155a6` pour les aplats et les titres, cyan `#00c0f3` pour les éléments graphiques, rouge réservé aux démolitions et aux pertes, blanc pour le texte sur fond bleu. Elles sont définies en tête de `assets/style.css`.
+- **Typographie :** Arial, titres en Arial Black ; obliques montantes sous l'en-tête et les bandeaux.
+- **Signature :** une seule mention, « Réalisé par les membres du Bien Commun pour Gentilly », dans le bandeau du bas de chaque page et dans la page « À propos ».
 
 ## Voir le site sur son ordinateur
 
