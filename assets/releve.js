@@ -7,6 +7,9 @@
   const D = window.OBSERVATOIRE || { meta: {}, permis: [] };
   const META = D.meta;
   const PHOTOS = (META.photos_couleur || []).filter((ph) => ph.annee >= 2008);
+  // Photo des années 1950 (noir et blanc) : proposée en option, jamais choisie par défaut
+  const PHOTO_1950 = { annee: 1950, libelle: "Années 1950", couche: "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965", format: "image/png", zmax: 18 };
+  const TOUTES_PHOTOS = [PHOTO_1950, ...PHOTOS];
   const CLE = "releve-pleine-terre-v1";
   const casse = window.casseAdresse;
 
@@ -153,7 +156,7 @@
   $("retour-accueil").addEventListener("click", () => { finirDessin(false); montrer("accueil"); });
 
   // ------------------------------------------------------------------ Cartes avant / après synchronisées
-  const IGN = (couche) => `https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${couche}&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
+  const IGN = (couche, format = "image/jpeg") => `https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${couche}&STYLE=normal&TILEMATRIXSET=PM&FORMAT=${format}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
   const ATTRIB = '© <a href="https://www.ign.fr/" target="_blank" rel="noopener">IGN</a>';
   const cartes = {};
   const couches = {};
@@ -175,14 +178,14 @@
     lier("avant", "apres");
     lier("apres", "avant");
   }
-  function photo(annee) { return PHOTOS.find((ph) => ph.annee === annee) || PHOTOS[PHOTOS.length - 1]; }
+  function photo(annee) { return TOUTES_PHOTOS.find((ph) => ph.annee === annee) || PHOTOS[PHOTOS.length - 1]; }
   function poserPhoto(cote, annee) {
     const ph = photo(annee);
     if (couches[cote]) cartes[cote].removeLayer(couches[cote]);
-    couches[cote] = L.tileLayer(IGN(ph.couche), { maxZoom: 20, maxNativeZoom: ph.zmax, attribution: ATTRIB }).addTo(cartes[cote]);
+    couches[cote] = L.tileLayer(IGN(ph.couche, ph.format), { maxZoom: 20, maxNativeZoom: ph.zmax, attribution: ATTRIB }).addTo(cartes[cote]);
   }
   ["avant", "apres"].forEach((cote) => {
-    $(`annee-${cote}`).innerHTML = PHOTOS.map((ph) => `<option value="${ph.annee}">${ph.annee}</option>`).join("");
+    $(`annee-${cote}`).innerHTML = TOUTES_PHOTOS.map((ph) => `<option value="${ph.annee}">${ph.libelle || ph.annee}</option>`).join("");
     $(`annee-${cote}`).addEventListener("change", (e) => {
       const r = reponse(terrainCourant());
       r[`annee_${cote}`] = +e.target.value;

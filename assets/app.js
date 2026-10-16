@@ -510,6 +510,9 @@
       plan: L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "image/png"), { ...opts, className: "fond-plan" }),
       photo: L.tileLayer(IGN("ORTHOIMAGERY.ORTHOPHOTOS", "image/jpeg"), opts),
       cadastre: L.tileLayer(IGN("CADASTRALPARCELS.PARCELLAIRE_EXPRESS", "image/png", "PCI vecteur"), { ...opts, opacity: 0.85 }),
+      // Images anciennes de l'IGN : photo aérienne des années 1950, carte d'état-major (1820-1866)
+      annees50: L.tileLayer(IGN("ORTHOIMAGERY.ORTHOPHOTOS.1950-1965", "image/png"), { ...opts, maxNativeZoom: 18 }),
+      etatMajor: L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40", "image/jpeg"), { ...opts, maxNativeZoom: 15 }),
     };
   }
   function couleurCss(p) {
@@ -528,7 +531,8 @@
     if (carte || typeof L === "undefined") return;
     const f = fonds();
     carte = L.map("carte", { layers: [f.plan], zoomSnap: 0.5 });
-    L.control.layers({ "Plan IGN": f.plan, "Photo aérienne": f.photo }, { "Cadastre": f.cadastre }, { collapsed: true }).addTo(carte);
+    L.control.layers({ "Plan IGN": f.plan, "Photo aérienne": f.photo, "Gentilly vers 1950": f.annees50, "Carte d'état-major (1820-1866)": f.etatMajor },
+      { "Cadastre": f.cadastre }, { collapsed: true }).addTo(carte);
     L.control.scale({ imperial: false }).addTo(carte);
     if (DONNEES.commune) {
       coucheCommune = L.geoJSON(DONNEES.commune, { style: { color: "#3155a6", weight: 2.5, dashArray: "8 5", fill: false }, interactive: false }).addTo(carte);
@@ -782,6 +786,7 @@
     const liensExt = [];
     if (p.lat != null) {
       liensExt.push(`<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}" target="_blank" rel="noopener">Vue de la rue (Google Street View)</a>`);
+      liensExt.push(`<a href="https://remonterletemps.ign.fr/comparer/basic?x=${p.lon}&y=${p.lat}&z=17&layer1=ORTHOIMAGERY.ORTHOPHOTOS&layer2=ORTHOIMAGERY.ORTHOPHOTOS.1950-1965&mode=vSlider" target="_blank" rel="noopener">Photos aériennes anciennes depuis 1919 (Remonter le temps, IGN)</a>`);
       liensExt.push(`<a href="https://www.geoportail.gouv.fr/carte?c=${p.lon},${p.lat}&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.PARCELLAIRE_EXPRESS::GEOPORTAIL:OGC:WMTS(1)&permalink=yes" target="_blank" rel="noopener">Photo aérienne et cadastre (Géoportail)</a>`);
       liensExt.push(`<a href="https://www.geoportail-urbanisme.gouv.fr/map/#tile=1&lon=${p.lon}&lat=${p.lat}&zoom=18" target="_blank" rel="noopener">Règles d'urbanisme applicables (Géoportail de l'urbanisme)</a>`);
     }
@@ -840,7 +845,7 @@
     if (p.lat != null && typeof L !== "undefined") {
       const f = fonds();
       carteFiche = L.map("fiche-carte", { layers: [f.photo], zoomControl: true, scrollWheelZoom: false });
-      const fondsFiche = { "Photo aérienne": f.photo, "Plan IGN": f.plan };
+      const fondsFiche = { "Photo aérienne": f.photo, "Plan IGN": f.plan, "Photo années 1950": f.annees50 };
       (META.photos_couleur || []).filter((ph) => ph.annee >= 2008).forEach((ph) => {
         fondsFiche[`Photo ${ph.annee}`] = L.tileLayer(IGN(ph.couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: ph.zmax, attribution: ATTRIB_IGN });
       });
