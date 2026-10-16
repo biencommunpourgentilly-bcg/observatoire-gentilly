@@ -5,19 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Observatoire de l'urbanisme de Gentilly</title>
   <meta name="description" content="L'Observatoire de l'urbanisme de Gentilly : tous les permis de construire, de démolir et d'aménager publiés par l'État depuis 2013.">
-  <meta name="theme-color" content="#3155a6">
+  <meta name="theme-color" content="#304e43">
   <!-- Préversion : à retirer lors de la publication officielle, ainsi que robots.txt -->
   <meta name="robots" content="noindex, nofollow">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233155a6'/%3E%3Cpath d='M0 32L32 22V32z' fill='%2300c0f3'/%3E%3Cpath d='M8 21V13l8-6 8 6v8h-5v-5h-6v5z' fill='white'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23304e43%22/%3E%3Cpath d=%22M6 7h8v7H6zM17 7h9v5h-9zM6 17h6v8H6zM15 15h11v10H15z%22 fill=%22%23dfeadd%22 opacity=%22.9%22/%3E%3Cpath d=%22M17 18h5v4h-5z%22 fill=%22%23658c79%22/%3E%3Cpath d=%22M15.5 13.5 26 13.5%22 stroke=%22%23304e43%22 stroke-width=%221.2%22/%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/observatoire-vert-equilibre.css">
 </head>
 <body>
   <a class="evitement" href="#contenu">Aller au contenu</a>
   <header class="entete">
     <div class="entete-int">
       <a class="marque" href="#accueil">
-        <span class="marque-titre"><small>Observatoire de l'urbanisme</small><strong>GENTILLY</strong><small class="signature-entete">réalisé par le Bien Commun pour Gentilly</small></span>
+        <svg class="marque-picto" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#304e43"/><path d="M6 7h8v7H6zM17 7h9v5h-9zM6 17h6v8H6zM15 15h11v10H15z" fill="#dfeadd" opacity=".9"/><path d="M17 18h5v4h-5z" fill="#658c79"/><path d="M15.5 13.5 26 13.5" stroke="#304e43" stroke-width="1.2"/></svg><span class="marque-titre"><strong>Observatoire de l'urbanisme de Gentilly</strong><small class="signature-entete">Réalisé par les membres du Bien Commun pour Gentilly</small></span>
       </a>
       <button class="menu-bouton" aria-expanded="false" aria-controls="nav">Menu</button>
       <nav id="nav" class="nav" aria-label="Navigation principale">
@@ -113,8 +114,8 @@
             <p class="note">Au-dessus de la ligne : bureaux créés. En dessous : bureaux démolis ou transformés (souvent en logements). Permis annulés exclus.</p>
           </figcaption>
           <div class="legende-graphique">
-            <span><i style="--c:var(--bleu)"></i>Bureaux créés</span>
-            <span><i style="--c:var(--cyan)"></i>Bureaux démolis ou transformés</span>
+            <span><i style="--c:var(--donnee-creation)"></i>Bureaux créés</span>
+            <span><i style="--c:var(--donnee-suppression)"></i>Bureaux démolis ou transformés</span>
           </div>
           <div id="graphique-bureaux" class="graphique-zone"></div>
         </figure>
@@ -280,7 +281,7 @@
 
   <footer class="pied">
     <div class="pied-int">
-      <p class="signature">Réalisé par les membres du Bien Commun pour Gentilly</p>
+      <p class="signature">Observatoire de l'urbanisme de Gentilly — Une initiative du Bien Commun pour Gentilly.</p>
       <p>Observatoire de l'urbanisme de Gentilly · Données : Sitadel (ministère de la Transition écologique), IGN, Base Adresse Nationale · <span id="pied-maj"></span> · <a href="#a-propos">À propos et contact</a></p>
     </div>
   </footer>

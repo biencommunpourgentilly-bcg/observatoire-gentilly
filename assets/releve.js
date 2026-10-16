@@ -277,7 +277,7 @@
 
   // ------------------------------------------------------------------ Dessin des zones (doigt ou souris)
   let dessin = null; // { type, points: [[lat, lon]] }
-  const COULEURS = { disparue: "#e30613", creee: "#00c0f3" };
+  const COULEURS = { disparue: "#b5452b", creee: "#2f6db5" }; // couleurs des données (voir observatoire-vert-equilibre.css)
   document.querySelectorAll(".bouton-dessin").forEach((b) => b.addEventListener("click", () => {
     dessin = { type: b.dataset.type, points: [] };
     $("outils-dessin").hidden = true;

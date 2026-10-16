@@ -491,7 +491,7 @@
     document.getElementById("pt-resultats").innerHTML = lignes.length ? `<figure class="bloc graphique">
         <figcaption><h2>Pleine terre perdue ou gagnée, terrain par terrain</h2>
         <p class="note">Projets construits ou en chantier. Estimations des habitants sur les photos aériennes avant et après le projet (médiane des réponses). Cliquez sur un terrain pour voir sa fiche.</p></figcaption>
-        <div class="legende-graphique"><span><i style="--c:var(--rouge)"></i>Pleine terre perdue</span><span><i style="--c:var(--cyan)"></i>Pleine terre créée</span></div>
+        <div class="legende-graphique"><span><i style="--c:var(--donnee-perte)"></i>Pleine terre perdue</span><span><i style="--c:var(--donnee-gain)"></i>Pleine terre créée</span></div>
         <div id="graphique-pleine-terre" class="graphique-zone"></div></figure>` : "";
     if (lignes.length) {
       barresProjets(document.getElementById("graphique-pleine-terre"), lignes.map(({ p, r }) => ({
@@ -540,7 +540,7 @@
       { "Cadastre": f.cadastre }, { collapsed: true }).addTo(carte);
     L.control.scale({ imperial: false }).addTo(carte);
     if (DONNEES.commune) {
-      coucheCommune = L.geoJSON(DONNEES.commune, { style: { color: "#3155a6", weight: 2.5, dashArray: "8 5", fill: false }, interactive: false }).addTo(carte);
+      coucheCommune = L.geoJSON(DONNEES.commune, { style: { color: "#304e43", weight: 2.5, dashArray: "8 5", fill: false }, interactive: false }).addTo(carte);
       carte.fitBounds(coucheCommune.getBounds(), { padding: [10, 10] });
     } else {
       carte.setView([48.8155, 2.3445], 15);

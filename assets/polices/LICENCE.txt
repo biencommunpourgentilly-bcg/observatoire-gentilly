@@ -1,0 +1,3 @@
+Manrope (Mikhail Sharanda), Inter (Rasmus Andersson) et IBM Plex Mono (IBM) sont distribuées sous
+SIL Open Font License 1.1 : https://openfontlicense.org
+Fichiers issus de Fontsource (https://fontsource.org).

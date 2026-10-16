@@ -2,11 +2,14 @@
 
 Site réalisé par les membres du Bien Commun pour Gentilly, qui recense les permis de construire, de démolir et d'aménager de Gentilly (94) publiés par l'État depuis 2013 : carte, liste filtrable, fiche par autorisation et sélection des grands projets.
 
-## Habillage
+## Habillage : charte « Vert équilibré — Atlas urbain »
 
-- **Couleurs :** bleu roi `#3155a6` pour les aplats et les titres, cyan `#00c0f3` pour les éléments graphiques, rouge réservé aux démolitions et aux pertes, blanc pour le texte sur fond bleu. Elles sont définies en tête de `assets/style.css`.
-- **Typographie :** Arial, titres en Arial Black ; obliques montantes sous l'en-tête et les bandeaux.
-- **Signature :** une seule mention, « Réalisé par les membres du Bien Commun pour Gentilly », dans le bandeau du bas de chaque page et dans la page « À propos ».
+- **Fichier :** `assets/observatoire-vert-equilibre.css`, chargé après `assets/style.css`. Toutes les couleurs y sont des variables, en tête du fichier.
+- **Couleurs de l'interface :** vert forêt `#304E43` (titres, boutons), vert sauge `#658C79` (pictogrammes, indicateurs ; variante `#4F7463` pour les liens, plus lisible), vert clair `#DFEADD`, ivoire `#FAFAF6` (fond), blanc (cartes), gris minéral `#64736C` (texte secondaire).
+- **Couleurs des données,** distinctes de l'interface et vérifiées pour les daltonismes : bleu `#2F6DB5` (habitat, créations), ocre `#C98A1B` (activités), brique `#B5452B` (démolitions, pertes), gris `#7A847F` (aménagement).
+- **Polices :** Manrope (titres), Inter (texte), IBM Plex Mono (numéros de permis), hébergées dans `assets/polices/` (licence SIL Open Font License) : aucun appel à Google Fonts.
+- **Pictogramme :** `assets/picto.svg`, repris dans l'icône d'onglet.
+- **Mention :** « Réalisé par les membres du Bien Commun pour Gentilly » sous le nom, et « Une initiative du Bien Commun pour Gentilly » en pied de page.
 
 ## Voir le site sur son ordinateur
 
