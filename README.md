@@ -32,6 +32,15 @@ Le script télécharge les quatre fichiers Sitadel filtrés sur Gentilly (code I
 - **Bureaux :** les surfaces de bureaux créées, démolies et transformées viennent directement des permis (base Sitadel). La page « Bureaux » en fait le bilan depuis 2013.
 - **Pleine terre :** aucune base publique ne la donne, et une mesure automatique sur photos aériennes s'est révélée trop imprécise (jardins sur dalle, toitures, ombres). Elle est donc relevée par des habitants (voir ci-dessous). Tant que le relevé n'a pas été traité, la page « Pleine terre » n'affiche que des explications.
 
+## Relevé en ligne et commentaires
+
+Le relevé peut recevoir les réponses directement, et les fiches accueillir des commentaires modérés, grâce à une feuille Google du groupe : voir `collecte/LISEZMOI.md` (10 minutes, une seule fois). Une fois l'adresse de la collecte inscrite dans `data/config.js` et les secrets `RELEVE_URL` et `RELEVE_CLE` ajoutés sur GitHub :
+
+- chaque réponse au relevé part toute seule à chaque terrain ;
+- chaque nuit, `.github/workflows/releve.yml` regroupe les réponses et publie les résultats anonymes ;
+- un terrain n'apparaît dans les résultats qu'à partir de 3 réponses (réglable dans `data/config.js`) ;
+- un commentaire n'est publié que si sa case « publie » est cochée dans la feuille.
+
 ## Relevé collaboratif de la pleine terre
 
 La page `releve-pleine-terre.html` (non reliée au reste du site) permet à plusieurs personnes de relever, terrain par terrain, la part de pleine terre visible sur les photos aériennes avant et après chaque projet, et d'y dessiner au doigt les zones disparues ou créées. Elle fonctionne sur téléphone.

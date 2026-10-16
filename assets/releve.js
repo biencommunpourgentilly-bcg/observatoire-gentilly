@@ -95,6 +95,8 @@
 
   // ------------------------------------------------------------------ Réponses enregistrées sur l'appareil
   let etat = { participant: "", reponses: {} };
+  const CONFIG = window.CONFIG || {};
+  const COLLECTE = CONFIG.collecte || "";
   try {
     const lu = JSON.parse(localStorage.getItem(CLE) || "null");
     if (lu && lu.reponses) etat = lu;
@@ -139,9 +141,7 @@
   $("choix-quartier").addEventListener("change", () => { document.querySelector("input[name=liste][value=quartier]").checked = true; });
   $("participant").value = etat.participant || "";
   $("form-demarrage").addEventListener("submit", () => {
-    const nom = $("participant").value.trim();
-    if (!nom) { $("participant").focus(); return; }
-    etat.participant = nom;
+    etat.participant = $("participant").value.trim();
     sauver();
     const choix = document.querySelector("input[name=liste]:checked").value;
     liste = choix === "quartier" ? TERRAINS.filter((t) => t.quartier === $("choix-quartier").value)
@@ -259,11 +259,12 @@
 
   function aller(delta) {
     finirDessin(false);
+    if (COLLECTE && repondu(terrainCourant())) envoyer([terrainCourant()]);
     index += delta;
     if (index >= liste.length) {
       index = liste.length - 1;
       montrer("accueil");
-      alert("Merci ! Pensez à envoyer vos réponses avec le bouton « Envoyer ».");
+      alert(COLLECTE ? "Merci ! Vos réponses ont été envoyées." : "Merci ! Pensez à envoyer vos réponses avec le bouton « Envoyer ».");
       return;
     }
     index = Math.max(0, index);
@@ -390,6 +391,68 @@
     telecharger();
     alert("Le fichier a été téléchargé : envoyez-le en pièce jointe à la personne qui coordonne le relevé.");
   });
+
+  // ------------------------------------------------------------------ Envoi direct vers la collecte en ligne
+  // Un identifiant tiré au hasard regroupe les réponses d'un même appareil, sans rien dire de la personne.
+  if (!etat.id) {
+    etat.id = (crypto.randomUUID && crypto.randomUUID()) || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    sauver();
+  }
+  async function envoyer(terrains) {
+    if (!COLLECTE) return false;
+    const reponses = terrains.filter(repondu).map((t) => ({
+      terrain: t.id, parcelles: t.parcelles, permis: t.permis.map((p) => p.id),
+      adresse: casse(t.principal.adresse), surface_terrain_m2: Math.round(t.surface), ...etat.reponses[t.id],
+    }));
+    if (!reponses.length) return true;
+    $("etat-envoi").textContent = "Envoi en cours…";
+    try {
+      // Corps en texte brut : évite la requête préalable que les applications Web Google refusent.
+      const rep = await fetch(COLLECTE, { method: "POST", body: JSON.stringify({ type: "releve", participant_id: etat.id, pseudo: etat.participant, reponses }) });
+      const ok = rep.ok;
+      $("etat-envoi").textContent = ok ? `Dernier envoi réussi à ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}.` : "L'envoi a échoué, il sera retenté.";
+      return ok;
+    } catch (e) {
+      $("etat-envoi").textContent = "Pas de connexion : l'envoi sera retenté au terrain suivant.";
+      return false;
+    }
+  }
+  if (COLLECTE) {
+    $("envoi-auto").hidden = false;
+    $("bouton-partager").textContent = "Renvoyer toutes mes réponses";
+    $("bouton-partager").addEventListener("click", async (e) => {
+      e.stopImmediatePropagation();
+      if (!TERRAINS.some(repondu)) { alert("Aucune réponse à envoyer pour le moment."); return; }
+      alert((await envoyer(TERRAINS)) ? "Toutes vos réponses ont été envoyées. Merci !" : "L'envoi a échoué. Réessayez plus tard, ou utilisez « Télécharger le fichier ».");
+    }, { capture: true });
+  }
+
+  // ------------------------------------------------------------------ Terrains qui ont le plus perdu (résultats publics)
+  const RELEVE = window.RELEVE_PLEINE_TERRE;
+  $("min-reponses").textContent = String(CONFIG.min_reponses || 3);
+  if (RELEVE && RELEVE.terrains) {
+    const pertes = TERRAINS.map((t) => ({ t, r: RELEVE.terrains[t.id] }))
+      .filter(({ r }) => r && r.evolution_m2 < 0 && ["termine", "chantier"].includes(r.etat_projet))
+      .sort((a, b) => a.r.evolution_m2 - b.r.evolution_m2).slice(0, 3);
+    if (pertes.length) {
+      $("bloc-pertes").hidden = false;
+      $("liste-pertes").innerHTML = pertes.map(({ t, r }, i) => `<li>
+        <div class="pertes-photos"><div id="perte-avant-${i}" class="carte-mini"></div><div id="perte-apres-${i}" class="carte-mini"></div></div>
+        <b>${esc(casse(t.principal.adresse))}</b>${t.quartier ? ` · ${esc(t.quartier)}` : ""}<br>
+        Pleine terre : environ ${Math.round(r.part_avant_pct)} % du terrain avant, ${Math.round(r.part_apres_pct)} % après,
+        soit <b class="txt-disparue">−${m2(Math.abs(r.evolution_m2))}</b> (${r.nb_reponses} réponses)</li>`).join("");
+      pertes.forEach(({ t }, i) => {
+        const bornes = L.geoJSON({ type: "GeometryCollection", geometries: t.contours.map((c) => ({ type: c.type, coordinates: c.coordinates })) }).getBounds();
+        [["avant", t.anneeAvant], ["apres", t.anneeApres]].forEach(([cote, an]) => {
+          const ph = photo(an);
+          const c = L.map(`perte-${cote}-${i}`, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, keyboard: false, boxZoom: false });
+          L.tileLayer(IGN(ph.couche, ph.format), { maxZoom: 20, maxNativeZoom: ph.zmax }).addTo(c);
+          t.contours.forEach((g) => L.geoJSON(g, { style: { color: "#ffe100", weight: 2.5, fill: false } }).addTo(c));
+          c.fitBounds(bornes, { padding: [10, 10], maxZoom: 19 });
+        });
+      });
+    }
+  }
 
   majProgression();
 })();

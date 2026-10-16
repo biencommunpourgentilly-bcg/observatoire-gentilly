@@ -35,6 +35,11 @@ button.bouton:disabled { opacity: .45; cursor: default; }
 }
 
 .questions { margin-top: 18px; display: grid; gap: 14px; }
+.envoi-auto { background: var(--bleu-pale); padding: 8px 10px; font-size: .92rem; }
+.pertes { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 16px; }
+.pertes li { font-size: .95rem; }
+.pertes-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+.carte-mini { height: 150px; background: var(--surface-2); isolation: isolate; }
 .terrain-quartier { margin: -4px 0 8px; font-weight: 700; color: var(--bleu); }
 .question.avis { border-left-color: var(--bleu); }
 .choix-liste select { font: inherit; padding: 4px 8px; border: 1px solid var(--trait-fort); margin-left: 4px; }

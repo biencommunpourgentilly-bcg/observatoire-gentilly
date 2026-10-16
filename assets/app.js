@@ -828,12 +828,31 @@
         phrase = `<p>Relevé par ${r.nb_reponses} habitant${r.nb_reponses > 1 ? "s" : ""} : environ <b>${Math.round(r.part_avant_pct)} %</b> du terrain en pleine terre avant le projet, <b>${Math.round(r.part_apres_pct)} %</b> après` +
           (construit(r) && r.evolution_m2 ? `, soit <b class="${r.evolution_m2 < 0 ? "perte" : "gain"}">${r.evolution_m2 < 0 ? "−" : "+"}${m2(Math.abs(arrondi(r.evolution_m2)))}</b>` : "") +
           `.${r.desaccord ? " Les avis divergent sur ce terrain." : ""}</p>`;
+        const DENSITES = { beaucoup_plus: "beaucoup plus dense", plus: "un peu plus dense", pareil: "aussi dense", moins: "moins dense" };
+        const avis = [];
+        if (r.densite) avis.push(`projet jugé ${DENSITES[r.densite]} qu'avant (${r.nb_avis_densite} avis)`);
+        if (r.appreciation) avis.push(`note ${String(Math.round(r.appreciation * 10) / 10).replace(".", ",")}/5 (${r.nb_avis_appreciation} avis)`);
+        if (avis.length) phrase += `<p class="note">Avis des participants : ${avis.join(" ; ")}.</p>`;
       }
       ptHtml = `<div class="bloc bloc-theme"><h2>Le terrain avant et après</h2>${phrase}
         <div class="avant-apres"><figure><div id="carte-avant" class="carte-photo"></div><figcaption>${photoAvant.annee}, avant le projet</figcaption></figure>
         <figure><div id="carte-apres" class="carte-photo"></div><figcaption>${photoApres.annee}</figcaption></figure></div>
         <p class="note">Photos aériennes de l'IGN, terrain du projet entouré en blanc. <a href="#pleine-terre">Pourquoi la pleine terre compte</a></p></div>`;
     }
+
+    // Commentaires : ceux validés par la modération, et un formulaire si la collecte en ligne est active
+    const CONFIG = window.CONFIG || {};
+    const coms = (window.COMMENTAIRES || {})[p.id] || [];
+    const comHtml = (coms.length || CONFIG.collecte) ? `<div class="bloc"><h2>Commentaires${coms.length ? ` (${coms.length})` : ""}</h2>
+        ${coms.map((c) => `<div class="commentaire"><p>${esc(c.texte)}</p><p class="note">${esc(c.pseudo || "Anonyme")} · ${dateFr((c.date || "").slice(0, 10))}</p></div>`).join("")}
+        ${CONFIG.collecte ? `<form class="form-commentaire" id="form-commentaire" onsubmit="return false">
+          <label for="com-texte">Votre commentaire sur ce projet</label>
+          <textarea id="com-texte" rows="3" maxlength="1500" required></textarea>
+          <label for="com-pseudo">Pseudo (facultatif)</label>
+          <input type="text" id="com-pseudo" maxlength="40">
+          <p class="note">Les commentaires sont lus avant publication. Restez factuel et courtois : les propos injurieux ou visant des personnes ne sont pas publiés.</p>
+          <button type="submit" class="bouton">Envoyer</button> <span id="com-etat" class="note"></span>
+        </form>` : ""}</div>` : "";
 
     const lies = (p.lies || []).map((i) => PAR_ID.get(i)).filter(Boolean);
     const liesHtml = lies.length
@@ -874,6 +893,7 @@
           <div class="bloc"><h2>Détails déclarés</h2><table class="details"><tbody>${details}</tbody></table>
             <p class="note" style="margin-top:10px">Chiffres déclarés par le demandeur à la date de l'autorisation initiale, sans les éventuels permis modificatifs.</p></div>
           ${liesHtml}
+          ${comHtml}
         </div>
         <div>
           <div class="bloc">
@@ -886,6 +906,22 @@
           </div>
         </div>
       </div>`;
+
+    const form = document.getElementById("form-commentaire");
+    if (form) form.addEventListener("submit", async () => {
+      const texte = document.getElementById("com-texte").value.trim();
+      if (!texte) return;
+      const etatCom = document.getElementById("com-etat");
+      etatCom.textContent = "Envoi…";
+      try {
+        const rep = await fetch(window.CONFIG.collecte, { method: "POST", body: JSON.stringify({ type: "commentaire", permis: p.id, pseudo: document.getElementById("com-pseudo").value.trim(), texte }) });
+        if (!rep.ok) throw new Error(rep.status);
+        form.reset();
+        etatCom.textContent = "Merci ! Votre commentaire sera publié après relecture.";
+      } catch (e) {
+        etatCom.textContent = "L'envoi a échoué, réessayez plus tard.";
+      }
+    });
 
     if (carteFiche) { carteFiche.remove(); carteFiche = null; }
     cartesPhotos.forEach((c) => c.remove());

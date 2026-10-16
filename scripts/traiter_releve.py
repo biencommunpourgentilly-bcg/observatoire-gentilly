@@ -3,6 +3,9 @@
 
 Usage : python scripts/traiter_releve.py [dossier]   (par défaut : reponses/)
 
+Sources : les fichiers .json du dossier, et la collecte en ligne (feuille Google, voir
+collecte/LISEZMOI.md) si les variables RELEVE_URL et RELEVE_CLE sont définies.
+
 Placez dans le dossier les fichiers .json reçus des participants. Si une même personne a
 envoyé plusieurs fichiers, seul le plus récent compte (chaque envoi contient toutes ses réponses).
 
@@ -20,9 +23,13 @@ import csv
 import datetime as dt
 import json
 import math
+import os
 import pathlib
+import re
 import statistics
 import sys
+import urllib.parse
+import urllib.request
 from collections import Counter
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
@@ -268,20 +275,33 @@ def ecrire_tableur(lignes, fichiers, dossier):
     return chemin
 
 
-def ecrire_public(lignes, fichiers):
-    """Résultats anonymes pour le site : ni prénoms, ni commentaires."""
-    construits = [l for l in lignes if l["etat_projet"] in ("termine", "chantier") and l["evolution_m2"] is not None]
+def min_reponses():
+    """Seuil de réponses pour publier un terrain, lu dans data/config.js (3 par défaut)."""
+    try:
+        m = re.search(r"min_reponses:\s*(\d+)", (DATA / "config.js").read_text(encoding="utf-8"))
+        return int(m.group(1)) if m else 3
+    except OSError:
+        return 3
+
+
+def ecrire_public(lignes, fichiers, seuil):
+    """Résultats anonymes pour le site : ni pseudos, ni commentaires des participants.
+    Seuls les terrains ayant au moins `seuil` réponses sont publiés, pour limiter les réponses fantaisistes."""
+    publies = [l for l in lignes if l["nb_reponses"] >= seuil]
+    construits = [l for l in publies if l["etat_projet"] in ("termine", "chantier") and l["evolution_m2"] is not None]
     paquet = {
         "genere_le": dt.date.today().isoformat(),
         "participants": len(fichiers),
-        "terrains_releves": len(lignes),
+        "min_reponses": seuil,
+        "terrains_releves": len(publies),
+        "terrains_en_attente": len(lignes) - len(publies),
         "terrains_construits": len(construits),
         "pertes_m2": -sum(l["evolution_m2"] for l in construits if l["evolution_m2"] < 0),
         "gains_m2": sum(l["evolution_m2"] for l in construits if l["evolution_m2"] > 0),
         "terrains": {l["terrain"]: {k: l[k] for k in ("nb_reponses", "part_avant_pct", "part_apres_pct", "pleine_terre_avant_m2",
                                                       "pleine_terre_apres_m2", "evolution_m2", "desaccord", "etat_projet",
                                                       "dessin_disparue_m2", "dessin_creee_m2", "densite", "nb_avis_densite",
-                                                      "appreciation", "nb_avis_appreciation")} for l in lignes},
+                                                      "appreciation", "nb_avis_appreciation")} for l in publies},
     }
     (DATA / "releve_pleine_terre.json").write_text(json.dumps(paquet, ensure_ascii=False, indent=1), encoding="utf-8")
     (DATA / "releve_pleine_terre.js").write_text(
@@ -290,22 +310,59 @@ def ecrire_public(lignes, fichiers):
     return paquet
 
 
+def lire_collecte(url, cle):
+    """Réponses et commentaires validés, depuis la feuille Google (collecte/Code.gs)."""
+    with urllib.request.urlopen(f"{url}?{urllib.parse.urlencode({'cle': cle})}", timeout=120) as rep:
+        d = json.load(rep)
+    if not d.get("ok"):
+        sys.exit(f"Collecte refusée : {d.get('erreur')}")
+    par_participant = {}
+    for ligne in d.get("releve", []):
+        try:
+            r = json.loads(ligne["reponse_json"])
+        except (TypeError, ValueError):
+            continue
+        pid = str(ligne.get("participant_id") or "?")
+        p = par_participant.setdefault(pid, {"format": "releve-pleine-terre-gentilly", "participant": ligne.get("pseudo") or f"anonyme-{pid[:6]}",
+                                              "exporte_le": "", "par_terrain": {}})
+        p["exporte_le"] = max(p["exporte_le"], ligne.get("recu_le") or "")
+        if ligne.get("pseudo"):
+            p["participant"] = ligne["pseudo"]
+        p["par_terrain"][r.get("terrain")] = r  # les lignes arrivent dans l'ordre : la dernière réponse l'emporte
+    fichiers = [{**{k: v for k, v in p.items() if k != "par_terrain"}, "reponses": list(p["par_terrain"].values())} for p in par_participant.values()]
+    commentaires = {}
+    for c in d.get("commentaires", []):
+        commentaires.setdefault(c["permis"], []).append({"pseudo": c.get("pseudo") or "", "texte": c["texte"], "date": (c.get("date") or "")[:10]})
+    return fichiers, commentaires
+
+
+def ecrire_commentaires(commentaires):
+    (DATA / "commentaires.js").write_text(
+        "/* Fichier généré par scripts/traiter_releve.py — commentaires validés par la modération. */\n"
+        "window.COMMENTAIRES = " + json.dumps(commentaires, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     dossier = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else RACINE / "reponses"
-    if not dossier.is_dir():
-        sys.exit(f"Dossier introuvable : {dossier}. Créez-le et placez-y les fichiers .json reçus.")
-    fichiers = lire_reponses(dossier)
+    fichiers = lire_reponses(dossier) if dossier.is_dir() else []
+    url, cle = os.environ.get("RELEVE_URL"), os.environ.get("RELEVE_CLE")
+    if url and cle:
+        en_ligne, commentaires = lire_collecte(url, cle)
+        fichiers += en_ligne
+        ecrire_commentaires(commentaires)
+        print(f"Collecte en ligne : {len(en_ligne)} participant(s), {sum(len(v) for v in commentaires.values())} commentaire(s) publié(s).")
     if not fichiers:
-        sys.exit(f"Aucun fichier de relevé dans {dossier}.")
+        sys.exit(f"Aucune réponse : ni fichier dans {dossier}, ni collecte en ligne (RELEVE_URL et RELEVE_CLE).")
     contours, etats_permis = charger_permis()
     lignes = synthese(fichiers, contours, etats_permis)
-    tableur = ecrire_tableur(lignes, fichiers, dossier)
-    pub = ecrire_public(lignes, fichiers)
-    print(f"{len(fichiers)} participant(s), {len(lignes)} terrain(s) relevé(s).")
-    print(f"Terrains construits : {pub['terrains_construits']} ; pleine terre perdue : {pub['pertes_m2']} m², gagnée : {pub['gains_m2']} m².")
-    print(f"Détail : {tableur}")
+    seuil = min_reponses()
+    pub = ecrire_public(lignes, fichiers, seuil)
+    print(f"{len(fichiers)} participant(s), {len(lignes)} terrain(s) relevé(s), dont {pub['terrains_releves']} publiés (au moins {seuil} réponses).")
+    print(f"Terrains publiés construits : {pub['terrains_construits']} ; pleine terre perdue : {pub['pertes_m2']} m², gagnée : {pub['gains_m2']} m².")
+    if dossier.is_dir():
+        print(f"Détail (tous les terrains, avec les pseudos) : {ecrire_tableur(lignes, fichiers, dossier)}")
     print("Résultats anonymes pour le site : data/releve_pleine_terre.js")
 
 

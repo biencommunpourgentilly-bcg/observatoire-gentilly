@@ -45,8 +45,8 @@
         </div>
 
         <form class="bloc demarrage" id="form-demarrage" onsubmit="return false">
-          <label for="participant"><strong>Votre prénom ou vos initiales</strong> (pour regrouper vos réponses)</label>
-          <input type="text" id="participant" autocomplete="given-name" maxlength="40" required>
+          <label for="participant"><strong>Un prénom ou un pseudo</strong> (facultatif, il n'est jamais publié)</label>
+          <input type="text" id="participant" autocomplete="nickname" maxlength="40">
           <fieldset class="choix-liste">
             <legend><strong>Quels terrains ?</strong></legend>
             <label><input type="radio" name="liste" value="grands" checked> <span id="lib-grands">Les grands projets d'abord</span></label>
@@ -57,8 +57,15 @@
           <button type="submit" class="bouton" id="bouton-commencer">Commencer</button>
         </form>
 
+        <div class="bloc" id="bloc-pertes" hidden>
+          <h2>Les terrains qui ont le plus perdu</h2>
+          <p class="note">D'après les réponses déjà reçues (au moins <span id="min-reponses">3</span> par terrain). Photo avant le projet à gauche, photo récente à droite.</p>
+          <ul class="pertes" id="liste-pertes"></ul>
+        </div>
+
         <div class="bloc" id="bloc-envoi">
           <h2>Envoyer mes réponses</h2>
+          <p class="envoi-auto" id="envoi-auto" hidden>Vos réponses sont envoyées automatiquement à chaque terrain. <span id="etat-envoi"></span></p>
           <p id="resume-reponses">Aucune réponse pour le moment.</p>
           <p class="note">Vos réponses restent sur cet appareil jusqu'à ce que vous les envoyiez. Vous pouvez faire une partie des terrains, envoyer, puis reprendre plus tard : chaque envoi contient toutes vos réponses.</p>
           <div class="actions">
@@ -153,6 +160,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="data/permis.js"></script>
+  <script src="data/config.js"></script>
+  <script src="data/releve_pleine_terre.js"></script>
   <script src="assets/adresses.js"></script>
   <script src="assets/releve.js"></script>
 </body>

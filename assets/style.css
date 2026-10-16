@@ -258,6 +258,14 @@ h3 { font-size: 1rem; }
 .tableau td a:hover { text-decoration: underline; }
 .tableau .gp-marque { display: inline-block; background: var(--bleu); color: var(--blanc); font-size: .68rem; font-weight: 700; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
 
+/* Commentaires des fiches */
+.commentaire { border-left: 3px solid var(--cyan); padding: 2px 0 2px 12px; margin-bottom: 12px; }
+.commentaire p { margin: 0 0 4px; }
+.form-commentaire { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; margin-top: 8px; }
+.form-commentaire label { font-weight: 700; font-size: .9rem; }
+.form-commentaire textarea, .form-commentaire input { font: inherit; width: 100%; padding: 8px 10px; border: 1px solid var(--trait-fort); }
+.form-commentaire button { cursor: pointer; }
+
 /* Gentilly autrefois */
 .autrefois-outils { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .autrefois-outils label { display: flex; flex-direction: column; gap: 3px; font-size: .8rem; font-weight: 700; color: var(--encre-2); }
