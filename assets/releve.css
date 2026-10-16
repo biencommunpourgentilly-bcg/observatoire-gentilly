@@ -35,10 +35,13 @@ button.bouton:disabled { opacity: .45; cursor: default; }
 }
 
 .questions { margin-top: 18px; display: grid; gap: 14px; }
+.terrain-quartier { margin: -4px 0 8px; font-weight: 700; color: var(--bleu); }
+.question.avis { border-left-color: var(--bleu); }
+.choix-liste select { font: inherit; padding: 4px 8px; border: 1px solid var(--trait-fort); margin-left: 4px; }
 .question { background: var(--surface); border: 1px solid var(--trait); border-left: 5px solid var(--cyan); padding: 14px 16px; }
 .question h2 { font-size: 1.05rem; margin-bottom: 10px; }
 .choix { display: flex; flex-wrap: wrap; gap: 8px; }
-.choix button { font: 700 1rem var(--police); padding: 10px 14px; min-width: 64px; background: var(--blanc); color: var(--bleu); border: 2px solid var(--bleu); cursor: pointer; }
+.choix button { font: 700 1rem var(--police); padding: 10px 12px; min-width: 58px; background: var(--blanc); color: var(--bleu); border: 2px solid var(--bleu); cursor: pointer; }
 .choix button[aria-pressed="true"] { background: var(--bleu); color: var(--blanc); }
 .choix button[data-valeur="null"], .choix button[data-valeur="inconnu"] { border-style: dashed; }
 .outils-dessin { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }

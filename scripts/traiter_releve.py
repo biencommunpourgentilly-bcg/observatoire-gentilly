@@ -149,6 +149,8 @@ def synthese(fichiers, contours, etats_permis):
                 continue
             disparues.append(sum(surface_dans_terrain(z["points"], polys, proj) for z in zones if z["type"] == "disparue"))
             creees.append(sum(surface_dans_terrain(z["points"], polys, proj) for z in zones if z["type"] == "creee"))
+        densites = Counter(r.get("densite") for _, r in t["reponses"] if r.get("densite") not in (None, "inconnu"))
+        notes = [r.get("appreciation") for _, r in t["reponses"]]
         m_avant, m_apres = mediane(avant), mediane(apres)
         ecarts = [max(v) - min(v) for v in ([x for x in avant if x is not None], [x for x in apres if x is not None]) if len(v) > 1]
         lignes.append({
@@ -166,6 +168,10 @@ def synthese(fichiers, contours, etats_permis):
             "desaccord": bool(ecarts and max(ecarts) >= SEUIL_DESACCORD),
             "etat_projet": etats.most_common(1)[0][0] if etats else etat_sitadel(t["permis"], etats_permis),
             "etat_source": "participants" if etats else "Sitadel",
+            "densite": densites.most_common(1)[0][0] if densites else None,
+            "nb_avis_densite": sum(densites.values()),
+            "appreciation": mediane(notes),
+            "nb_avis_appreciation": len([n for n in notes if n is not None]),
             "nb_dessins": len(disparues),
             "dessin_disparue_m2": round(statistics.median(disparues)) if disparues else None,
             "dessin_creee_m2": round(statistics.median(creees)) if creees else None,
@@ -183,10 +189,13 @@ COLONNES = [
     ("pleine_terre_avant_m2", "Pleine terre avant (m²)"), ("pleine_terre_apres_m2", "Pleine terre après (m²)"),
     ("evolution_m2", "Évolution (m²)"), ("desaccord", "Avis divergents"), ("etat_projet", "Projet sur la photo après"),
     ("etat_source", "État d'après"),
+    ("densite", "Avis : densité"), ("nb_avis_densite", "Avis densité (nb)"), ("appreciation", "Avis : note sur 5 (médiane)"),
+    ("nb_avis_appreciation", "Notes (nb)"),
     ("nb_dessins", "Dessins"), ("dessin_disparue_m2", "Zones dessinées disparues (m²)"), ("dessin_creee_m2", "Zones dessinées créées (m²)"),
     ("commentaires", "Commentaires"),
 ]
 ETATS = {"termine": "Terminé", "chantier": "En chantier", "pas_commence": "Pas commencé"}
+DENSITES = {"beaucoup_plus": "Beaucoup plus dense", "plus": "Un peu plus dense", "pareil": "Aussi dense", "moins": "Moins dense"}
 
 
 def valeur(cle, v):
@@ -194,6 +203,8 @@ def valeur(cle, v):
         return "oui" if v else ""
     if cle == "etat_projet":
         return ETATS.get(v, "")
+    if cle == "densite":
+        return DENSITES.get(v, "")
     return v
 
 
@@ -238,7 +249,7 @@ def ecrire_tableur(lignes, fichiers, dossier):
     c = ws.cell(row=total + 1, column=col, value=f'=SUMIF({lettre}2:{lettre}{fin},"<0")')
     c.font = Font(name="Arial", bold=True, color="E30613")
     c.number_format = "#,##0"
-    for col, largeur in enumerate([30, 14, 30, 12, 9, 11, 11, 12, 12, 12, 10, 14, 12, 9, 13, 13, 60], 1):
+    for col, largeur in enumerate([30, 14, 30, 12, 9, 11, 11, 12, 12, 12, 10, 14, 12, 18, 10, 12, 9, 9, 13, 13, 60], 1):
         ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = largeur
     ws.freeze_panes = "B2"
     ws.auto_filter.ref = f"A1:{ws.cell(row=1, column=len(COLONNES)).column_letter}{fin}"
@@ -269,7 +280,8 @@ def ecrire_public(lignes, fichiers):
         "gains_m2": sum(l["evolution_m2"] for l in construits if l["evolution_m2"] > 0),
         "terrains": {l["terrain"]: {k: l[k] for k in ("nb_reponses", "part_avant_pct", "part_apres_pct", "pleine_terre_avant_m2",
                                                       "pleine_terre_apres_m2", "evolution_m2", "desaccord", "etat_projet",
-                                                      "dessin_disparue_m2", "dessin_creee_m2")} for l in lignes},
+                                                      "dessin_disparue_m2", "dessin_creee_m2", "densite", "nb_avis_densite",
+                                                      "appreciation", "nb_avis_appreciation")} for l in lignes},
     }
     (DATA / "releve_pleine_terre.json").write_text(json.dumps(paquet, ensure_ascii=False, indent=1), encoding="utf-8")
     (DATA / "releve_pleine_terre.js").write_text(

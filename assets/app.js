@@ -121,14 +121,15 @@
   // ------------------------------------------------------------------ Filtres partagés
   const annees = [...new Set(PERMIS.map(annee).filter(Boolean))].sort();
   const THEMES = { bureaux: "Bureaux", ...(RELEVE ? { pleine_terre: "Pleine terre perdue (relevé)" } : {}) };
-  const FILTRES_VIDES = () => ({ texte: "", type: "", categorie: "", theme: "", etat: "", de: annees[0], a: annees[annees.length - 1], gp: false });
+  const QUARTIERS = Object.fromEntries([...new Set(PERMIS.map((p) => p.quartier).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr")).map((q) => [q, q]));
+  const FILTRES_VIDES = () => ({ texte: "", type: "", categorie: "", theme: "", quartier: "", etat: "", de: annees[0], a: annees[annees.length - 1], gp: false });
   const filtres = FILTRES_VIDES();
 
   function normaliser(s) {
     return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   }
   PERMIS.forEach((p) => {
-    p._recherche = normaliser([p.adresse, casse(p.adresse), p.demandeur, p.num, p.parcelles.join(" "), p.residence].join(" "));
+    p._recherche = normaliser([p.adresse, casse(p.adresse), p.demandeur, p.num, p.parcelles.join(" "), p.residence, p.quartier].join(" "));
   });
 
   function filtrer() {
@@ -137,6 +138,7 @@
       if (t && !t.split(/\s+/).every((m) => p._recherche.includes(m))) return false;
       if (filtres.type && p.type !== filtres.type) return false;
       if (filtres.categorie && p.categorie !== filtres.categorie) return false;
+      if (filtres.quartier && p.quartier !== filtres.quartier) return false;
       if (filtres.theme === "bureaux" && !aBureaux(p)) return false;
       if (filtres.theme === "pleine_terre" && !perdPT(p)) return false;
       if (filtres.etat && p.etat !== filtres.etat) return false;
@@ -160,6 +162,7 @@
       <label class="plus">Type<select name="type">${options(TYPES, "Tous")}</select></label>
       <label class="plus">Catégorie<select name="categorie">${options(CATEGORIES, "Toutes")}</select></label>
       <label class="plus">Thème<select name="theme">${options(THEMES, "Tous")}</select></label>
+      <label class="plus">Quartier<select name="quartier">${options(QUARTIERS, "Tous")}</select></label>
       <label class="plus">État<select name="etat">${options(ETATS, "Tous")}</select></label>
       <label class="plus">De<select name="de">${optionsAnnees}</select></label>
       <label class="plus">À<select name="a">${optionsAnnees}</select></label>
@@ -175,6 +178,7 @@
       f.type.value = filtres.type;
       f.categorie.value = filtres.categorie;
       f.theme.value = filtres.theme;
+      f.quartier.value = filtres.quartier;
       f.etat.value = filtres.etat;
       f.de.value = filtres.de;
       f.a.value = filtres.a;
@@ -615,15 +619,23 @@
     document.getElementById("gp-chapeau").textContent =
       `${liste.length} opérations : permis d'au moins ${s.logements} logements ou ${nombre(s.surface_m2)} m², permis de démolir de sociétés ou collectivités, et permis d'aménager. ` +
       `Ensemble, hors permis annulés, elles prévoient ${nombre(lgts)} logements.`;
-    document.getElementById("gp-liste").innerHTML = liste
-      .map((p) => `<li><a class="carte-permis" href="#fiche/${encodeURIComponent(p.id)}" style="--c:${couleur(p)}">
+    const parQuartier = new Map();
+    liste.forEach((p) => {
+      const q = p.quartier || "Quartier non déterminé";
+      if (!parQuartier.has(q)) parQuartier.set(q, []);
+      parQuartier.get(q).push(p);
+    });
+    const carteGp = (p) => `<li><a class="carte-permis" href="#fiche/${encodeURIComponent(p.id)}" style="--c:${couleur(p)}">
         <div class="ligne-haut"><span>${esc(TYPES[p.type])} · accordé le ${dateFr(p.date_autorisation)}</span></div>
         <div class="adresse">${esc((COMPLEMENTS[p.num] && COMPLEMENTS[p.num].titre) || adresse(p))}</div>
         <div class="demandeur">${esc(demandeur(p))}${COMPLEMENTS[p.num] && COMPLEMENTS[p.num].titre ? ` · ${esc(adresse(p))}` : ""}</div>
         ${resume(p) ? `<div class="chiffres">${esc(resume(p))}</div>` : ""}
         <div style="margin-top:10px">${pastilles(p, false)}</div>
-      </a></li>`)
-      .join("");
+      </a></li>`;
+    document.getElementById("gp-liste").innerHTML = [...parQuartier.entries()]
+      .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0], "fr"))
+      .map(([q, ps]) => `<li class="gp-quartier"><h2>${esc(q)} <small>${ps.length} opération${ps.length > 1 ? "s" : ""}</small></h2>
+        <ul class="liste-cartes grille">${ps.map(carteGp).join("")}</ul></li>`).join("");
   }
   document.getElementById("gp-periode").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-periode]");
@@ -652,6 +664,7 @@
       ? tries.map((p) => `<tr data-id="${esc(p.id)}">
         <td class="date">${dateFr(p.date_autorisation)}</td>
         <td><a href="#fiche/${encodeURIComponent(p.id)}">${esc(adresse(p))}</a>${p.grand_projet ? '<span class="gp-marque">GRAND PROJET</span>' : ""}</td>
+        <td>${esc(p.quartier || "")}</td>
         <td><span class="pastille" style="--c:${couleur(p)}"><span class="point"></span>${esc(p.type)}</span></td>
         <td>${esc(demandeur(p))}</td>
         <td class="num">${p.logements ? nombre(p.logements) : ""}</td>
@@ -660,12 +673,12 @@
         ${RELEVE ? `<td class="num ${perdPT(p) ? "perte" : ""}">${p.pt_evolution ? `${p.pt_evolution > 0 ? "+" : "−"}${m2(arrondi(Math.abs(p.pt_evolution)))}` : ""}</td>` : ""}
         <td>${esc(ETATS[p.etat])}</td>
       </tr>`).join("")
-      : `<tr><td colspan="${RELEVE ? 9 : 8}" class="vide">Aucune autorisation ne correspond à ces filtres.</td></tr>`;
+      : `<tr><td colspan="${RELEVE ? 10 : 9}" class="vide">Aucune autorisation ne correspond à ces filtres.</td></tr>`;
   }
   document.querySelector("#tableau thead").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-tri]");
     if (!b) return;
-    tri = { cle: b.dataset.tri, sens: tri.cle === b.dataset.tri ? -tri.sens : (["adresse", "demandeur", "type", "etat"].includes(b.dataset.tri) ? 1 : -1) };
+    tri = { cle: b.dataset.tri, sens: tri.cle === b.dataset.tri ? -tri.sens : (["adresse", "demandeur", "type", "etat", "quartier"].includes(b.dataset.tri) ? 1 : -1) };
     tableau(filtrer());
   });
   document.querySelector("#tableau tbody").addEventListener("click", (e) => {
@@ -726,6 +739,7 @@
       ligne("Usage prévu", esc(p.utilisation)),
       ligne("Surélévation ou niveaux ajoutés", p.surelevation ? "Oui" : ""),
       ligne("Zone", esc(p.zone)),
+      ligne("Quartier", esc(p.quartier)),
       ligne("Parcelles cadastrales", esc(p.parcelles.join(", "))),
       ligne("Dernière mise à jour Sitadel", p.maj_sitadel ? dateFr(p.maj_sitadel) : ""),
     ].join("");

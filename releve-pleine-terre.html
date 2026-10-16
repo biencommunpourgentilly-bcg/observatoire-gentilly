@@ -51,6 +51,7 @@
             <legend><strong>Quels terrains ?</strong></legend>
             <label><input type="radio" name="liste" value="grands" checked> <span id="lib-grands">Les grands projets d'abord</span></label>
             <label><input type="radio" name="liste" value="tous"> <span id="lib-tous">Tous les terrains</span></label>
+            <label><input type="radio" name="liste" value="quartier"> <span>Un quartier :</span> <select id="choix-quartier" aria-label="Quartier"></select></label>
             <label><input type="radio" name="liste" value="restants"> <span id="lib-restants">Seulement ceux que je n'ai pas encore faits</span></label>
           </fieldset>
           <button type="submit" class="bouton" id="bouton-commencer">Commencer</button>
@@ -76,6 +77,7 @@
           <span class="compteur-terrain" id="compteur-terrain"></span>
         </div>
         <h1 id="terrain-titre"></h1>
+        <p class="terrain-quartier" id="terrain-quartier"></p>
         <ul class="terrain-permis" id="terrain-permis"></ul>
 
         <div class="photos">
@@ -103,8 +105,17 @@
             <h2>3. Sur la photo APRÈS, le projet est…</h2>
             <div class="choix" data-question="etat_projet"></div>
           </div>
+          <div class="question avis">
+            <h2>4. Votre avis : par rapport à ce qui existait, le projet est…</h2>
+            <div class="choix" data-question="densite"></div>
+          </div>
+          <div class="question avis">
+            <h2>5. Votre avis : le projet vous plaît-il ?</h2>
+            <div class="choix" data-question="appreciation"></div>
+            <p class="note">Ces deux questions recueillent votre opinion ; elles sont présentées à part des mesures.</p>
+          </div>
           <div class="question">
-            <h2>4. Facultatif : dessinez les zones</h2>
+            <h2>6. Facultatif : dessinez les zones</h2>
             <p class="note">Touchez « Dessiner », puis touchez la photo pour placer les coins de la zone, et « Terminer ». Une zone <b class="txt-disparue">disparue</b> se dessine plutôt sur la photo avant, une zone <b class="txt-creee">créée</b> sur la photo après.</p>
             <div class="outils-dessin" id="outils-dessin">
               <button type="button" class="bouton-dessin disparue" data-type="disparue">Dessiner une pleine terre disparue</button>
@@ -119,7 +130,7 @@
             <ul class="zones" id="liste-zones"></ul>
           </div>
           <div class="question">
-            <h2>5. Une remarque ?</h2>
+            <h2>7. Une remarque ?</h2>
             <textarea id="commentaire" rows="2" placeholder="Ex. : jardin sur dalle, arbres conservés, photo floue…"></textarea>
           </div>
         </div>

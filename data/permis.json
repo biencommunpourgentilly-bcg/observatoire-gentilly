@@ -5,7 +5,7 @@
   "millesime": "2026-09",
   "donnees_jusqu_au": "2026-08-31",
   "maj_source": "2026-09-29",
-  "genere_le": "2026-10-10",
+  "genere_le": "2026-10-16",
   "source_url": "https://www.statistiques.developpement-durable.gouv.fr/catalogue?page=dataset&datasetId=6513f0189d7d312c80ec5b5b",
   "seuils_grand_projet": {
    "logements": 10,
@@ -551,7 +551,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PC-0940372601004",
@@ -710,7 +711,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "DP-0940372604015",
@@ -868,7 +870,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-0940372501010",
@@ -1007,7 +1010,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-0940372501019",
@@ -1154,7 +1158,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "PD-0940372602001",
@@ -1345,7 +1350,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-0940372501011",
@@ -1562,7 +1568,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PD-0940372602002",
@@ -1809,7 +1816,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-0940372501018",
@@ -1999,7 +2007,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-0940372501008",
@@ -2136,7 +2145,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-0940372601002",
@@ -2271,7 +2281,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "DP-0940372504062",
@@ -2397,7 +2408,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PC-0940372501005",
@@ -2500,7 +2512,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-0940372504025",
@@ -2631,7 +2644,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-0940372504014",
@@ -2757,7 +2771,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "DP-0940372504008",
@@ -2888,7 +2903,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403724W1010",
@@ -3070,7 +3086,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403724W1011",
@@ -3185,7 +3202,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403724W1005",
@@ -3299,7 +3317,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "PC-09403724W1001",
@@ -3446,7 +3465,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "DP-09403724W4006",
@@ -3577,7 +3597,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403723W1006",
@@ -3704,7 +3725,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403723W1013",
@@ -3834,7 +3856,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403723W1005",
@@ -3957,7 +3980,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403723W1003",
@@ -4094,7 +4118,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-09403723W4005",
@@ -4226,7 +4251,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403722W1022",
@@ -4348,7 +4374,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403722W1020",
@@ -4467,7 +4494,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403722W1021",
@@ -4582,7 +4610,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403722W1016",
@@ -4720,7 +4749,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403722W1009",
@@ -4779,8 +4809,8 @@
    "categorie": "activites",
    "grand_projet": true,
    "lies": [
-    "PD-0940372602001",
-    "PC-0940372501011"
+    "PC-0940372501011",
+    "PD-0940372602001"
    ],
    "lat": 48.81362,
    "lon": 2.346264,
@@ -4942,7 +4972,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403722W1002",
@@ -5047,7 +5078,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "DP-09403722W4010",
@@ -5190,7 +5222,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403722W1004",
@@ -5304,7 +5337,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403721W1023",
@@ -5410,7 +5444,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403722W1006",
@@ -5543,7 +5578,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403721W1021",
@@ -5641,7 +5677,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403721W1019",
@@ -5913,7 +5950,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403721W1020",
@@ -6040,7 +6078,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403721W1014",
@@ -6168,7 +6207,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403721W1016",
@@ -6304,7 +6344,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403721W1010",
@@ -6367,7 +6408,8 @@
    "lat": 48.816119,
    "lon": 2.355049,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PC-09403721W1003",
@@ -6425,7 +6467,8 @@
    "lat": null,
    "lon": null,
    "geo": null,
-   "contours": []
+   "contours": [],
+   "quartier": null
   },
   {
    "id": "PC-09403721W1002",
@@ -6601,7 +6644,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403720W1013",
@@ -6712,7 +6756,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403720W1007",
@@ -6830,7 +6875,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403720W1014",
@@ -6967,7 +7013,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403720W1010",
@@ -7078,7 +7125,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403720W1012",
@@ -7193,7 +7241,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "PC-09403720W1003",
@@ -7252,7 +7301,8 @@
    "lat": 48.809837,
    "lon": 2.347846,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "PD-09403720W2001",
@@ -7359,7 +7409,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403720W1005",
@@ -7749,7 +7800,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403719W1020",
@@ -7867,7 +7919,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PA-09403720W6001",
@@ -7947,7 +8000,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "DP-09403720W4011",
@@ -8077,7 +8131,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403719W1018",
@@ -8187,7 +8242,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403719W1019",
@@ -8337,7 +8393,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PC-09403719W1017",
@@ -8484,7 +8541,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Gabriel-Péri"
   },
   {
    "id": "PC-09403719W1014",
@@ -8591,7 +8649,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403719W1009",
@@ -8712,7 +8771,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403719W1015",
@@ -8830,7 +8890,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403719W1007",
@@ -8988,7 +9049,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403719W1004",
@@ -9045,7 +9107,8 @@
    "lat": 48.814604,
    "lon": 2.334744,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403719W1005",
@@ -9173,7 +9236,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "DP-09403719W4037",
@@ -9233,7 +9297,8 @@
    "lat": 48.813942,
    "lon": 2.343307,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403719W1010",
@@ -9384,7 +9449,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403719W1008",
@@ -9504,7 +9570,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403719W1002",
@@ -9647,7 +9714,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403719W1001",
@@ -9752,7 +9820,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403718W1015",
@@ -9883,7 +9952,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403718W1013",
@@ -10009,7 +10079,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403718W1018",
@@ -10109,7 +10180,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "DP-09403718W4068",
@@ -10164,7 +10236,8 @@
    "lat": 48.816386,
    "lon": 2.351578,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403718W1012",
@@ -10331,7 +10404,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403718W1014",
@@ -10466,7 +10540,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403718W1004",
@@ -10588,7 +10663,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "DP-09403718W4046",
@@ -10703,7 +10779,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-09403718W4052",
@@ -10805,7 +10882,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403718W1002",
@@ -10948,7 +11026,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403718W1007",
@@ -11089,7 +11168,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403718W1011",
@@ -11316,7 +11396,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403718W1005",
@@ -11371,7 +11452,8 @@
    "lat": 48.810231,
    "lon": 2.348165,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403717W1025",
@@ -11523,7 +11605,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403717W1026",
@@ -11653,7 +11736,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403717W1020",
@@ -11858,7 +11942,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PC-09403717W1015",
@@ -11991,7 +12076,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403717W1017",
@@ -12088,7 +12174,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403717W1011",
@@ -12289,7 +12376,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403717W1016",
@@ -12537,7 +12625,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "DP-09403717W4037",
@@ -12670,7 +12759,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403717W1010",
@@ -12927,7 +13017,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403717W1008",
@@ -13101,7 +13192,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403717W1006",
@@ -13213,7 +13305,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "DP-09403717W4024",
@@ -13318,7 +13411,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403717W1001",
@@ -13426,7 +13520,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "DP-09403717W4008",
@@ -13568,7 +13663,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403716W1021",
@@ -13760,7 +13856,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Victor-Hugo"
   },
   {
    "id": "PD-09403716W2002",
@@ -13895,7 +13992,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "DP-09403716W4050",
@@ -14042,7 +14140,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403716W1013",
@@ -14367,7 +14466,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "DP-09403716W4022",
@@ -14506,7 +14606,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PD-09403716W2001",
@@ -14591,7 +14692,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403716W1009",
@@ -14743,7 +14845,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403716W1008",
@@ -14864,7 +14967,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403716W1001",
@@ -14978,7 +15082,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403716W1003",
@@ -15100,7 +15205,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403716W1004",
@@ -15254,7 +15360,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403715W1014",
@@ -15408,7 +15515,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403715W1013",
@@ -15626,7 +15734,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403715W1009",
@@ -15764,7 +15873,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PD-09403715W2003",
@@ -15841,7 +15951,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403713W1004",
@@ -15896,7 +16007,8 @@
    "lat": 48.813929,
    "lon": 2.338545,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403715W1002",
@@ -16000,7 +16112,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403715W1005",
@@ -16125,7 +16238,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403714W1012",
@@ -16309,7 +16423,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403714W1009",
@@ -16427,7 +16542,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403714W1014",
@@ -16535,7 +16651,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "DP-09403715W4003",
@@ -16690,7 +16807,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-09403715W4004",
@@ -16828,7 +16946,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403714W1010",
@@ -16948,7 +17067,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PD-09403715W2001",
@@ -17029,7 +17149,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403714W1007",
@@ -17175,7 +17296,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403714W1008",
@@ -17299,7 +17421,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PC-09403714W1004",
@@ -17426,7 +17549,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403714W1006",
@@ -17618,7 +17742,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PD-09403714W2002",
@@ -17735,7 +17860,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403714W1001",
@@ -17888,7 +18014,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403712W1003",
@@ -17941,7 +18068,8 @@
    "lat": 48.815145,
    "lon": 2.345698,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403713W1019",
@@ -18119,7 +18247,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PD-09403714W2001",
@@ -18202,7 +18331,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403713W1013",
@@ -18317,7 +18447,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PD-09403713W2002",
@@ -18400,7 +18531,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Reine Blanche"
   },
   {
    "id": "PC-09403713W1011",
@@ -18526,7 +18658,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Centre-ville Frileuse"
   },
   {
    "id": "PD-09403713W2001",
@@ -18645,7 +18778,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403713W1002",
@@ -18825,7 +18959,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403713W1006",
@@ -19034,7 +19169,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "DP-09403713W4010",
@@ -19145,7 +19281,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403713W1001",
@@ -19381,7 +19518,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403712W1019",
@@ -19553,7 +19691,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403712W1035",
@@ -19609,7 +19748,8 @@
    "lat": 48.812841,
    "lon": 2.33968,
    "geo": "adresse",
-   "contours": []
+   "contours": [],
+   "quartier": "Plateau"
   },
   {
    "id": "PC-09403712W1025",
@@ -19717,7 +19857,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Val-de-Bièvre"
   },
   {
    "id": "PC-09403712W1034",
@@ -19894,7 +20035,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Chaperon vert"
   },
   {
    "id": "PC-09403712W1021",
@@ -20034,7 +20176,8 @@
      ],
      "type": "MultiPolygon"
     }
-   ]
+   ],
+   "quartier": "Plateau"
   }
  ]
 }

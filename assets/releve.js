@@ -11,8 +11,13 @@
   const casse = window.casseAdresse;
 
   const TYPES = { PC: "Permis de construire", DP: "Déclaration préalable", PD: "Permis de démolir", PA: "Permis d'aménager" };
-  const PARTS = [[0, "0 %"], [10, "10 %"], [25, "25 %"], [50, "50 %"], [75, "75 %"], [100, "100 %"], [null, "Je ne sais pas"]];
+  const PARTS = [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((v) => [v, `${v} %`]).concat([[null, "Je ne sais pas"]]);
+  const DENSITES = [["beaucoup_plus", "Beaucoup plus dense"], ["plus", "Un peu plus dense"], ["pareil", "Aussi dense"], ["moins", "Moins dense"], ["inconnu", "Je ne sais pas"]];
+  const APPRECIATIONS = [[1, "1 · Pas du tout"], [2, "2"], [3, "3"], [4, "4"], [5, "5 · Beaucoup"], [null, "Sans avis"]];
+  const OPTIONS = { part_avant: PARTS, part_apres: PARTS, etat_projet: null, densite: DENSITES, appreciation: APPRECIATIONS };
+  const TEXTE = { etat_projet: true, densite: true }; // réponses en mots ; les autres sont des nombres
   const ETATS_PROJET = [["termine", "Terminé"], ["chantier", "En chantier"], ["pas_commence", "Pas commencé"], ["inconnu", "Je ne sais pas"]];
+  OPTIONS.etat_projet = ETATS_PROJET;
   const nf = new Intl.NumberFormat("fr-FR");
   const m2 = (n) => `${nf.format(Math.round(n))} m²`;
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -77,6 +82,7 @@
       permis,
       principal,
       grand: permis.some((p) => p.grand_projet),
+      quartier: principal.quartier || permis.map((p) => p.quartier).find(Boolean) || null,
       surface: [...contours.values()].reduce((s, g) => s + aireGeojson(g), 0),
       anneeAvant: avant ? avant.annee : null,
       anneeApres: PHOTOS.length ? PHOTOS[PHOTOS.length - 1].annee : null,
@@ -125,6 +131,9 @@
     window.scrollTo(0, 0);
   }
 
+  const QUARTIERS = [...new Set(TERRAINS.map((t) => t.quartier).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+  $("choix-quartier").innerHTML = QUARTIERS.map((q) => `<option value="${esc(q)}">${esc(q)} (${TERRAINS.filter((t) => t.quartier === q).length})</option>`).join("");
+  $("choix-quartier").addEventListener("change", () => { document.querySelector("input[name=liste][value=quartier]").checked = true; });
   $("participant").value = etat.participant || "";
   $("form-demarrage").addEventListener("submit", () => {
     const nom = $("participant").value.trim();
@@ -132,7 +141,8 @@
     etat.participant = nom;
     sauver();
     const choix = document.querySelector("input[name=liste]:checked").value;
-    liste = choix === "restants" ? TERRAINS.filter((t) => !repondu(t)) : choix === "tous"
+    liste = choix === "quartier" ? TERRAINS.filter((t) => t.quartier === $("choix-quartier").value)
+      : choix === "restants" ? TERRAINS.filter((t) => !repondu(t)) : choix === "tous"
       ? [...TERRAINS].sort((a, b) => (b.principal.date_autorisation || "").localeCompare(a.principal.date_autorisation || ""))
       : TERRAINS;
     if (!liste.length) { alert("Vous avez déjà relevé tous les terrains. Merci !"); return; }
@@ -198,6 +208,7 @@
     $("terrain-titre").textContent = casse(t.principal.adresse) || `Parcelles ${t.parcelles.join(", ")}`;
     $("terrain-permis").innerHTML = t.permis.map((p) => `<li><b>${esc(TYPES[p.type])}</b> accordé en ${esc((p.date_autorisation || "").slice(0, 4))}` +
       `${p.demandeur ? ` à ${esc(p.demandeur)}` : ""}${resumePermis(p) ? ` · ${esc(resumePermis(p))}` : ""}${p.etat === "annule" ? " · <i>annulé</i>" : ""}</li>`).join("");
+    $("terrain-quartier").textContent = t.quartier ? `Quartier ${t.quartier}` : "";
     $("terrain-surface").textContent = `${m2(t.surface)} (parcelles ${t.parcelles.join(", ")})`;
 
     creerCartes();
@@ -216,7 +227,7 @@
 
     document.querySelectorAll(".choix").forEach((zone) => {
       const q = zone.dataset.question;
-      const options = q === "etat_projet" ? ETATS_PROJET : PARTS;
+      const options = OPTIONS[q];
       zone.innerHTML = options.map(([v, lib]) => `<button type="button" data-valeur="${v === null ? "null" : v}" aria-pressed="${r[q] !== undefined && r[q] === v}">${lib}</button>`).join("");
     });
     $("commentaire").value = r.commentaire || "";
@@ -232,7 +243,7 @@
     const q = zone.dataset.question;
     const v = b.dataset.valeur;
     const r = reponse(terrainCourant());
-    r[q] = v === "null" ? null : q === "etat_projet" ? v : +v;
+    r[q] = v === "null" ? null : TEXTE[q] ? v : +v;
     r.repondu_le = new Date().toISOString();
     zone.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     sauver();

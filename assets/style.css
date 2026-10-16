@@ -258,6 +258,11 @@ h3 { font-size: 1rem; }
 .tableau td a:hover { text-decoration: underline; }
 .tableau .gp-marque { display: inline-block; background: var(--bleu); color: var(--blanc); font-size: .68rem; font-weight: 700; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
 
+/* Grands projets regroupés par quartier */
+.gp-quartiers { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
+.gp-quartier h2 { margin-bottom: 12px; }
+.gp-quartier h2 small { font-family: var(--police); font-weight: 400; font-size: .9rem; color: var(--encre-2); margin-left: 6px; }
+
 /* Segments (choix de période) */
 .segments { display: inline-flex; border: 2px solid var(--bleu); margin-bottom: 20px; }
 .segments button { font: 700 .9rem var(--police); background: var(--blanc); color: var(--bleu); border: none; padding: 7px 14px; cursor: pointer; }

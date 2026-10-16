@@ -426,6 +426,28 @@ def adresse_ban(texte, cache):
     return res
 
 
+def charger_quartiers():
+    """Grille des quartiers (data/quartiers.json, cases d'environ 10 m), tirée de la carte des quartiers."""
+    chemin = DATA / "quartiers.json"
+    return json.loads(chemin.read_text(encoding="utf-8")) if chemin.exists() else None
+
+
+def quartier(q, lat, lon):
+    """Nom du quartier d'un point ; à défaut, celui de la case la plus proche (bord de commune)."""
+    if not q or lat is None:
+        return None
+    i = int((lon - q["lon_min"]) / q["pas_lon"])
+    j = int((q["lat_max"] - lat) / q["pas_lat"])
+    for rayon in range(0, 15):
+        for b in range(j - rayon, j + rayon + 1):
+            for a in range(i - rayon, i + rayon + 1):
+                if 0 <= b < q["ny"] and 0 <= a < q["nx"] and max(abs(a - i), abs(b - j)) == rayon:
+                    c = q["grille"][b][a]
+                    if c != ".":
+                        return q["quartiers"][c]
+    return None
+
+
 def localiser(permis, cache):
     for p in permis:
         geoms, centres = [], []
@@ -487,7 +509,7 @@ def photos_couleur(cache):
 
 COLONNES_CSV = [
     "type", "num", "etat", "date_depot", "date_autorisation", "date_chantier", "date_achevement",
-    "demandeur", "siren", "adresse", "parcelles", "nature", "logements", "logements_sociaux",
+    "demandeur", "siren", "adresse", "quartier", "parcelles", "nature", "logements", "logements_sociaux",
     "surf_hab_creee", "surf_loc_creee", "surface_totale", "bureaux_crees", "bureaux_demolis",
     "bureaux_transformes", "niveaux", "grand_projet", "lat", "lon",
 ]
@@ -534,6 +556,9 @@ def main():
     print("Localisation des autorisations…")
     cache = charger_cache()
     localiser(permis, cache)
+    grille = charger_quartiers()
+    for p in permis:
+        p["quartier"] = quartier(grille, p["lat"], p["lon"])
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
 
     try:
