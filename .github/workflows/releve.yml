@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "observatoire-bot"
           git config user.email "observatoire-bot@users.noreply.github.com"
-          git add data/releve_pleine_terre.js data/releve_pleine_terre.json data/commentaires.js
+          git add -A data/
           if git diff --cached --quiet; then
             echo "Rien de nouveau."
           else
