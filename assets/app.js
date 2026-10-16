@@ -59,7 +59,9 @@
   const annee = (p) => (p.date_autorisation || "").slice(0, 4);
 
   // Bureaux, et relevé collaboratif de la pleine terre (data/releve_pleine_terre.js, produit par scripts/traiter_releve.py)
-  const RELEVE = window.RELEVE_PLEINE_TERRE || null;
+  // Résultats du relevé : seulement s'il y a au moins un terrain publié ; la date sert même sans résultat.
+  const MAJ_RELEVE = (window.RELEVE_PLEINE_TERRE || {}).genere_le || null;
+  const RELEVE = window.RELEVE_PLEINE_TERRE && window.RELEVE_PLEINE_TERRE.terrains_releves ? window.RELEVE_PLEINE_TERRE : null;
   const PHOTOS = (META.photos_couleur || []).filter((ph) => ph.annee >= 2008);
   const arrondi = (n, pas = 10) => Math.round((n || 0) / pas) * pas;
   const aBureaux = (p) => !!(p.bureaux && (p.bureaux.crees || p.bureaux.demolis || p.bureaux.transformes));
@@ -465,6 +467,9 @@
   function pagePleineTerre() {
     if (pleineTerreFaite) return;
     pleineTerreFaite = true;
+    if (MAJ_RELEVE || (window.CONFIG || {}).collecte) {
+      document.getElementById("pt-maj").textContent = `Résultats du relevé recalculés chaque nuit${MAJ_RELEVE ? `, dernière mise à jour le ${dateFr(MAJ_RELEVE, true)}` : ""}. Un terrain apparaît à partir de ${(window.CONFIG || {}).min_reponses || 3} réponses.`;
+    }
     if (!RELEVE || !RELEVE.terrains_releves) return; // relevé pas encore traité : la page n'affiche que l'explication
     const tuiles = [
       [m2(arrondi(RELEVE.pertes_m2)), "de pleine terre perdus sur les terrains des projets construits"],

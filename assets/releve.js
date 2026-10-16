@@ -429,6 +429,12 @@
 
   // ------------------------------------------------------------------ Terrains qui ont le plus perdu (résultats publics)
   const RELEVE = window.RELEVE_PLEINE_TERRE;
+  if (RELEVE && RELEVE.genere_le) {
+    const [a, m, j] = RELEVE.genere_le.split("-");
+    $("maj-releve").textContent = `Les résultats sont recalculés chaque nuit. Dernière mise à jour : ${+j}/${m}/${a}.`;
+  } else if (COLLECTE) {
+    $("maj-releve").textContent = "Les résultats sont recalculés chaque nuit.";
+  }
   $("min-reponses").textContent = String(CONFIG.min_reponses || 3);
   if (RELEVE && RELEVE.terrains) {
     const pertes = TERRAINS.map((t) => ({ t, r: RELEVE.terrains[t.id] }))

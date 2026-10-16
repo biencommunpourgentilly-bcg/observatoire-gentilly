@@ -258,6 +258,8 @@ h3 { font-size: 1rem; }
 .tableau td a:hover { text-decoration: underline; }
 .tableau .gp-marque { display: inline-block; background: var(--bleu); color: var(--blanc); font-size: .68rem; font-weight: 700; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
 
+.maj-releve { margin: -8px 0 16px; }
+
 /* Commentaires des fiches */
 .commentaire { border-left: 3px solid var(--cyan); padding: 2px 0 2px 12px; margin-bottom: 12px; }
 .commentaire p { margin: 0 0 4px; }

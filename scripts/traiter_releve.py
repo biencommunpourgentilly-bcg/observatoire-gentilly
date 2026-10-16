@@ -355,6 +355,7 @@ def main():
         print(f"Collecte en ligne : {len(en_ligne)} participant(s), {sum(len(v) for v in commentaires.values())} commentaire(s) publié(s).")
     if not fichiers:
         if url and cle:
+            ecrire_public([], [], min_reponses())  # résultats vides, mais datés du jour
             print("Aucune réponse pour le moment dans la collecte en ligne.")
             return
         sys.exit(f"Aucune réponse : ni fichier dans {dossier}, ni collecte en ligne (RELEVE_URL et RELEVE_CLE).")
