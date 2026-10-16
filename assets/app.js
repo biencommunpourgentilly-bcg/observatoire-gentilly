@@ -610,6 +610,63 @@
     m.openPopup();
   });
 
+  // ------------------------------------------------------------------ Gentilly autrefois : curseur entre une image ancienne et aujourd'hui
+  // Grands chantiers mis en avant ; les textes sont tirés des permis eux-mêmes.
+  const LIEUX = ["PC-09403718W1004", "PC-09403717W1010", "PC-09403714W1001", "PC-0940372501011", "PC-09403721W1002", "PC-09403718W1012"];
+  let carteAutrefois = null;
+  function pageAutrefois() {
+    if (carteAutrefois || typeof L === "undefined") { if (carteAutrefois) setTimeout(() => carteAutrefois.invalidateSize(), 0); return; }
+    const f = fonds();
+    const recente = (META.photos_couleur || []).slice(-1)[0];
+    const apres = recente ? L.tileLayer(IGN(recente.couche, "image/jpeg"), { maxZoom: 20, maxNativeZoom: recente.zmax, attribution: ATTRIB_IGN }) : f.photo;
+    carteAutrefois = L.map("carte-autrefois", { layers: [apres], zoomSnap: 0.5, maxZoom: 19 });
+    carteAutrefois.createPane("ancien");
+    const pane = carteAutrefois.getPane("ancien");
+    pane.style.zIndex = 250;
+    const anciens = {
+      annees50: L.tileLayer(IGN("ORTHOIMAGERY.ORTHOPHOTOS.1950-1965", "image/png"), { pane: "ancien", maxZoom: 20, maxNativeZoom: 18, attribution: ATTRIB_IGN }),
+      etatmajor: L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40", "image/jpeg"), { pane: "ancien", maxZoom: 20, maxNativeZoom: 15, attribution: ATTRIB_IGN }),
+    };
+    let ancien = anciens.annees50.addTo(carteAutrefois);
+    if (DONNEES.commune) {
+      const contour = L.geoJSON(DONNEES.commune, { style: { color: "#ffe100", weight: 2, dashArray: "6 4", fill: false }, interactive: false }).addTo(carteAutrefois);
+      carteAutrefois.fitBounds(contour.getBounds(), { padding: [10, 10] });
+    } else carteAutrefois.setView([48.8155, 2.3445], 15);
+    const curseur = document.getElementById("autrefois-curseur");
+    const ligne = document.getElementById("autrefois-ligne");
+    // La couche ancienne n'est visible qu'à gauche du curseur (technique du « rideau »).
+    function decouper() {
+      const taille = carteAutrefois.getSize();
+      const nw = carteAutrefois.containerPointToLayerPoint([0, 0]);
+      const se = carteAutrefois.containerPointToLayerPoint(taille);
+      const x = nw.x + (se.x - nw.x) * (curseur.value / 100);
+      pane.style.clip = `rect(${nw.y}px, ${x}px, ${se.y}px, ${nw.x}px)`;
+      ligne.style.left = `${curseur.value}%`;
+    }
+    carteAutrefois.on("move zoom resize", decouper);
+    curseur.addEventListener("input", decouper);
+    decouper();
+    document.getElementById("autrefois-epoque").addEventListener("change", (e) => {
+      carteAutrefois.removeLayer(ancien);
+      ancien = anciens[e.target.value].addTo(carteAutrefois);
+      document.getElementById("autrefois-gauche").textContent = e.target.value === "etatmajor" ? "Vers 1820-1866" : "Années 1950";
+      decouper();
+    });
+    document.getElementById("autrefois-droite").textContent = recente ? `${recente.annee}` : "Aujourd'hui";
+    const lieux = LIEUX.map((i) => PAR_ID.get(i)).filter((p) => p && p.lat != null);
+    document.getElementById("autrefois-lieux").innerHTML = lieux.map((p, i) => `<li><button type="button" class="lieu" data-i="${i}">
+        <span class="lieu-adresse">${esc(adresse(p))}</span>
+        <span class="lieu-texte">${esc(p.quartier ? p.quartier + " · " : "")}${esc(TYPES[p.type])} accordé en ${annee(p)}${resume(p) ? " · " + esc(resume(p)) : ""}</span>
+      </button> <a class="lieu-fiche" href="#fiche/${encodeURIComponent(p.id)}">Fiche du projet</a></li>`).join("");
+    document.getElementById("autrefois-lieux").addEventListener("click", (e) => {
+      const b = e.target.closest("button.lieu");
+      if (!b) return;
+      const p = lieux[+b.dataset.i];
+      document.getElementById("carte-autrefois").scrollIntoView({ behavior: "smooth", block: "center" });
+      carteAutrefois.flyTo([p.lat, p.lon], 18, { duration: 0.8 });
+    });
+  }
+
   // ------------------------------------------------------------------ Grands projets
   let periodeGp = "recent";
   function grandsProjets() {
@@ -888,6 +945,7 @@
     if (vue === "grands-projets") grandsProjets();
     if (vue === "bureaux") pageBureaux();
     if (vue === "pleine-terre") pagePleineTerre();
+    if (vue === "autrefois") pageAutrefois();
     rafraichir();
     window.scrollTo(0, 0);
   }

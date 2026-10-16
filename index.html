@@ -27,6 +27,7 @@
         <a href="#pleine-terre" data-vue="pleine-terre">Pleine terre</a>
         <a href="#grands-projets" data-vue="grands-projets">Grands projets</a>
         <a href="#liste" data-vue="liste">Liste</a>
+        <a href="#autrefois" data-vue="autrefois">Autrefois</a>
         <a href="#a-propos" data-vue="a-propos">À propos</a>
       </nav>
     </div>
@@ -144,6 +145,36 @@
           <p><strong>Les chiffres exacts sont dans les dossiers de permis</strong> : plan de masse et respect des règles de pleine terre du plan local d'urbanisme. Nous les demandons à la mairie.</p>
         </div>
         <p class="lien-carte" id="pt-lien-carte" hidden><a class="bouton" href="#carte" data-theme="pleine_terre">Voir les terrains concernés sur la carte</a></p>
+      </div>
+    </section>
+
+    <!-- Gentilly autrefois -->
+    <section class="vue" id="vue-autrefois" data-vue="autrefois" hidden>
+      <div class="bandeau">
+        <div class="bandeau-int">
+          <h1>Gentilly autrefois</h1>
+          <p class="sous-titre"><span class="pour">POUR</span> voir comment notre ville a changé, des jardins d'hier aux immeubles d'aujourd'hui.</p>
+        </div>
+      </div>
+      <div class="conteneur large">
+        <p class="chapeau">Faites glisser le curseur pour passer d'une époque à l'autre. À gauche, l'image ancienne ; à droite, la photo aérienne la plus récente. Zoomez et déplacez-vous librement, ou choisissez un lieu ci-dessous.</p>
+        <div class="autrefois-outils">
+          <label>Image ancienne
+            <select id="autrefois-epoque">
+              <option value="annees50">Photo aérienne des années 1950</option>
+              <option value="etatmajor">Carte d'état-major (1820-1866)</option>
+            </select>
+          </label>
+          <span class="autrefois-etiquettes"><b id="autrefois-gauche">Années 1950</b> ⟷ <b id="autrefois-droite">Aujourd'hui</b></span>
+        </div>
+        <div class="autrefois-carte-zone">
+          <div id="carte-autrefois" class="carte-autrefois"></div>
+          <div class="autrefois-ligne" id="autrefois-ligne" aria-hidden="true"><span>⟷</span></div>
+        </div>
+        <input type="range" id="autrefois-curseur" min="0" max="100" value="50" aria-label="Partage entre l'image ancienne et la photo récente">
+        <h2 class="titre-section">Quelques lieux</h2>
+        <ul class="lieux" id="autrefois-lieux"></ul>
+        <p class="note">Images de l'IGN : photographies aériennes des années 1950 (assemblage de prises de vue de 1950 à 1965), carte d'état-major dressée entre 1820 et 1866, photo aérienne de 2024. Pour d'autres prises de vue depuis 1919, voir <a href="https://remonterletemps.ign.fr" target="_blank" rel="noopener">Remonter le temps</a>.</p>
       </div>
     </section>
 

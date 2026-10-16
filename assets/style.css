@@ -258,6 +258,26 @@ h3 { font-size: 1rem; }
 .tableau td a:hover { text-decoration: underline; }
 .tableau .gp-marque { display: inline-block; background: var(--bleu); color: var(--blanc); font-size: .68rem; font-weight: 700; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
 
+/* Gentilly autrefois */
+.autrefois-outils { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.autrefois-outils label { display: flex; flex-direction: column; gap: 3px; font-size: .8rem; font-weight: 700; color: var(--encre-2); }
+.autrefois-outils select { font: inherit; font-size: .95rem; font-weight: 400; padding: 7px 10px; border: 1px solid var(--trait-fort); background: var(--blanc); color: var(--encre); }
+.autrefois-etiquettes { font-size: .95rem; color: var(--encre-2); }
+.autrefois-etiquettes b { color: var(--bleu); }
+.autrefois-carte-zone { position: relative; }
+.carte-autrefois { height: min(70vh, 620px); background: var(--surface-2); isolation: isolate; }
+.autrefois-ligne { position: absolute; top: 0; bottom: 0; width: 0; border-left: 3px solid var(--blanc); box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); pointer-events: none; z-index: 500; transform: translateX(-1.5px); }
+.autrefois-ligne span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bleu); color: var(--blanc); font-weight: 700; padding: 4px 8px; border-radius: 999px; font-size: .9rem; }
+#autrefois-curseur { width: 100%; margin: 10px 0 0; accent-color: var(--bleu); height: 28px; }
+.lieux { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.lieux li { background: var(--surface); border: 1px solid var(--trait); border-left: 5px solid var(--cyan); padding: 12px 14px; }
+.lieu { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+.lieu:focus-visible { outline: 3px solid var(--cyan); }
+.lieu-adresse { font-family: var(--police-titre); font-weight: 900; color: var(--bleu); }
+.lieu-texte { font-size: .88rem; color: var(--encre-2); }
+.lieu-fiche { display: inline-block; margin-top: 6px; font-size: .85rem; font-weight: 700; }
+@media (max-width: 760px) { .carte-autrefois { height: 60vh; } }
+
 /* Grands projets regroupés par quartier */
 .gp-quartiers { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
 .gp-quartier h2 { margin-bottom: 12px; }
