@@ -77,7 +77,6 @@ Un nom de domaine (par exemple `observatoire-gentilly.fr`) peut ensuite être re
 
 ## À compléter avant publication
 
-- L'adresse de contact, dans la page « À propos » (`index.html`, texte surligné).
 - Des mentions légales : nom et adresse de l'hébergeur (GitHub), et un moyen de contact. Une personne qui publie à titre non professionnel peut rester anonyme, à condition d'avoir donné son identité à l'hébergeur (loi pour la confiance dans l'économie numérique).
 
 ## Ce que les données ne disent pas
