@@ -855,7 +855,7 @@
           <textarea id="com-texte" rows="3" maxlength="1500" required></textarea>
           <label for="com-pseudo">Pseudo (facultatif)</label>
           <input type="text" id="com-pseudo" maxlength="40">
-          <p class="note">Les commentaires sont lus avant publication. Restez factuel et courtois : les propos injurieux ou visant des personnes ne sont pas publiés.</p>
+          <p class="note">Chaque commentaire est relu avant publication, puis affiché dans la nuit suivant son envoi s'il respecte les <a href="#a-propos">règles de modération</a>.</p>
           <button type="submit" class="bouton">Envoyer</button> <span id="com-etat" class="note"></span>
         </form>` : ""}</div>` : "";
 
@@ -922,7 +922,7 @@
         const rep = await fetch(window.CONFIG.collecte, { method: "POST", body: JSON.stringify({ type: "commentaire", permis: p.id, pseudo: document.getElementById("com-pseudo").value.trim(), texte }) });
         if (!rep.ok) throw new Error(rep.status);
         form.reset();
-        etatCom.textContent = "Merci ! Votre commentaire sera publié après relecture.";
+        etatCom.textContent = "Merci ! Votre commentaire sera relu, puis affiché dans la nuit suivante s'il respecte les règles de modération.";
       } catch (e) {
         etatCom.textContent = "L'envoi a échoué, réessayez plus tard.";
       }
