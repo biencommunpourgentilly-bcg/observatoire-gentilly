@@ -246,3 +246,13 @@ button.bouton:disabled { opacity: .5; }
   .marque-titre strong { font-size: .98rem; }
   .marque-titre .signature-entete { font-size: .66rem; }
 }
+
+/* Appel à participer au relevé */
+.nav .nav-participer { background: var(--foret); color: #fff; border-radius: var(--rayon-petit); border-bottom: 0; margin-left: 6px; font-weight: 600; }
+.nav .nav-participer:hover { background: var(--foret-fonce); color: #fff; border-bottom: 0; }
+.participer { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; background: var(--vert-clair); border: 1px solid var(--trait-fort); border-radius: var(--rayon); padding: 18px 22px; margin: 0 0 24px; }
+.participer h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.participer p { margin: 0; max-width: 62ch; color: var(--encre); }
+@media (max-width: 1140px) {
+  .nav .nav-participer { margin: 8px 0 0; text-align: center; padding: 10px 12px; }
+}
