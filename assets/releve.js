@@ -244,6 +244,9 @@
       t.contours.forEach((g) => L.geoJSON(g, { style: { color: "#ffe100", weight: 3, fill: false }, interactive: false }).addTo(calques[cote].contour));
     });
     const bornes = L.geoJSON({ type: "GeometryCollection", geometries: t.contours.map((c) => ({ type: c.type, coordinates: c.coordinates })) }).getBounds();
+    const centre = bornes.getCenter();
+    $("lien-google").href = `https://www.google.com/maps/@?api=1&map_action=map&center=${centre.lat.toFixed(6)},${centre.lng.toFixed(6)}&zoom=19&basemap=satellite`;
+    $("lien-rue").href = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${centre.lat.toFixed(6)},${centre.lng.toFixed(6)}`;
     setTimeout(() => {
       ["avant", "apres"].forEach((cote) => cartes[cote].invalidateSize());
       cartes.avant.fitBounds(bornes, { padding: [24, 24], maxZoom: 19 });

@@ -866,6 +866,7 @@
 
     const liensExt = [];
     if (p.lat != null) {
+      liensExt.push(`<a href="https://www.google.com/maps/@?api=1&map_action=map&center=${p.lat},${p.lon}&zoom=19&basemap=satellite" target="_blank" rel="noopener">En cas de doute : voir sur Google Maps (vue satellite)</a>`);
       liensExt.push(`<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}" target="_blank" rel="noopener">Vue de la rue (Google Street View)</a>`);
       liensExt.push(`<a href="https://remonterletemps.ign.fr/comparer/basic?x=${p.lon}&y=${p.lat}&z=17&layer1=ORTHOIMAGERY.ORTHOPHOTOS&layer2=ORTHOIMAGERY.ORTHOPHOTOS.1950-1965&mode=vSlider" target="_blank" rel="noopener">Photos aériennes anciennes depuis 1919 (Remonter le temps, IGN)</a>`);
       liensExt.push(`<a href="https://www.geoportail.gouv.fr/carte?c=${p.lon},${p.lat}&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.PARCELLAIRE_EXPRESS::GEOPORTAIL:OGC:WMTS(1)&permalink=yes" target="_blank" rel="noopener">Photo aérienne et cadastre (Géoportail)</a>`);
