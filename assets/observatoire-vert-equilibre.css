@@ -256,3 +256,15 @@ button.bouton:disabled { opacity: .5; }
 @media (max-width: 1140px) {
   .nav .nav-participer { margin: 8px 0 0; text-align: center; padding: 10px 12px; }
 }
+
+/* Reprise du relevé et inscription aux informations */
+.reprise { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; background: var(--vert-clair); border-color: var(--trait-fort); margin-bottom: 16px; }
+.reprise h2 { margin: 0 0 4px; font-size: 1.1rem; }
+.reprise p { margin: 0; }
+.form-abonnement { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.form-abonnement h2 { margin-bottom: 0; }
+.form-abonnement p { margin: 0; }
+.form-abonnement label { font-weight: 600; font-size: .92rem; }
+.form-abonnement label.case { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+.form-abonnement input[type="email"] { font: inherit; width: 100%; max-width: 380px; padding: 9px 12px; border: 1px solid var(--trait-fort); border-radius: var(--rayon-petit); background: var(--surface); }
+.form-abonnement button { cursor: pointer; }

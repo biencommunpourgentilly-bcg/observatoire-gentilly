@@ -45,6 +45,14 @@
           </ul>
         </div>
 
+        <div class="bloc reprise" id="bloc-reprise" hidden>
+          <div>
+            <h2>Reprendre où j'en étais</h2>
+            <p id="reprise-texte"></p>
+          </div>
+          <button type="button" class="bouton" id="bouton-reprendre">Reprendre</button>
+        </div>
+
         <form class="bloc demarrage" id="form-demarrage" onsubmit="return false">
           <label for="participant"><strong>Un prénom ou un pseudo</strong> (facultatif, il n'est jamais publié)</label>
           <input type="text" id="participant" autocomplete="nickname" maxlength="40">
@@ -63,6 +71,8 @@
           <p class="note">D'après les réponses déjà reçues (au moins <span id="min-reponses">3</span> par terrain). Photo avant le projet à gauche, photo récente à droite.</p>
           <ul class="pertes" id="liste-pertes"></ul>
         </div>
+
+        <div class="bloc" data-abonnement></div>
 
         <div class="bloc" id="bloc-envoi">
           <h2>Envoyer mes réponses</h2>
@@ -165,6 +175,7 @@
   <script src="data/config.js"></script>
   <script src="data/releve_pleine_terre.js"></script>
   <script src="assets/adresses.js"></script>
+  <script src="assets/abonnement.js"></script>
   <script src="assets/releve.js"></script>
 </body>
 </html>

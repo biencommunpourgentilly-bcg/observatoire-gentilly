@@ -35,4 +35,10 @@ Dans l'onglet « Commentaires », cochez la case **publie** d'un commentaire pou
 
 ## Ce qui est enregistré
 
-Pour le relevé : un identifiant tiré au hasard sur l'appareil du participant, le pseudo qu'il a choisi (facultatif) et ses réponses. Pour les commentaires : le pseudo (facultatif), le texte et la fiche concernée. Aucune adresse e-mail, aucun nom obligatoire. Les pseudos et les commentaires non validés ne sont jamais publiés.
+Pour le relevé : un identifiant tiré au hasard sur l'appareil du participant, le pseudo qu'il a choisi (facultatif) et ses réponses. Pour les commentaires : le pseudo (facultatif), le texte et la fiche concernée. Aucune adresse e-mail n'est demandée pour répondre ni pour commenter, aucun nom n'est obligatoire. Les pseudos et les commentaires non validés ne sont jamais publiés.
+
+## Inscriptions aux informations
+
+Les adresses e-mail laissées par les visiteurs arrivent dans l'onglet **« Abonnes »** (créé automatiquement à la première inscription) : une ligne par adresse, avec deux colonnes « resultats_observatoire » et « infos_bien_commun » (VRAI si la case a été cochée). Cet onglet n'est jamais lu par le site ni publié. Pour écrire aux inscrits, utilisez la copie cachée (Cci) et ne contactez que ceux qui ont coché la case correspondante. Pour désinscrire quelqu'un qui le demande par e-mail, supprimez sa ligne.
+
+Après avoir modifié `Code.gs` : dans Apps Script, **Déployer → Gérer les déploiements → crayon → Version : Nouvelle version → Déployer**. L'adresse `/exec` reste la même.

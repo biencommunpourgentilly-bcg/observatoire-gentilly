@@ -140,20 +140,40 @@
   $("choix-quartier").innerHTML = QUARTIERS.map((q) => `<option value="${esc(q)}">${esc(q)} (${TERRAINS.filter((t) => t.quartier === q).length})</option>`).join("");
   $("choix-quartier").addEventListener("change", () => { document.querySelector("input[name=liste][value=quartier]").checked = true; });
   $("participant").value = etat.participant || "";
-  $("form-demarrage").addEventListener("submit", () => {
-    etat.participant = $("participant").value.trim();
-    sauver();
-    const choix = document.querySelector("input[name=liste]:checked").value;
-    liste = choix === "quartier" ? TERRAINS.filter((t) => t.quartier === $("choix-quartier").value)
+  function listePour(choix, quartier) {
+    return choix === "quartier" ? TERRAINS.filter((t) => t.quartier === quartier)
       : choix === "restants" ? TERRAINS.filter((t) => !repondu(t)) : choix === "tous"
       ? [...TERRAINS].sort((a, b) => (b.principal.date_autorisation || "").localeCompare(a.principal.date_autorisation || ""))
       : TERRAINS;
+  }
+  $("form-demarrage").addEventListener("submit", () => {
+    etat.participant = $("participant").value.trim();
+    const choix = document.querySelector("input[name=liste]:checked").value;
+    etat.parcours = { choix, quartier: $("choix-quartier").value, dernier: null };
+    sauver();
+    liste = listePour(choix, etat.parcours.quartier);
     if (!liste.length) { alert("Vous avez déjà relevé tous les terrains. Merci !"); return; }
     index = 0;
     montrer("terrain");
     afficherTerrain();
   });
-  $("retour-accueil").addEventListener("click", () => { finirDessin(false); montrer("accueil"); });
+  // Reprise : même liste, au dernier terrain consulté (sur cet appareil, dans ce navigateur)
+  function majReprise() {
+    const p = etat.parcours;
+    const t = p && p.dernier ? TERRAINS.find((x) => x.id === p.dernier) : null;
+    $("bloc-reprise").hidden = !t;
+    if (t) $("reprise-texte").textContent = `Dernier terrain consulté : ${casse(t.principal.adresse) || t.parcelles.join(", ")}. ${TERRAINS.filter(repondu).length} terrain(s) déjà relevé(s).`;
+  }
+  $("bouton-reprendre").addEventListener("click", () => {
+    const p = etat.parcours;
+    liste = listePour(p.choix, p.quartier);
+    let i = liste.findIndex((t) => t.id === p.dernier);
+    if (i < 0) { liste = TERRAINS; i = liste.findIndex((t) => t.id === p.dernier); }
+    index = Math.max(0, i);
+    montrer("terrain");
+    afficherTerrain();
+  });
+  $("retour-accueil").addEventListener("click", () => { finirDessin(false); majReprise(); montrer("accueil"); });
 
   // ------------------------------------------------------------------ Cartes avant / après synchronisées
   const IGN = (couche, format = "image/jpeg") => `https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${couche}&STYLE=normal&TILEMATRIXSET=PM&FORMAT=${format}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
@@ -206,6 +226,7 @@
   }
   function afficherTerrain() {
     const t = terrainCourant();
+    if (etat.parcours) { etat.parcours.dernier = t.id; sauver(); }
     const r = etat.reponses[t.id] || { annee_avant: t.anneeAvant, annee_apres: t.anneeApres, zones: [], commentaire: "" };
     $("compteur-terrain").textContent = `Terrain ${index + 1} sur ${liste.length}${repondu(t) ? " · déjà relevé" : ""}`;
     $("terrain-titre").textContent = casse(t.principal.adresse) || `Parcelles ${t.parcelles.join(", ")}`;
@@ -461,4 +482,5 @@
   }
 
   majProgression();
+  majReprise();
 })();

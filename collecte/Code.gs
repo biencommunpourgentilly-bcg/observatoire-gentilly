@@ -21,6 +21,13 @@ function installer() {
   Logger.log('Clé à copier dans GitHub (secret RELEVE_CLE) : ' + props.getProperty('CLE_EXPORT'));
 }
 
+/** Inscriptions aux informations : onglet privé, jamais renvoyé par doGet ni publié sur le site. */
+function creerAbonnes(ss) {
+  const f = ss.insertSheet('Abonnes');
+  f.appendRow(['recu_le', 'email', 'resultats_observatoire', 'infos_bien_commun', 'source']);
+  return f;
+}
+
 function repondre(objet) {
   return ContentService.createTextOutput(JSON.stringify(objet)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -55,6 +62,17 @@ function doPost(e) {
       const f = ss.getSheetByName('Commentaires');
       f.appendRow([maintenant, Utilities.getUuid(), texte(d.permis, 40), texte(d.pseudo, 40), texte(d.texte, LIMITE_TEXTE), false]);
       f.getRange(f.getLastRow(), 6).insertCheckboxes();
+      return repondre({ ok: true });
+    }
+    if (d.type === 'abonne') {
+      const adresse = texte(d.email, 120).trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adresse) || (!d.resultats && !d.bien_commun)) return repondre({ ok: false, erreur: 'donnees' });
+      const f = ss.getSheetByName('Abonnes') || creerAbonnes(ss);
+      const lignes = f.getLastRow() > 1 ? f.getRange(2, 2, f.getLastRow() - 1, 1).getValues() : [];
+      const ligne = lignes.findIndex(function (l) { return String(l[0]).toLowerCase() === adresse; });
+      const valeurs = [maintenant, adresse, !!d.resultats, !!d.bien_commun, texte(d.source, 40)];
+      if (ligne >= 0) f.getRange(ligne + 2, 1, 1, 5).setValues([valeurs]);  // une seule ligne par adresse : le dernier choix l'emporte
+      else f.appendRow(valeurs);
       return repondre({ ok: true });
     }
     return repondre({ ok: false, erreur: 'type' });
