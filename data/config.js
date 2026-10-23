@@ -3,6 +3,9 @@
    le relevé fonctionne par envoi de fichier et les commentaires sont désactivés. */
 window.CONFIG = {
   collecte: "https://script.google.com/macros/s/AKfycbwTzzawyevL7G5tKIVTmewpKxmF9VKOdLLusmn9z_sSLDt0mdqH1PLL4F35hF_v2-g/exec",
+  // Mesure d'audience GoatCounter (sans cookie) : le code de votre compte, par exemple "bcg-gentilly" pour
+  // bcg-gentilly.goatcounter.com. Tant qu'il est vide, aucune mesure n'est faite.
+  goatcounter: "",
   // Nombre minimal de réponses pour qu'un terrain apparaisse dans les résultats publics.
   min_reponses: 3,
 };
