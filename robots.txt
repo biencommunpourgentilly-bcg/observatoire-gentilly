@@ -1,3 +1,4 @@
-# Préversion : le site ne doit pas être indexé par les moteurs de recherche.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://urbanisme.observatoiregentilly.fr/sitemap.xml
