@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://data.geopf.fr https://cdnjs.cloudflare.com https://*.goatcounter.com; font-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.goatcounter.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Relevé de la pleine terre</title>
   <meta name="description" content="Relevé collaboratif de la pleine terre sur les terrains des permis de construire de Gentilly.">
   <meta name="theme-color" content="#304e43">
   <link rel="canonical" href="https://urbanisme.observatoiregentilly.fr/releve-pleine-terre.html">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23304e43%22/%3E%3Cpath d=%22M6 7h8v7H6zM17 7h9v5h-9zM6 17h6v8H6zM15 15h11v10H15z%22 fill=%22%23dfeadd%22 opacity=%22.9%22/%3E%3Cpath d=%22M17 18h5v4h-5z%22 fill=%22%23658c79%22/%3E%3Cpath d=%22M15.5 13.5 26 13.5%22 stroke=%22%23304e43%22 stroke-width=%221.2%22/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/releve.css">
   <link rel="stylesheet" href="assets/observatoire-vert-equilibre.css">
@@ -53,7 +55,7 @@
           <button type="button" class="bouton" id="bouton-reprendre">Reprendre</button>
         </div>
 
-        <form class="bloc demarrage" id="form-demarrage" onsubmit="return false">
+        <form class="bloc demarrage" id="form-demarrage">
           <label for="participant"><strong>Un prénom ou un pseudo</strong> (facultatif, il n'est jamais publié)</label>
           <input type="text" id="participant" autocomplete="nickname" maxlength="40">
           <fieldset class="choix-liste">
@@ -170,7 +172,7 @@
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
   <script src="data/permis.js"></script>
   <script src="data/config.js"></script>
   <script src="data/releve_pleine_terre.js"></script>

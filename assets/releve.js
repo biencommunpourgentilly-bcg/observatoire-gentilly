@@ -146,7 +146,8 @@
       ? [...TERRAINS].sort((a, b) => (b.principal.date_autorisation || "").localeCompare(a.principal.date_autorisation || ""))
       : TERRAINS;
   }
-  $("form-demarrage").addEventListener("submit", () => {
+  $("form-demarrage").addEventListener("submit", (e) => {
+    e.preventDefault();
     etat.participant = $("participant").value.trim();
     const choix = document.querySelector("input[name=liste]:checked").value;
     etat.parcours = { choix, quartier: $("choix-quartier").value, dernier: null };

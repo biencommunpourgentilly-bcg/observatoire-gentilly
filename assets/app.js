@@ -158,7 +158,7 @@
   const LEGENDE = Object.entries(CATEGORIES).map(([k, v]) => `<span><i style="--c:var(--c-${k})"></i>${v}</span>`).join("");
 
   document.querySelectorAll("[data-filtres]").forEach((zone) => {
-    zone.innerHTML = `<form class="filtres" role="search" onsubmit="return false">
+    zone.innerHTML = `<form class="filtres" role="search">
       <label class="recherche">Rechercher<input type="search" name="texte" placeholder="Adresse, demandeur, n° de permis…"></label>
       <button type="button" class="bouton-filtres" aria-expanded="false">Filtres</button>
       <label class="plus">Type<select name="type">${options(TYPES, "Tous")}</select></label>
@@ -198,6 +198,8 @@
     synchroniserFormulaires();
     rafraichir();
   });
+  // Les formulaires de filtres ne s'envoient jamais : la touche Entrée ne recharge pas la page
+  document.addEventListener("submit", (e) => { if (e.target.classList && e.target.classList.contains("filtres")) e.preventDefault(); });
   document.addEventListener("click", (e) => {
     const bf = e.target.closest(".bouton-filtres");
     if (bf) {
@@ -850,7 +852,7 @@
     const coms = (window.COMMENTAIRES || {})[p.id] || [];
     const comHtml = (coms.length || CONFIG.collecte) ? `<div class="bloc"><h2>Commentaires${coms.length ? ` (${coms.length})` : ""}</h2>
         ${coms.map((c) => `<div class="commentaire"><p>${esc(c.texte)}</p><p class="note">${esc(c.pseudo || "Anonyme")} · ${dateFr((c.date || "").slice(0, 10))}</p></div>`).join("")}
-        ${CONFIG.collecte ? `<form class="form-commentaire" id="form-commentaire" onsubmit="return false">
+        ${CONFIG.collecte ? `<form class="form-commentaire" id="form-commentaire">
           <label for="com-texte">Votre commentaire sur ce projet</label>
           <textarea id="com-texte" rows="3" maxlength="1500" required></textarea>
           <label for="com-pseudo">Pseudo (facultatif)</label>
@@ -914,7 +916,8 @@
       </div>`;
 
     const form = document.getElementById("form-commentaire");
-    if (form) form.addEventListener("submit", async () => {
+    if (form) form.addEventListener("submit", async (e) => {
+      e.preventDefault();
       const texte = document.getElementById("com-texte").value.trim();
       if (!texte) return;
       const etatCom = document.getElementById("com-etat");

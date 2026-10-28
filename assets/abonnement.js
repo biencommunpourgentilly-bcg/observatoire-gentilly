@@ -10,7 +10,7 @@
   let n = 0;
   zones.forEach((zone) => {
     const id = `abo${++n}`;
-    zone.innerHTML = `<form class="form-abonnement" onsubmit="return false">
+    zone.innerHTML = `<form class="form-abonnement">
       <h2>Rester informé (facultatif)</h2>
       <p>Laissez votre adresse e-mail si vous souhaitez être prévenu. Elle ne sert pas à répondre au relevé et n'est jamais publiée.</p>
       <label for="${id}-mail">Adresse e-mail</label>
@@ -23,7 +23,8 @@
     </form>`;
     const form = zone.querySelector("form");
     const etat = form.querySelector(".etat");
-    form.addEventListener("submit", async () => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = form.querySelector("input[type=email]").value.trim();
       const resultats = form.querySelector("[name=resultats]").checked;
       const bienCommun = form.querySelector("[name=bien_commun]").checked;
