@@ -2,6 +2,10 @@
 
 Site réalisé par les membres du Bien Commun pour Gentilly, qui recense les permis de construire, de démolir et d'aménager de Gentilly (94) publiés par l'État depuis 2013 : carte, liste filtrable, fiche par autorisation et sélection des grands projets.
 
+## Licences
+
+Code sous **GNU AGPL v3** ([LICENSE](LICENSE)), textes et mise en forme sous **CC BY-SA 4.0**, données sous la Licence Ouverte 2.0 de leurs sources. Le nom et les logos du Bien Commun pour Gentilly ne sont pas concédés. Détail dans [LICENCE.md](LICENCE.md).
+
 ## Habillage : charte « Vert équilibré — Atlas urbain »
 
 - **Fichier :** `assets/observatoire-vert-equilibre.css`, chargé après `assets/style.css`. Toutes les couleurs y sont des variables, en tête du fichier.

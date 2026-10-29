@@ -26,5 +26,8 @@ Site statique (HTML, CSS, JavaScript, sans framework) publié par GitHub Pages s
 - Pas d'estimation automatique de la pleine terre : seule la mesure par relevé d'habitants est publiée, avec un minimum de 3 réponses par terrain.
 - Les commentaires sont modérés (case « publie » dans la feuille) et affichés la nuit suivante.
 
+## Licences
+Code sous AGPL v3 (`LICENSE`), contenus sous CC BY-SA 4.0, détail dans `LICENCE.md`. Tout nouveau fichier de code doit rester compatible AGPL ; ne pas ajouter de ressource dont la licence l'interdit.
+
 ## Domaine
 `urbanisme.observatoiregentilly.fr` (CNAME vers GitHub), `observatoiregentilly.fr` redirigé par le dépôt `observatoiregentilly-accueil` (page d'accueil provisoire, futurs autres observatoires).
