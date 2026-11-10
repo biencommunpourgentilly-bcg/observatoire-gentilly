@@ -7,6 +7,7 @@
   const zones = document.querySelectorAll("[data-abonnement]");
   if (!zones.length) return;
   if (!CONFIG.collecte) { zones.forEach((z) => (z.hidden = true)); return; }
+  const EN_LIGNE = CONFIG.desinscription_en_ligne === true;
   let n = 0;
   zones.forEach((zone) => {
     const id = `abo${++n}`;
@@ -19,20 +20,20 @@
       <label class="case"><input type="checkbox" name="bien_commun"> Recevoir aussi les informations de l'association Bien Commun pour Gentilly, y compris ses prises de position</label>
       <p class="note">Ces deux choix sont séparés : la première case ne vous inscrit pas aux communications de l'association.</p>
       <button type="submit" class="bouton">M'inscrire</button> <span class="note etat"></span>
-      <p class="note">Responsable : l'association Bien Commun pour Gentilly. Votre adresse, la date et vos choix sont enregistrés, jamais publiés, ni vendus, ni transmis. Vous pouvez vous désinscrire à tout moment, avec effet immédiat, ci-dessous ou en écrivant à
+      <p class="note">Responsable : l'association Bien Commun pour Gentilly. Votre adresse, la date et vos choix sont enregistrés, jamais publiés, ni vendus, ni transmis. Vous pouvez vous désinscrire à tout moment, avec effet immédiat, ${EN_LIGNE ? "ci-dessous ou en écrivant à" : "en écrivant à"}
         <a href="mailto:biencommunpourgentilly@gmail.com">biencommunpourgentilly@gmail.com</a> ; l'adresse est effacée dans les 30 jours. <a href="confidentialite.html">Confidentialité</a></p>
     </form>
-    <details class="desinscription"><summary>Se désinscrire</summary>
+    ${EN_LIGNE ? `<details class="desinscription"><summary>Se désinscrire</summary>
       <form class="form-desinscription">
         <label for="${id}-mail-off">Adresse e-mail à désinscrire</label>
         <input type="email" id="${id}-mail-off" autocomplete="email" maxlength="120">
         <button type="submit" class="bouton contour-bleu">Me désinscrire</button> <span class="note etat-off" role="status"></span>
       </form>
-    </details>`;
+    </details>` : ""}`;
     const form = zone.querySelector(".form-abonnement");
     const formOff = zone.querySelector(".form-desinscription");
-    const etatOff = formOff.querySelector(".etat-off");
-    formOff.addEventListener("submit", async (e) => {
+    const etatOff = formOff && formOff.querySelector(".etat-off");
+    if (formOff) formOff.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = formOff.querySelector("input[type=email]").value.trim();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { etatOff.textContent = "Adresse e-mail non valide."; return; }
