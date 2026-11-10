@@ -39,6 +39,12 @@ Pour le relevé : un identifiant tiré au hasard sur l'appareil du participant, 
 
 ## Inscriptions aux informations
 
-Les adresses e-mail laissées par les visiteurs arrivent dans l'onglet **« Abonnes »** (créé automatiquement à la première inscription) : une ligne par adresse, avec deux colonnes « resultats_observatoire » et « infos_bien_commun » (VRAI si la case a été cochée). Cet onglet n'est jamais lu par le site ni publié. Pour écrire aux inscrits, utilisez la copie cachée (Cci) et ne contactez que ceux qui ont coché la case correspondante. Pour désinscrire quelqu'un qui le demande par e-mail, supprimez sa ligne.
+Les adresses e-mail laissées par les visiteurs arrivent dans l'onglet **« Abonnes »** (créé automatiquement à la première inscription) : une ligne par adresse, avec deux colonnes « resultats_observatoire » et « infos_bien_commun » (VRAI si la case a été cochée). Cet onglet n'est jamais lu par le site ni publié. Pour écrire aux inscrits, utilisez la copie cachée (Cci) et ne contactez que ceux qui ont coché la case correspondante. 
+
+### Désinscription
+
+Le site propose un formulaire « Se désinscrire » : il décoche immédiatement les deux cases et note la date dans la colonne « desinscrit_le ». Quelqu'un qui écrit à l'adresse de contact doit être traité de la même façon : décochez ses deux cases et notez la date du jour dans « desinscrit_le ». **Ne plus écrire à une ligne dont les deux cases sont décochées.**
+
+La ligne est effacée automatiquement 30 jours après la désinscription. Pour activer cette suppression, une seule fois : dans Apps Script, choisissez la fonction **installerPurge** et cliquez sur **Exécuter** (acceptez les autorisations). Vérifiez ensuite dans le menu **Déclencheurs** (horloge) qu'un déclencheur quotidien « purgerDesinscrits » existe.
 
 Après avoir modifié `Code.gs` : dans Apps Script, **Déployer → Gérer les déploiements → crayon → Version : Nouvelle version → Déployer**. L'adresse `/exec` reste la même.

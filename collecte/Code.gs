@@ -24,8 +24,35 @@ function installer() {
 /** Inscriptions aux informations : onglet privé, jamais renvoyé par doGet ni publié sur le site. */
 function creerAbonnes(ss) {
   const f = ss.insertSheet('Abonnes');
-  f.appendRow(['recu_le', 'email', 'resultats_observatoire', 'infos_bien_commun', 'source']);
+  f.appendRow(['recu_le', 'email', 'resultats_observatoire', 'infos_bien_commun', 'source', 'desinscrit_le']);
   return f;
+}
+
+const DELAI_SUPPRESSION_JOURS = 30;
+
+/** Les feuilles créées avant la désinscription n'ont pas la sixième colonne : on l'ajoute. */
+function assurerColonneDesinscription(f) {
+  if (f.getMaxColumns() < 6) f.insertColumnAfter(f.getMaxColumns());
+  if (f.getRange(1, 6).getValue() !== 'desinscrit_le') f.getRange(1, 6).setValue('desinscrit_le');
+}
+
+/** À lancer une fois : programme la suppression quotidienne des adresses désinscrites depuis plus de 30 jours. */
+function installerPurge() {
+  const deja = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'purgerDesinscrits'; });
+  if (!deja) ScriptApp.newTrigger('purgerDesinscrits').timeBased().everyDays(1).atHour(4).create();
+}
+
+/** Efface définitivement les lignes dont la désinscription date de plus de 30 jours. */
+function purgerDesinscrits() {
+  const f = SpreadsheetApp.getActive().getSheetByName('Abonnes');
+  if (!f || f.getLastRow() < 2) return;
+  assurerColonneDesinscription(f);
+  const limite = new Date(Date.now() - DELAI_SUPPRESSION_JOURS * 24 * 3600 * 1000);
+  const v = f.getRange(2, 1, f.getLastRow() - 1, 6).getValues();
+  for (let i = v.length - 1; i >= 0; i--) {
+    const quand = v[i][5];
+    if (quand instanceof Date && quand < limite) f.deleteRow(i + 2);
+  }
 }
 
 function repondre(objet) {
@@ -68,11 +95,29 @@ function doPost(e) {
       const adresse = texte(d.email, 120).trim().toLowerCase();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adresse) || (!d.resultats && !d.bien_commun)) return repondre({ ok: false, erreur: 'donnees' });
       const f = ss.getSheetByName('Abonnes') || creerAbonnes(ss);
+      assurerColonneDesinscription(f);
       const lignes = f.getLastRow() > 1 ? f.getRange(2, 2, f.getLastRow() - 1, 1).getValues() : [];
       const ligne = lignes.findIndex(function (l) { return String(l[0]).toLowerCase() === adresse; });
-      const valeurs = [maintenant, adresse, !!d.resultats, !!d.bien_commun, texte(d.source, 40)];
-      if (ligne >= 0) f.getRange(ligne + 2, 1, 1, 5).setValues([valeurs]);  // une seule ligne par adresse : le dernier choix l'emporte
+      const valeurs = [maintenant, adresse, !!d.resultats, !!d.bien_commun, texte(d.source, 40), ''];
+      if (ligne >= 0) f.getRange(ligne + 2, 1, 1, 6).setValues([valeurs]);  // une seule ligne par adresse : le dernier choix l'emporte
       else f.appendRow(valeurs);
+      return repondre({ ok: true });
+    }
+    if (d.type === 'desabonne') {
+      // Désinscription immédiate : les deux cases sont décochées et la date est notée ; la ligne est effacée sous 30 jours (purgerDesinscrits).
+      // La réponse est la même que l'adresse soit connue ou non, pour ne pas révéler qui est inscrit.
+      const adresse = texte(d.email, 120).trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adresse)) return repondre({ ok: false, erreur: 'donnees' });
+      const f = ss.getSheetByName('Abonnes');
+      if (f && f.getLastRow() > 1) {
+        assurerColonneDesinscription(f);
+        const lignes = f.getRange(2, 2, f.getLastRow() - 1, 1).getValues();
+        const ligne = lignes.findIndex(function (l) { return String(l[0]).toLowerCase() === adresse; });
+        if (ligne >= 0) {
+          f.getRange(ligne + 2, 3, 1, 2).setValues([[false, false]]);
+          f.getRange(ligne + 2, 6).setValue(maintenant);
+        }
+      }
       return repondre({ ok: true });
     }
     return repondre({ ok: false, erreur: 'type' });

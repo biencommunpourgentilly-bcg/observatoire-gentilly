@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://data.geopf.fr https://cdnjs.cloudflare.com https://*.goatcounter.com; font-src 'self'; connect-src 'self' https://*.goatcounter.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Parcelles et locaux de la Commune de Gentilly : Observatoire de l'urbanisme</title>
+  <meta name="description" content="Carte des parcelles et locaux recensés au nom de la Commune de Gentilly dans les fichiers fiscaux de la DGFiP, millésimes 2019 à 2025.">
+  <link rel="canonical" href="https://urbanisme.observatoiregentilly.fr/patrimoine.html">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/patrimoine.css">
+</head>
+<body>
+<header class="pat-entete">
+  <p class="retour"><a href="index.html">← Observatoire de l'urbanisme de Gentilly</a></p>
+  <h1>Parcelles et locaux recensés au nom de la Commune de Gentilly (SIREN 219 400 371), 2019-2025</h1>
+  <p>Fichiers fiscaux des personnes morales (DGFiP), stock au 1er janvier de chaque année. Contours : cadastre IGN.</p>
+</header>
+<div class="avertissement"><strong>À lire avant d'interpréter.</strong> Une parcelle qui « apparaît » ou « disparaît » d'un millésime à l'autre n'est <strong>pas</strong> une acquisition ni une cession : elle peut venir d'une correction du fichier, d'un changement de numérotation ou d'une division du cadastre. <a href="#methode">Méthode et limites</a>.</div>
+<main>
+<aside>
+  <h2>Colorer par</h2>
+  <label class="case"><input type="radio" name="mode" value="emprise" checked> Emprise de la commune (terrain ou locaux)</label>
+  <label class="case"><input type="radio" name="mode" value="statut"> Statut 2019-2025 (présente, apparue, disparue)</label>
+  <label class="case"><input type="radio" name="mode" value="ens"> Ensembles de parcelles contiguës</label>
+  <div id="statuts" style="margin-top:8px"></div>
+  <h2>Apparue en</h2>
+  <select id="annee" aria-label="Année d'apparition"><option value="">Toutes les années</option></select>
+  <h2>Où sont-elles ?</h2>
+  <div class="communes" id="communes"></div>
+  <h2>Rechercher</h2>
+  <input type="search" id="recherche" placeholder="Référence, rue, lieu-dit…" aria-label="Rechercher une parcelle">
+  <div class="liste" id="liste" style="margin-top:6px"></div>
+  <p class="note" id="compteur"></p>
+  <p class="note">Ensembles : parcelles détenues par la commune qui se touchent par un côté, calculées par l'observatoire à partir des contours du cadastre (ce n'est pas une donnée officielle). Les locaux seuls n'y entrent pas.</p>
+  <p class="note">Les contours ne s'affichent qu'en zoomant ; en vue large, chaque parcelle est un point. Un point entouré de pointillés marque un emplacement <strong>approximatif</strong> (contour introuvable au cadastre actuel, placé au centre de la commune).</p>
+</aside>
+<div id="carte" role="region" aria-label="Carte des parcelles"></div>
+</main>
+
+<section class="pat-methode" id="methode">
+  <h2>D'où viennent ces informations ?</h2>
+  <p>Source : « Fichiers des locaux et des parcelles des personnes morales » (Direction générale des Finances publiques, ministères économiques et financiers), republiés sur <a href="https://www.data.gouv.fr/datasets/fichiers-des-locaux-et-des-parcelles-des-personnes-morales-version-unifiee" target="_blank" rel="noopener">data.gouv.fr</a> en version unifiée, sous <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence/" target="_blank" rel="noopener">Licence Ouverte 2.0</a>. Nous avons gardé les lignes dont le propriétaire est la Commune de Gentilly (SIREN 219400371), pour les millésimes 2019 à 2025. Les contours viennent de l'<a href="https://apicarto.ign.fr/" target="_blank" rel="noopener">API Carto de l'IGN</a>, les fonds de carte de la Géoplateforme de l'IGN. Les données sont mises à jour chaque mois, mais un nouveau millésime n'est publié qu'une fois par an.</p>
+  <h2>Comment lire la carte</h2>
+  <ul>
+    <li><strong>Emprise :</strong> terrain détenu en totalité, en partie, en bail à construction, ou locaux seuls (la commune n'a alors pas le terrain).</li>
+    <li><strong>Statut :</strong> présence de la référence dans les millésimes successifs.</li>
+    <li><strong>Ensembles :</strong> regroupement des parcelles voisines, calculé par l'observatoire.</li>
+  </ul>
+  <h2>Ce que ces données ne disent pas</h2>
+  <ul>
+    <li>Une apparition ou une disparition de référence n'est pas une transaction. Pour qualifier une opération, il faut un acte, la publicité foncière ou une délibération.</li>
+    <li>Les fichiers ont un décalage : le stock du 1er janvier reflète des situations antérieures.</li>
+    <li>Une erreur ? Écrivez à <a href="mailto:biencommunpourgentilly@gmail.com">biencommunpourgentilly@gmail.com</a> : nous corrigerons ou compléterons.</li>
+  </ul>
+</section>
+
+<footer class="pat-pied">
+  <div class="pat-pied-int">
+    <p>Observatoire de l'urbanisme de Gentilly, une initiative du Bien Commun pour Gentilly · <a href="index.html">Retour au site</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a></p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
+<script src="data/patrimoine.js"></script>
+<script src="data/config.js"></script>
+<script src="assets/mesure.js"></script>
+<script src="assets/patrimoine.js"></script>
+</body>
+</html>
