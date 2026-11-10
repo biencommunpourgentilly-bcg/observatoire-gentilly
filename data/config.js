@@ -7,5 +7,7 @@ window.CONFIG = {
   // bcg-gentilly.goatcounter.com. Tant qu'il est vide, aucune mesure n'est faite.
   goatcounter: "bcggentilly",
   // Nombre minimal de réponses pour qu'un terrain apparaisse dans les résultats publics.
+  // Passer à true une fois le nouveau Code.gs déployé (collecte/LISEZMOI.md) : affiche le formulaire « Se désinscrire ».
+  desinscription_en_ligne: false,
   min_reponses: 3,
 };
