@@ -19,6 +19,11 @@ jobs:
           python-version: "3.12"
       - name: Télécharger et préparer les données
         run: python scripts/maj_donnees.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Règles d'urbanisme actuelles de chaque permis (page Règles du PLUi)
+        run: node scripts/regles_permis.js
       - name: Enregistrer les changements
         run: |
           git config user.name "observatoire-bot"
