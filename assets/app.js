@@ -883,7 +883,7 @@
             ${r.exc.length ? `<li>Exceptions du règlement : ${r.exc.map(esc).join(" ; ")}</li>` : ""}
             ${alertes.length ? `<li>À savoir : ${alertes.join(" ; ")}</li>` : ""}
           </ul>
-          <span class="note">Comparaison avec l'ancien PLU : ${esc(r.niv)}.</span></li>`;
+          <span class="note">Comparaison avec l'ancien PLU : ${esc(r.niv)}. <a href="urbanisme.html?fiche=${encodeURIComponent(r.id)}">Fiche détaillée de la parcelle →</a></span></li>`;
       }).join("");
       return `<div class="bloc"><h2>Règles d'urbanisme actuelles du terrain</h2>
         <p class="note">PLUi en vigueur depuis le 21 février 2026. Ces règles ne sont pas celles qui s'appliquaient à la date de ce permis. Première version, sujette à erreurs : règles générales seulement, le règlement et les documents graphiques officiels font foi ; ce n'est pas un conseil juridique.</p>

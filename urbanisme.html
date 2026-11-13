@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://data.geopf.fr https://cdnjs.cloudflare.com https://*.goatcounter.com; font-src 'self'; connect-src 'self' https://api-adresse.data.gouv.fr https://*.goatcounter.com; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Règles d'urbanisme (PLU et PLUi) : Observatoire de l'urbanisme de Gentilly</title>
+<meta name="description" content="Les règles d'urbanisme de chaque terrain de Gentilly : ancien PLU de 2024 et PLUi de 2026, ce qui change, carrières, argiles, servitudes. Première version, sujette à erreurs.">
+<link rel="canonical" href="https://urbanisme.observatoiregentilly.fr/urbanisme.html">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
+<link rel="stylesheet" href="assets/urbanisme.css">
+</head>
+<body>
+<p class="retour-obs"><a href="index.html">← Observatoire de l'urbanisme de Gentilly (permis de construire)</a></p>
+<div class="bandeau">PREMIÈRE VERSION — SUJETTE À ERREURS<span class="long"> — outil d’information, pas un conseil juridique : le règlement et les documents officiels font foi ; toute erreur peut nous être signalée</span></div>
+<div class="entete">
+  <h1>Les règles d'urbanisme : PLU de 2024 et PLUi de 2026</h1>
+  <p class="sous">Le PLU de mars 2024 et le PLUi en vigueur depuis le 21 février 2026, parcelle par parcelle. Un outil de lecture : il décrit des règles, pas des projets.</p>
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-p="pc">La carte</button>
+    <button role="tab" aria-selected="false" data-p="pq">Ce qui change</button>
+    <button role="tab" aria-selected="false" data-p="pd">Droit de préemption</button>
+    <button role="tab" aria-selected="false" data-p="pk">Les carrières</button>
+    <button role="tab" aria-selected="false" data-p="pg">Glossaire</button>
+    <button role="tab" aria-selected="false" data-p="ps">Sources et limites</button>
+  </nav>
+</div>
+
+<section id="pc" class="pan on">
+  <div class="mise">
+    <div>
+      <div class="boite" id="bCol">
+        <h2>Colorier les terrains selon</h2>
+        <div id="modes"></div>
+        <div class="cle" id="cle"></div>
+      </div>
+      <div class="boite" id="bAjo" style="margin-top:10px">
+        <h2>Ajouter par-dessus</h2>
+        <label class="l"><input type="checkbox" id="osat"> Vue satellite (photographies aériennes IGN)</label>
+        <label class="l"><input type="checkbox" id="oz"> Zonage du plan de prévention « carrières » (2026)</label>
+        <label class="l"><input type="checkbox" id="oa"> Aléas « carrières » (2026)</label>
+        <label class="l"><input type="checkbox" id="oa9"> Aléas « carrières » (2019)</label>
+        <div class="note" id="clecar" style="display:none;margin:4px 0 6px"></div>
+        <label class="l"><input type="checkbox" id="osup"> Monuments historiques et leurs abords (servitudes AC1, à vérifier)</label>
+        <label class="l"><input type="checkbox" id="num"> Numéros de rue (à partir du zoom 17)</label>
+      </div>
+      <div class="boite" id="bAdr" style="margin-top:10px">
+        <h2>Mon adresse</h2>
+        <input type="text" id="adr" placeholder="ex. 10 avenue Raspail" aria-label="Adresse à Gentilly">
+        <button class="b" id="ok">Trouver le terrain</button>
+        <div id="res" class="note" style="margin-top:6px"></div>
+      </div>
+    </div>
+    <div id="cMap"><div id="map"></div><p class="note">Cliquez sur un terrain pour lire ses règles. Fond : © IGN (Plan IGN). Données : Géoportail de l'urbanisme, cadastre Etalab.</p></div>
+    <div class="boite" id="fiche"><h2>Fiche du terrain</h2><p class="note">Cliquez sur un terrain de la carte, ou saisissez une adresse. Vous verrez la zone du PLUi, les règles de hauteur, d'emprise et de pleine terre, ce qui change par rapport à l'ancien PLU, et les protections ou prescriptions voisines.</p></div>
+  </div>
+</section>
+
+<section id="pq" class="pan"><div class="texte">
+  <h2 style="margin-top:6px">Ce qui change, en quelques chiffres</h2>
+  <p class="note">Sur 1598 terrains (94,1 ha de parcelles). « Inchangé » veut dire : même chiffre pour la <strong>règle générale</strong> dans les deux textes ; cela ne prouve pas que les droits à construire sont inchangés (exceptions, petits terrains, annexes, majorations). Les modes « règle générale + exceptions » et chaque fiche comparent aussi les exceptions.</p>
+  <div class="cartes" id="stats"></div>
+  <h2>Ce que l'on retient</h2>
+  <ul>
+    <li id="rt-h"></li>
+    <li id="rt-e"></li>
+    <li id="rt-p"></li>
+    <li><strong>Usages autorisés</strong> : selon notre comparaison, <strong>partielle</strong> (l’ancien PLU n’utilise pas la même nomenclature), les usages se resserrent en zone pavillonnaire et pour le logement dans les zones d'activités ; presque rien ne change au centre-ville.</li>
+    <li><strong>Les secteurs de projet (OAP) passent de 42 à 54 ha</strong>, et le PLUi impose 30 % de logements locatifs sociaux aux opérations de logements d’une certaine taille (30 logements ou 2 000 m² ; seuil exact à vérifier) sur environ 75 % de la commune.</li>
+    <li><strong>Protections ajoutées</strong> : bâti patrimonial (62 repérés contre 5 listés), arbres, Bièvre.</li>
+  </ul>
+  <h2 id="ubum">Zone pavillonnaire passée en zone mixte : les terrains UB2 → UM</h2>
+  <p id="ubumtxt"></p>
+  <p class="note">Contrôlé : aucun de ces terrains n’est à moins de 5 m d’une bande de « hauteur particulière » du plan de l’ancien PLU (planche 3) ni d’une « hauteur spécifique » du PLUi ; aucun n’est à cheval sur deux zones. Autres règles (retraits, prospects, espaces verts protégés) : voir la fiche de chaque terrain.</p>
+  <div style="overflow-x:auto"><table class="tbl" id="tubum"><thead><tr><th>Terrain</th><th>Adresse(s) probable(s)</th><th>Surface</th><th>Faîtage</th><th>Égout</th><th>Emprise</th><th>Pleine terre</th><th>Fiabilité</th></tr></thead><tbody></tbody></table></div>
+  <p><button class="b" id="csvubum">Télécharger la liste (CSV)</button></p>
+  <div class="avert">Un potentiel réglementaire n'est ni un permis ni un projet. Le règlement écrit et les documents graphiques approuvés font foi.</div>
+</div></section>
+
+<section id="pd" class="pan">
+  <div class="texte" style="max-width:none">
+    <h2 style="margin-top:6px">Le droit de préemption urbain renforcé</h2>
+    <div class="avert" style="max-width:860px"><strong>Toute la partie urbaine de la commune est concernée.</strong> La délibération du 16 décembre 2025 institue le droit de préemption urbain, <em>simple et renforcé</em>, sur l’ensemble du territoire de l’établissement public territorial : il s’applique à toutes les zones urbaines (U) et à urbaniser (AU) ; seules les zones naturelles (N) et agricoles en sont exclues. Le périmètre <em>renforcé</em> (carte ci-dessous) en couvre environ 91 %, le reste est en droit de préemption simple.</div>
+    <p style="max-width:860px">Quand un bien est vendu dans un périmètre de <strong>droit de préemption urbain (DPU)</strong>, le vendeur doit le signaler à la collectivité par une <strong>déclaration d'intention d'aliéner (DIA)</strong>, qui dispose de 2 mois pour acheter au prix demandé ou y renoncer. Le droit de préemption <strong>« renforcé »</strong> étend ce mécanisme à des ventes que le droit simple n'atteint pas : <strong>lots de copropriété de plus de dix ans</strong>, <strong>parts de certaines sociétés</strong> donnant droit à un local, et <strong>immeubles achevés depuis moins de quatre ans</strong> (article L.211-4 du code de l'urbanisme, tel que rappelé dans la délibération du conseil de l'EPT).</p>
+  </div>
+  <div class="mise3">
+    <div>
+      <div class="boite">
+        <h2>Couches</h2>
+        <label class="l"><input type="radio" name="dl" value="nouveau" checked> Périmètre du PLUi (2026)</label>
+        <label class="l"><input type="radio" name="dl" value="ancien"> Périmètre de l'ancien PLU (2024)</label>
+        <label class="l"><input type="radio" name="dl" value="diff"> Différences entre les deux</label>
+        <div class="cle" id="cled"></div>
+        <label class="l" style="margin-top:8px"><input type="checkbox" id="dp"> Limites des terrains</label>
+      </div>
+      <div class="boite" style="margin-top:10px" id="dstats"></div>
+    </div>
+    <div>
+      <div id="md" class="mkh"></div>
+      <p class="note">Fond : © IGN (Plan IGN). Périmètres : Géoportail de l'urbanisme (PLUi) et ancien PLU de Gentilly.</p>
+    </div>
+    <div>
+      <div class="boite" id="dsect"></div>
+    </div>
+  </div>
+  <div class="texte" style="max-width:none;margin-top:10px">
+    <div class="avert" style="max-width:860px"><strong>Ce que cela ne veut pas dire :</strong> un périmètre de préemption n'est ni un projet d'achat, ni une interdiction de vendre : il fixe une procédure (la DIA) et une possibilité d'acquérir. Aucun terrain n'est désigné pour être acheté. <strong>La commune reste le guichet unique</strong> de réception des déclarations. Cette page décrit les périmètres, elle ne donne pas de conseil juridique.</div>
+    <h2>Sources et limites</h2>
+    <ul style="max-width:860px">
+      <li>Délibération du conseil de l'EPT Grand-Orly Seine Bièvre du <strong>16 décembre 2025</strong> (n° 4195, reçue en préfecture le 23 décembre 2025), pièce annexée au PLUi : définition, motifs par secteur (pages 3 à 14).</li>
+      <li>Périmètres : couche « droit de préemption urbain renforcé » du PLUi (Géoportail de l'urbanisme) et couche DPUR de l'ancien PLU.</li>
+      <li>Le droit de préemption ne s'applique qu'aux zones urbaines ou à urbaniser : <strong>les zones naturelles en sortent</strong>. Une surface de 0,2 ha classée en zone naturelle reste toutefois à l'intérieur du périmètre dans les données (précision des tracés, à vérifier).</li>
+      <li>Le droit de préemption urbain « simple » s’applique sur le reste des zones urbaines (délibération, p. 3) ; son périmètre n’est pas cartographié ici (le plan annexé à la délibération n’a pas été lu : à vérifier).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="pk" class="pan">
+  <div class="texte" style="max-width:none">
+    <h2 style="margin-top:6px">Les carrières sous Gentilly <span class="note">(titre provisoire)</span></h2>
+    <p style="max-width:860px">Gentilly repose en partie sur d'anciennes carrières. Deux cartes officielles décrivent ce qu'on en sait : une carte d'aléas de <strong>janvier 2019</strong> (données officielles de la préfecture) et la carte d'aléas du <strong>plan de prévention approuvé le 19 février 2026</strong>. Ce plan fixe aussi un <strong>zonage réglementaire</strong> : c'est lui qui s'applique aux projets.</p>
+  </div>
+  <div class="mise3">
+    <div>
+      <div class="boite">
+        <h2>Comparer</h2>
+        <p class="note" style="margin:0 0 6px">Faites glisser le curseur : <strong>à gauche, 2019</strong> ; <strong>à droite, 2026</strong>.</p>
+        <label class="l"><input type="checkbox" id="kz"> Zonage réglementaire 2026 (par-dessus)</label>
+        <label class="l"><input type="checkbox" id="kp"> Limites des terrains</label>
+        <label class="l"><input type="checkbox" id="kn"> Numéros de rue (à partir du zoom 17)</label>
+        <div class="cle" id="clek"></div>
+      </div>
+      <div class="boite" style="margin-top:10px">
+        <h2>Surfaces (ha)</h2>
+        <table><tr><th>Niveau</th><th>2019</th><th>2026</th></tr>
+        <tr><td>Faible</td><td>23,7</td><td>25,4</td></tr><tr><td>Modéré</td><td>24,6</td><td>24,6</td></tr>
+        <tr><td>Fort</td><td>29,4</td><td>29,3</td></tr><tr><td>Très fort</td><td>0,43</td><td>0,29</td></tr></table>
+        <p class="note">Les emprises sont presque identiques (78 ha, 79 ha). Les niveaux ont été en partie reclassés.</p>
+      </div>
+      <div class="avert"><strong>Une différence entre les deux cartes ne prouve pas une aggravation du danger</strong> : elle peut venir de l'amélioration des connaissances (actualisation de 2022) ou d'un changement de méthode.</div>
+    </div>
+    <div>
+      <div style="position:relative">
+        <div id="mk" class="mkh"></div>
+        <div id="ligne" style="position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 4px #0008;z-index:500;pointer-events:none;left:50%"></div>
+        <div style="position:absolute;left:8px;top:8px;z-index:500;background:#fffd;padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;color:#1f2a25">2019</div>
+        <div style="position:absolute;right:8px;top:8px;z-index:500;background:#fffd;padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;color:#1f2a25">2026</div>
+        <input type="range" id="curseur" min="0" max="100" value="50" aria-label="Curseur de comparaison 2019 / 2026" style="position:absolute;left:0;right:0;bottom:6px;width:calc(100% - 20px);margin:0 10px;z-index:501">
+      </div>
+      <p class="avert" id="kmini" style="margin:6px 0">Cliquez sur la carte pour lire les niveaux d’aléa de 2019 et de 2026 en un point.</p><p class="note">Cliquez sur la carte : les niveaux et zones au point s'affichent à droite. Fond : © IGN (Plan IGN).</p>
+    </div>
+    <div>
+      <div class="boite" id="fk"><h2>Au point cliqué</h2><p class="note">Cliquez sur la carte pour voir les niveaux d'aléa de 2019 et de 2026 et la zone du plan de 2026.</p></div>
+      <div class="boite" style="margin-top:10px">
+        <h2>Ce que dit le plan (2026)</h2>
+        <table><tr><th>Zone</th><th>ha</th><th>Principe</th></tr>
+        <tr><td>Bleue</td><td>79,2</td><td>On construit, avec étude géotechnique et prescriptions.</td></tr>
+        <tr><td>Rouge</td><td>0,24</td><td>Inconstructible, exceptions limitées.</td></tr>
+        <tr><td>Rouge hachuré</td><td>0,05</td><td>Périmètre d'étude « Avenue Paul Vaillant-Couturier / Gare RER ».</td></tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="texte" style="max-width:none;margin-top:10px"><div class="avert" style="max-width:860px"><strong>Précision :</strong> les couches 2019 sont officielles ; les couches 2026 sont <strong>reconstituées à environ 3 m près</strong> à partir des cartes PDF officielles du plan (aucune donnée SIG n'est publiée). Les cartes sont au 1/5 000 : pour un terrain proche d'une limite, vérifiez sur la carte officielle. Cette page ne dit rien de la conformité d'un projet particulier ni de la valeur d'un bien.</div></div>
+</section>
+
+<section id="pg" class="pan"><div class="texte">
+  <h2 style="margin-top:6px">Glossaire : les mots du PLU en clair</h2>
+  <p>Les termes ci-dessous sont ceux que l’on rencontre dans les fiches de terrain. Quand c’est possible, la définition reprend le <strong>lexique officiel du PLUi</strong>, avec la page du règlement. Les autres explications sont de l’observatoire et sont signalées comme telles : elles aident à lire, elles ne remplacent pas le texte.</p>
+  <input type="text" id="gq" placeholder="Chercher un mot (ex. retrait, pleine terre, vue)" aria-label="Chercher dans le glossaire">
+  <p class="note" id="gn"></p>
+  <h2 class="gt">Les documents</h2>
+  <div class="gl" id="g-plu-et-plui"><h3>PLU et PLUi</h3><p>Le <strong>plan local d’urbanisme</strong> (PLU) fixe, pour une commune, où et comment on peut construire. Le <strong>PLUi</strong> est le même document à l’échelle de l’intercommunalité : ici l’établissement public territorial Grand-Orly Seine Bièvre, dont fait partie Gentilly. Le PLUi a été approuvé le 16 décembre 2025 et s’applique depuis le 21 février 2026 ; il a remplacé le PLU de Gentilly (modification n° 6, mars 2024).</p><p class="note">Source : Explication de l’observatoire.</p></div>
+  <div class="gl" id="g-reglement-ecrit-et-document-graphique"><h3>Règlement écrit et document graphique</h3><p>Le <strong>règlement écrit</strong> contient les règles (hauteur, distance aux voisins, usages…). Le <strong>document graphique</strong> (le plan de zonage) dit quelle zone et quelles prescriptions s’appliquent à chaque terrain. Les deux se lisent ensemble ; en cas de doute, les documents approuvés font foi, pas ce site.</p><p class="note">Source : Explication de l’observatoire.</p></div>
+  <div class="gl" id="g-zone-u-n-um-uc"><h3>Zone (U, N, UM, UC…)</h3><p>Le territoire est découpé en zones. Les zones <strong>U</strong> sont urbaines, les zones <strong>N</strong> naturelles. Dans le PLUi, le code de zone commence par une famille (par exemple <strong>UC</strong> cœur de ville, <strong>UA</strong> grands axes, <strong>UM</strong> mixte, <strong>UR</strong> habitat collectif, <strong>UH</strong> habitat individuel, <strong>UI</strong> activités, <strong>UE</strong> équipements), suivie de six indices qui précisent l’alignement, les limites, l’implantation sur le terrain, l’emprise, la pleine terre et la hauteur. La fiche de chaque terrain affiche ces règles déjà traduites, avec l’article du règlement.</p><p class="note">Source : Règlement PLUi, système d’indices (p. 13-14 et art. 3.1) ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-oap-orientation-d-amenagement-et-de-prog"><h3>OAP (orientation d’aménagement et de programmation)</h3><p>Document qui fixe, pour un secteur donné, des intentions d’aménagement (voirie, hauteurs, espaces verts, programme). Un projet doit être compatible avec l’OAP de son secteur. La carte indique si un terrain est dans une OAP locale.</p><p class="note">Source : Explication de l’observatoire ; texte des OAP du PLUi.</p></div>
+  <div class="gl" id="g-prescription-graphique"><h3>Prescription graphique</h3><p>Règle qui figure seulement sur le plan : alignement ou retrait imposé, hauteur spécifique, emprise spécifique, espace vert protégé, arbre remarquable, bâti patrimonial, emplacement réservé… Elle s’ajoute aux règles de la zone. La fiche les liste dans « Prescriptions sur le plan ».</p><p class="note">Source : Explication de l’observatoire.</p></div>
+  <h2 class="gt">Hauteur et volume</h2>
+  <div class="gl" id="g-hauteur"><h3>Hauteur</h3><p>Différence de niveau entre le point le plus bas de la construction (le terrain avant travaux) et son point le plus haut : le <strong>faîtage</strong> pour une toiture à pentes, le <strong>sommet de l’acrotère</strong> pour un toit-terrasse. Les installations techniques (antennes, cheminées, ascenseurs, panneaux solaires…) sont exclues du calcul dans la limite de 2 m et, sur un toit-terrasse, doivent être en retrait d’au moins 2 m de la façade.</p><p class="note">Source : Règlement PLUi, lexique, p. 393.</p></div>
+  <div class="gl" id="g-faitage"><h3>Faîtage</h3><p>Point le plus haut d’une toiture à pentes : la ligne où se rejoignent deux pans inclinés.</p><p class="note">Source : Règlement PLUi, lexique, p. 392.</p></div>
+  <div class="gl" id="g-egout-du-toit"><h3>Égout du toit</h3><p>Ligne basse d’un pan de toiture, par laquelle les eaux de pluie sont récupérées.</p><p class="note">Source : Règlement PLUi, lexique, p. 389.</p></div>
+  <div class="gl" id="g-hauteur-a-l-egout-hauteur-de-facade"><h3>Hauteur à l’égout, hauteur de façade</h3><p>Hauteur mesurée entre le terrain avant travaux et l’égout du toit (toit à pentes) ou l’acrotère (toit-terrasse). Dans plusieurs zones (UM, UH…), la distance à respecter vis-à-vis du voisin dépend de la hauteur de façade.</p><p class="note">Source : Règlement PLUi, lexique, p. 393-394.</p></div>
+  <div class="gl" id="g-acrotere"><h3>Acrotère</h3><p>Petit mur qui prolonge la façade au-dessus d’un toit-terrasse. Un garde-corps non maçonné ne compte pas dans la hauteur.</p><p class="note">Source : Règlement PLUi, lexique, p. 378.</p></div>
+  <div class="gl" id="g-terrain-avant-travaux-terrain-naturel"><h3>Terrain avant travaux (terrain naturel)</h3><p>Le terrain tel qu’il existe à la date de l’autorisation, avant les travaux liés à cette autorisation. C’est le niveau de départ pour mesurer les hauteurs.</p><p class="note">Source : Règlement PLUi, lexique, p. 406.</p></div>
+  <div class="gl" id="g-surelevation"><h3>Surélévation</h3><p>Agrandissement vertical d’un bâtiment existant, sur tout ou partie de son emprise au sol : on rehausse les murs et on refait la toiture.</p><p class="note">Source : Règlement PLUi, lexique, p. 405.</p></div>
+  <div class="gl" id="g-gabarit"><h3>Gabarit</h3><p>Forme extérieure d’une construction, qui résulte de la combinaison des règles de hauteur, de distance aux limites et d’emprise.</p><p class="note">Source : Règlement PLUi, lexique, p. 392.</p></div>
+  <div class="gl" id="g-heberge"><h3>Héberge</h3><p>Ligne qui dessine le contour d’un bâtiment construit sur la limite entre deux terrains. Elle sert de référence pour s’adosser à un voisin.</p><p class="note">Source : Règlement PLUi, lexique, p. 394.</p></div>
+  <h2 class="gt">Terrain, emprise et pleine terre</h2>
+  <div class="gl" id="g-parcelle-et-unite-fonciere-terrain"><h3>Parcelle et unité foncière (« terrain »)</h3><p>La <strong>parcelle</strong> est la case du cadastre. L’<strong>unité foncière</strong>, que le règlement appelle aussi « terrain », est une propriété d’un seul tenant, composée d’une ou de plusieurs parcelles contiguës appartenant à un même propriétaire. Les règles s’appliquent à l’unité foncière ; cette carte raisonne par parcelle cadastrale, donc un projet peut en couvrir plusieurs.</p><p class="note">Source : Règlement PLUi, lexique, p. 408 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-emprise-au-sol"><h3>Emprise au sol</h3><p>Projection verticale de la construction, saillies et surplombs compris : tout ce qui est bâti sur le terrain, y compris les annexes, les piscines, les balcons de plus de 1,80 m de large et les terrasses de plus de 60 cm au-dessus du sol. Elle s’exprime en pourcentage de la surface du terrain.</p><p class="note">Source : Règlement PLUi, lexique, p. 389-390.</p></div>
+  <div class="gl" id="g-espaces-libres"><h3>Espaces libres</h3><p>Ce qui reste de l’unité foncière une fois retirée l’emprise au sol des constructions.</p><p class="note">Source : Règlement PLUi, lexique, p. 391.</p></div>
+  <div class="gl" id="g-pleine-terre-espace-vert-de-pleine-terre"><h3>Pleine terre (espace vert de pleine terre)</h3><p>Espace végétalisé à ciel ouvert, sans construction ni ouvrage, y compris en sous-sol, qui laisse l’eau s’infiltrer librement. Ne comptent pas : les terrasses, les piscines, les circulations et stationnements (même perméables), ni le dessus d’un local souterrain, quelle que soit sa profondeur. Le confortement d’une carrière en sous-sol ne fait pas perdre la qualité de pleine terre.</p><p class="note">Source : Règlement PLUi, lexique, p. 391.</p></div>
+  <div class="gl" id="g-coefficient-de-biotope-par-surface-cbs"><h3>Coefficient de biotope par surface (CBS)</h3><p>Mesure de la qualité écologique d’un terrain : chaque type de surface (pleine terre, toiture végétalisée, sol perméable…) reçoit un coefficient, et le total est comparé à une valeur à atteindre.</p><p class="note">Source : Règlement PLUi, lexique et art. 3.3 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-construction-annexe"><h3>Construction annexe</h3><p>Construction qui remplit les trois conditions à la fois : fonction complémentaire de la construction principale (garage, abri…) sans créer de logement ; non contiguë ; 15 m² d’emprise au sol et 3 m de hauteur au maximum. Au-delà, c’est une construction principale ; un élément accolé est une extension.</p><p class="note">Source : Règlement PLUi, lexique, p. 384.</p></div>
+  <div class="gl" id="g-extension"><h3>Extension</h3><p>Agrandissement horizontal ou vertical d’une construction existante, limité à 50 % de sa surface de plancher ou de son emprise au sol, avec un lien physique et fonctionnel avec elle. Au-delà, c’est une construction nouvelle.</p><p class="note">Source : Règlement PLUi, lexique, p. 391.</p></div>
+  <div class="gl" id="g-construction-existante"><h3>Construction existante</h3><p>Construction réalisée en vertu d’autorisations légales, dont la structure remplit toujours ses fonctions à la date d’approbation du règlement (16/12/2025). Une ruine n’est pas une construction existante.</p><p class="note">Source : Règlement PLUi, lexique, p. 385.</p></div>
+  <h2 class="gt">Voisinage : limites, retraits, vues</h2>
+  <div class="gl" id="g-alignement"><h3>Alignement</h3><p>Limite entre le terrain et la voie ou l’emprise publique (ou une voie privée ouverte à la circulation publique). L’alignement peut être existant ou projeté (emplacement réservé, plan d’alignement).</p><p class="note">Source : Règlement PLUi, lexique, p. 379.</p></div>
+  <div class="gl" id="g-limites-separatives-laterales-de-fond"><h3>Limites séparatives (latérales, de fond)</h3><p>Limites entre votre terrain et un terrain voisin. Les limites <strong>latérales</strong> aboutissent directement à la voie ; la limite <strong>de fond</strong> est la limite autre que l’alignement et les limites latérales (certains terrains n’en ont pas).</p><p class="note">Source : Règlement PLUi, lexique, p. 395.</p></div>
+  <div class="gl" id="g-retrait"><h3>Retrait</h3><p>Distance imposée entre une construction et une limite du terrain (limite séparative ou alignement), ou entre deux constructions sur le même terrain. Elle se mesure horizontalement depuis le point de la construction le plus proche. Ne comptent pas dans le retrait : modénatures, débords de toit, saillies de moins de 0,8 m, sous-sols entièrement enterrés, balcons ou perrons ne constituant pas de vue…</p><p class="note">Source : Règlement PLUi, lexique, p. 403.</p></div>
+  <div class="gl" id="g-vue-ouverture-constituant-des-vues"><h3>Vue (ouverture constituant des vues)</h3><p>Sont des « vues » : les fenêtres, portes-fenêtres, baies vitrées, lucarnes et châssis de toit situés à moins de 1,90 m au-dessus du plancher, les portes vitrées transparentes, les balcons, les loggias, les terrasses situées à plus de 0,60 m au-dessus du terrain et les toits-terrasses accessibles. Ne sont pas des vues : les ouvertures à 1,90 m ou plus au-dessus du plancher (mesuré à l’allège), les ouvertures de moins de 0,25 m² (dans la limite de 0,5 m² par façade), les ouvertures de sous-sol dont le point haut est à 0,80 m ou moins du terrain, les portes pleines ou vitrées translucides. Une façade avec vues doit en général se tenir plus loin de la limite qu’une façade aveugle (voir la rubrique « Voisinage » de la fiche).</p><p class="note">Source : Règlement PLUi, lexique, p. 398-399.</p></div>
+  <div class="gl" id="g-facade"><h3>Façade</h3><p>Ensemble des parois extérieures d’un bâtiment, hors toiture, avec les baies, balcons, bardages, ouvertures, isolation extérieure et modénature.</p><p class="note">Source : Règlement PLUi, lexique, p. 392.</p></div>
+  <div class="gl" id="g-construction-contigu-construction-mitoye"><h3>Construction contiguë, construction mitoyenne</h3><p><strong>Contiguë</strong> : bâtiment accolé par au moins la moitié d’une façade à un autre bâtiment principal. <strong>Mitoyenne</strong> : un même mur sépare deux propriétés contiguës et appartient à deux propriétaires ou plus.</p><p class="note">Source : Règlement PLUi, lexique, p. 385.</p></div>
+  <div class="gl" id="g-voie-voie-privee-voie-publique"><h3>Voie, voie privée, voie publique</h3><p>Une <strong>voie</strong> dessert plusieurs terrains distincts ; elle comprend la chaussée, les itinéraires cyclables, les trottoirs et les accotements. La voie <strong>privée</strong> est sur emprise privée et dessert au moins deux unités foncières. Un passage étroit ou une voie privée apparaît sur la carte comme une parcelle très allongée : voir l’avertissement correspondant dans la fiche.</p><p class="note">Source : Règlement PLUi, lexique, p. 408 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-terrain-d-angle"><h3>Terrain d’angle</h3><p>Terrain situé à l’angle d’au moins deux voies ou emprises publiques.</p><p class="note">Source : Règlement PLUi, lexique, p. 406.</p></div>
+  <h2 class="gt">Arbres et espaces verts</h2>
+  <div class="gl" id="g-arbre-arbre-de-grand-developpement"><h3>Arbre, arbre de grand développement</h3><p>Un <strong>arbre</strong> est une plante ligneuse dont le tronc mesure au moins 30 cm de circonférence à 1 m du sol. Un arbre de <strong>grand développement</strong> mesure au moins 1,50 m de haut et 20 cm de circonférence à 1 m du sol à la plantation, et peut atteindre 15 m ou plus à maturité.</p><p class="note">Source : Règlement PLUi, lexique, p. 379-380.</p></div>
+  <div class="gl" id="g-arbre-remarquable-alignement-d-arbres"><h3>Arbre remarquable, alignement d’arbres</h3><p>Arbres repérés sur le plan et protégés au titre de l’article L. 151-23 du code de l’urbanisme. Leur abattage est encadré : la rubrique « Arbres et plantations » de la fiche indique si un arbre ou un alignement protégé touche le terrain et rappelle la règle générale (deux arbres plantés pour un abattu).</p><p class="note">Source : Règlement PLUi, art. 3.3 (p. 353-355) ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-espace-vert-protege"><h3>Espace vert protégé</h3><p>Espace repéré sur le plan, qui doit rester végétalisé selon les conditions de l’article correspondant du règlement.</p><p class="note">Source : Explication de l’observatoire ; règlement PLUi, art. 3.3.</p></div>
+  <h2 class="gt">Protections, servitudes et patrimoine</h2>
+  <div class="gl" id="g-servitude-d-utilite-publique-sup"><h3>Servitude d’utilité publique (SUP)</h3><p>Contrainte instituée par une autre législation que l’urbanisme (monuments historiques, canalisations, risques…) et annexée au PLUi. Elle s’ajoute aux règles de la zone.</p><p class="note">Source : Explication de l’observatoire.</p></div>
+  <div class="gl" id="g-monument-historique-et-abords-ac1"><h3>Monument historique et abords (AC1)</h3><p>Un monument historique classé ou inscrit protège un périmètre autour de lui, les <strong>abords</strong> : les travaux visibles depuis le monument, ou en même temps que lui, sont soumis à l’avis de l’architecte des Bâtiments de France. La couche « Monuments historiques et leurs abords » de la carte vient du Géoportail de l’urbanisme ; elle reste à vérifier.</p><p class="note">Source : Explication de l’observatoire ; données du Géoportail de l’urbanisme (à vérifier).</p></div>
+  <div class="gl" id="g-b-ti-patrimonial"><h3>Bâti patrimonial</h3><p>Bâtiment repéré sur le plan comme élément du patrimoine à protéger ; des règles particulières encadrent sa démolition et ses transformations.</p><p class="note">Source : Règlement PLUi, art. 3.2 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-emplacement-reserve-er"><h3>Emplacement réservé (ER)</h3><p>Terrain réservé par le PLU pour une voie, un équipement public, un espace vert ou des logements. En attendant le projet, toute construction incompatible avec lui est refusée : c’est une servitude qui limite le droit de construire.</p><p class="note">Source : Règlement PLUi, lexique, p. 389 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-sursis-a-statuer"><h3>Sursis à statuer</h3><p>Décision par laquelle l’administration peut différer sa réponse à une demande d’autorisation lorsque le projet risque de compromettre ou de rendre plus onéreuse la réalisation d’un plan ou d’une opération à venir. La fiche signale les cas relevés.</p><p class="note">Source : Explication de l’observatoire (code de l’urbanisme).</p></div>
+  <h2 class="gt">Droit de préemption</h2>
+  <div class="gl" id="g-droit-de-preemption-urbain-dpu-simple-et"><h3>Droit de préemption urbain (DPU), simple et renforcé</h3><p>Droit pour la collectivité d’acheter en priorité un bien mis en vente dans un périmètre défini. Le droit <strong>renforcé</strong> étend ce mécanisme à des ventes que le droit simple n’atteint pas (lots de copropriété de plus de dix ans, certaines parts de sociétés, immeubles achevés depuis moins de quatre ans). Voir l’onglet « Droit de préemption ».</p><p class="note">Source : Délibération de l’EPT du 16/12/2025, p. 3 ; code de l’urbanisme, art. L.211-4.</p></div>
+  <div class="gl" id="g-declaration-d-intention-d-aliener-dia"><h3>Déclaration d’intention d’aliéner (DIA)</h3><p>Document que le vendeur d’un bien situé en zone de préemption adresse à la collectivité avant la vente. La collectivité dispose de 2 mois pour acheter au prix demandé ou y renoncer.</p><p class="note">Source : Explication de l’observatoire ; délibération de l’EPT du 16/12/2025.</p></div>
+  <h2 class="gt">Eaux et réseaux</h2>
+  <div class="gl" id="g-eaux-usees-eaux-pluviales"><h3>Eaux usées, eaux pluviales</h3><p>Les <strong>eaux usées domestiques</strong> sont les eaux ménagères (cuisine, lessive, salle de bain) et les eaux vannes (toilettes). Les <strong>eaux pluviales</strong> viennent des précipitations qui ruissellent sur les toitures, terrasses, parkings et voies. Le règlement impose de les séparer à l’intérieur du terrain.</p><p class="note">Source : Règlement PLUi, lexique p. 388 et art. 4.3.2.2 (p. 367).</p></div>
+  <div class="gl" id="g-reseau-unitaire-separatif"><h3>Réseau unitaire, réseau séparatif</h3><p>Dans un réseau <strong>séparatif</strong>, une canalisation reçoit seulement les eaux usées et une autre seulement les eaux pluviales. Dans un réseau <strong>unitaire</strong>, une seule canalisation collecte les eaux usées et les eaux de ruissellement. À Gentilly, le règlement indique 94 % de réseau unitaire et 6 % de séparatif.</p><p class="note">Source : Règlement PLUi, lexique p. 402 ; tableau p. 371.</p></div>
+  <div class="gl" id="g-debit-de-fuite"><h3>Débit de fuite (régulation du débit)</h3><p>Débit maximal autorisé à la sortie d’un projet vers le réseau. En limiter le débit évite la saturation des réseaux et les débordements en aval. À Gentilly : 2 litres par seconde et par hectare, minimum 1 litre par seconde, et seulement par dérogation.</p><p class="note">Source : Règlement PLUi, lexique p. 401 ; art. 4.3.3.4 (p. 370-371).</p></div>
+  <div class="gl" id="g-pluie-courante-retention"><h3>Pluie courante, rétention</h3><p>La <strong>pluie courante</strong> est fixée à 10 mm : elle doit être gérée sur la parcelle pour tous les projets, sans dérogation, avec un ouvrage qui se vide en 48 h. La <strong>rétention</strong> est le stockage temporaire de l’eau : l’objectif est de retenir au minimum la pluie de période de retour 20 ans et de durée 4 heures.</p><p class="note">Source : Règlement PLUi, art. 4.3.3.3, p. 370.</p></div>
+  <div class="gl" id="g-infiltration-diffuse"><h3>Infiltration diffuse</h3><p>Pénétration progressive de l’eau de pluie dans le sol. Le ratio entre la surface qui collecte la pluie et la surface d’infiltration doit être inférieur ou égal à 5, pour limiter l’impact sur la stabilité du sous-sol.</p><p class="note">Source : Règlement PLUi, lexique p. 394.</p></div>
+  <h2 class="gt">Carrières et risques</h2>
+  <div class="gl" id="g-plan-de-prevention-des-risques-carrieres"><h3>Plan de prévention des risques « carrières »</h3><p>Plan approuvé le 19 février 2026 qui cartographie les anciennes carrières sous Gentilly, classe le sol en niveaux d’aléa et fixe un zonage réglementaire : zone bleue (on construit avec étude géotechnique et prescriptions), zone rouge (inconstructible, exceptions limitées). Voir l’onglet « Les carrières ».</p><p class="note">Source : Plan de prévention approuvé le 19/02/2026 ; explication de l’observatoire.</p></div>
+  <div class="gl" id="g-alea"><h3>Aléa</h3><p>Niveau de probabilité et d’intensité d’un phénomène (ici, un effondrement lié aux carrières) : faible, modéré, fort, très fort. Un aléa n’est pas la certitude d’un sinistre et ne dit rien de l’état d’un bâtiment précis.</p><p class="note">Source : Explication de l’observatoire.</p></div>
+  <h2 class="gt">Logement</h2>
+  <div class="gl" id="g-logement-social"><h3>Logement social</h3><p>Le règlement renvoie à la définition de l’article L. 302-5 du code de la construction et de l’habitation (logements des organismes HLM, logements conventionnés, certaines structures d’hébergement). Le PLUi impose, sur une partie de la commune, une part de logement social dans certains programmes : voir la rubrique « Mixité » de la fiche.</p><p class="note">Source : Règlement PLUi, lexique, p. 396 ; explication de l’observatoire.</p></div>
+  <div class="avert">Les pages citées sont celles du fichier PDF du règlement (la page imprimée porte un numéro inférieur d’une unité). Le règlement écrit et les documents graphiques approuvés font foi. Ce glossaire n’est pas un conseil juridique.</div>
+</div></section>
+
+<section id="ps" class="pan"><div class="texte">
+  <h2 style="margin-top:6px">Sources</h2>
+  <ul>
+    <li>PLUi du Grand-Orly Seine Bièvre, approuvé le 16 décembre 2025, en vigueur le 21 février 2026 : <a href="https://data.geopf.fr/annexes/gpu/documents/DU_200058014/2e018aad7e25effb980f4d34d2d7829c/200058014_reglement_20251216.pdf" target="_blank" rel="noopener">règlement écrit (PDF)</a> ; <a href="https://www.geoportail-urbanisme.gouv.fr/" target="_blank" rel="noopener">Géoportail de l'urbanisme</a> (règlement graphique, OAP, annexes).</li>
+    <li>PLU de Gentilly, modification n° 6, mars 2024 : fichiers de zone sur <a href="https://www.ville-gentilly.fr/" target="_blank" rel="noopener">ville-gentilly.fr</a> (par exemple <a href="https://www.ville-gentilly.fr/sites/default/files/zone_ub1_mars_2024.pdf" target="_blank" rel="noopener">zone UB1</a>, <a href="https://www.ville-gentilly.fr/sites/default/files/zone_ub2_mars_2024.pdf" target="_blank" rel="noopener">zone UB2</a>, <a href="https://www.ville-gentilly.fr/sites/default/files/zone_ua1_mars_2024.pdf" target="_blank" rel="noopener">zone UA1</a>) ; chaque fiche indique l'article et la page de chaque règle.</li>
+    <li>Argiles : <a href="https://www.georisques.gouv.fr/" target="_blank" rel="noopener">Géorisques</a> (BRGM).</li>
+    <li>Cadastre : Etalab. Carrières : Préfecture du Val-de-Marne, DRIEAT, plan de prévention approuvé le 19 février 2026.</li>
+  </ul>
+  <h2>Limites</h2>
+  <ul>
+    <li><strong>Première version, sujette à erreurs.</strong> Cet outil compare des textes complexes ; malgré les relectures, des erreurs ou des simplifications subsistent. Le règlement écrit et les documents graphiques officiels font foi, et un professionnel doit être consulté avant toute décision. Il ne constitue pas un conseil juridique et ne dit rien de la conformité d’un projet.</li>
+    <li>Chaque fiche distingue la règle générale, les exceptions et les prescriptions graphiques, et indique si la comparaison avec l’ancien PLU est <em>fiable</em>, <em>partielle</em> ou <em>à vérifier</em>. Une règle générale identique ne prouve pas que les droits à construire sont inchangés.</li>
+    <li><strong>Parcelle et unité foncière</strong> : les règles du PLUi portent sur l’unité foncière (parcelles contiguës d’un même propriétaire). Le site raisonne parcelle par parcelle faute de connaître les propriétaires : pour un terrain composé de plusieurs parcelles, additionnez les surfaces avant d’appliquer les seuils.</li>
+    <li>Pour une parcelle à cheval sur plusieurs zones, seule la zone majoritaire est comparée ; les autres sont indiquées.</li>
+    <li>Décalages de quelques mètres possibles entre le cadastre actuel et les plans de zonage ; surfaces cadastrales approximatives près des seuils (150 m² par exemple).</li>
+    <li>Les couches « carrières » 2026 sont reconstituées à environ 3 m près à partir de plans PDF ; l’exposition aux argiles est lue en un point par terrain.</li>
+    <li>Plusieurs points d’interprétation sont en cours de relecture par un spécialiste du droit de l’urbanisme (seuils de mixité sociale, annexes, nomenclature des destinations…). Ils sont signalés « à vérifier » dans les fiches.</li>
+    <li>La comparaison des destinations autorisées est partielle : l’ancien PLU n’utilise pas la même nomenclature.</li>
+  </ul>
+  <h2>Mentions légales</h2>
+  <p>Site édité à titre non commercial par l’association <strong>Bien Commun pour Gentilly</strong>. Directeur de la publication : <strong>Marion Mazières, présidente de Bien Commun pour Gentilly</strong>. Contact : <strong>biencommunpourgentilly@gmail.com</strong>. Hébergement : <strong>GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis</strong>.</p>
+  <p>Le site présente des informations d’intérêt général tirées de documents publics ; il ne constitue pas un conseil juridique et n’engage pas les auteurs des documents officiels. Aucun compte n’est nécessaire ; aucune donnée personnelle n’est collectée par la carte elle-même (la recherche d’adresse interroge un service public de géocodage ; les fonds de carte sont fournis par l’IGN). Signaler une erreur : <strong>biencommunpourgentilly@gmail.com</strong>.</p>
+</ul>
+</div></section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
+<script src="data/urbanisme_donnees.js"></script>
+<script src="assets/urbanisme.js"></script>
+</body>
+</html>
