@@ -238,14 +238,15 @@ const sig = t => { const m = t.toLowerCase().split(/\s+/).filter(Boolean); const
     const u = S[ks[i]].size + S[ks[j]].size - inter, sim = u ? inter / u : 0;
     L.push((sim < 0.45 ? 'OK ' : 'KO ') + 'similarite | ' + ks[i] + ' | ' + ks[j] + ' | ' + sim.toFixed(2));
   }
-  document.getElementById('r').textContent = 'RESULTATS
-' + L.join('
-') + '
-FIN';
+  document.getElementById('r').textContent = ['RESULTATS'].concat(L, ['FIN']).join(String.fromCharCode(10));
+  fetch('/__fin');
 })();
 </script>""" % __import__("json").dumps(cas, ensure_ascii=False)
         hp = R / "scripts" / "_harnais_test.html"
         hp.write_text(harnais, encoding="utf-8")
+        if "--harnais-seul" in sys.argv:
+            print("page de test écrite :", hp)
+            sys.exit(0)
         pdf = R / "_harnais.pdf"
         try:
             subprocess.run([edge, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", f"--print-to-pdf={pdf}", f"{LOCAL}/scripts/_harnais_test.html"],
