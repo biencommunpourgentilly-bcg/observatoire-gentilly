@@ -1,5 +1,8 @@
 /* Observatoire de l'urbanisme de Gentilly — affichage des données (data/permis.js). */
 (function () {
+  // Une page de rubrique ne contient que sa rubrique : les éléments des autres rubriques sont remplacés par des éléments détachés.
+  const $ = (id) => document.getElementById(id) || document.createElement("div");
+  const $q = (sel) => document.querySelector(sel) || document.createElement("div");
   "use strict";
 
   const DONNEES = window.OBSERVATOIRE || { meta: {}, permis: [] };
@@ -126,6 +129,7 @@
   const QUARTIERS = Object.fromEntries([...new Set(PERMIS.map((p) => p.quartier).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr")).map((q) => [q, q]));
   const FILTRES_VIDES = () => ({ texte: "", type: "", categorie: "", theme: "", quartier: "", etat: "", de: annees[0], a: annees[annees.length - 1], gp: false });
   const filtres = FILTRES_VIDES();
+  try { Object.assign(filtres, JSON.parse(sessionStorage.getItem("obs_filtres") || "{}")); } catch (e) { /* stockage indisponible */ }
 
   function normaliser(s) {
     return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -252,18 +256,18 @@
       RELEVE && RELEVE.terrains_construits ? [m2(arrondi(RELEVE.pertes_m2)), `de pleine terre perdus sur les terrains relevés par des habitants`] : null,
       [nombre(gp), "grands projets"],
     ].filter(Boolean);
-    document.getElementById("tuiles").innerHTML = tuiles
+    $("tuiles").innerHTML = tuiles
       .map(([v, l]) => `<div class="tuile"><div class="valeur">${esc(v)}</div><div class="libelle">${esc(l)}</div></div>`)
       .join("");
-    document.getElementById("dernieres").innerHTML = PERMIS.slice(0, 4).map((p) => `<li>${carteHtml(p)}</li>`).join("");
+    $("dernieres").innerHTML = PERMIS.slice(0, 4).map((p) => `<li>${carteHtml(p)}</li>`).join("");
     const part = B.habitation ? Math.round((B.crees / B.habitation) * 100) : null;
-    document.getElementById("focus-bureaux").innerHTML =
+    $("focus-bureaux").innerHTML =
       `<b>${m2(arrondi(B.crees, 100))}</b> de bureaux autorisés depuis ${annees[0]}` +
       (part ? `, soit l'équivalent de <b>${part} %</b> des surfaces de logement autorisées sur la même période.` : ".");
-    document.getElementById("focus-pleine-terre").innerHTML = RELEVE && RELEVE.terrains_construits
+    $("focus-pleine-terre").innerHTML = RELEVE && RELEVE.terrains_construits
       ? `Relevé par ${RELEVE.participants} habitant${RELEVE.participants > 1 ? "s" : ""} sur les photos aériennes : <b>${m2(arrondi(RELEVE.pertes_m2))}</b> de pleine terre perdus sur les terrains des projets construits. Les dossiers de permis donnent les chiffres exacts : nous les demandons.`
       : "Aucune base publique ne mesure la pleine terre. Avec des habitants, nous la relevons terrain par terrain sur les photos aériennes, et nous demandons à la mairie les chiffres des dossiers de permis.";
-    document.getElementById("accueil-couverture").textContent = META.donnees_jusqu_au ? `autorisations jusqu'au ${dateFr(META.donnees_jusqu_au, true)}` : "";
+    $("accueil-couverture").textContent = META.donnees_jusqu_au ? `autorisations jusqu'au ${dateFr(META.donnees_jusqu_au, true)}` : "";
     graphique(actifs);
   }
 
@@ -278,7 +282,7 @@
     const serie = [...parAn.entries()];
     const derniere = META.donnees_jusqu_au || "";
     const anneePartielle = derniere && !derniere.endsWith("-12-31") ? derniere.slice(0, 4) : null;
-    document.getElementById("graphique-note").textContent =
+    $("graphique-note").textContent =
       `Nombre de logements créés par les autorisations accordées chaque année, permis annulés exclus.` +
       (anneePartielle ? ` ${anneePartielle} : jusqu'au ${dateFr(derniere, true)} (barre hachurée).` : "");
 
@@ -316,7 +320,7 @@
       }
     });
     svg += `</svg>`;
-    const zone = document.getElementById("graphique");
+    const zone = $("graphique");
     zone.innerHTML = svg;
     const valeurs = new Map(serie);
     zone.querySelectorAll(".cible").forEach((c) => {
@@ -421,7 +425,7 @@
     bureauxFaits = true;
     const B = totauxBureaux();
     const part = B.habitation ? Math.round((B.crees / B.habitation) * 100) : 0;
-    document.getElementById("bureaux-chapeau").innerHTML =
+    $("bureaux-chapeau").innerHTML =
       `Depuis ${annees[0]}, les permis accordés à Gentilly ont autorisé <b>${m2(B.crees)}</b> de bureaux. ` +
       `C'est l'équivalent de <b>${part} %</b> des surfaces de logement autorisées sur la même période (${m2(B.habitation)}). ` +
       `Une fois retirés les bureaux démolis ou transformés, la ville compte <b>${m2(B.solde)}</b> de bureaux en plus.`;
@@ -431,7 +435,7 @@
       [m2(B.transformes), "de bureaux transformés, surtout en logements"],
       [`+${m2(B.solde)}`, "de bureaux en plus au total"],
     ];
-    document.getElementById("bureaux-tuiles").innerHTML = tuiles
+    $("bureaux-tuiles").innerHTML = tuiles
       .map(([v, l]) => `<div class="tuile"><div class="valeur">${esc(v)}</div><div class="libelle">${esc(l)}</div></div>`).join("");
 
     const parAn = new Map(annees.map((a) => [a, { cle: a, haut: 0, bas: 0, projets: [] }]));
@@ -442,7 +446,7 @@
       s.bas += p.bureaux.demolis + p.bureaux.transformes;
       if (p.bureaux.crees >= 1000) s.projets.push(adresse(p));
     });
-    barresAnnuelles(document.getElementById("graphique-bureaux"), [...parAn.values()], {
+    barresAnnuelles($("graphique-bureaux"), [...parAn.values()], {
       titre: "Surfaces de bureaux créées et supprimées par année",
       pas: 20000,
       bulle: (s) => `<strong>${s.cle}</strong>${m2(s.haut)} créés · ${m2(s.bas)} démolis ou transformés` +
@@ -452,10 +456,10 @@
     const projets = PERMIS.filter((p) => aBureaux(p) && p.bureaux.crees >= 100 && p.etat !== "annule")
       .sort((a, b) => b.bureaux.crees - a.bureaux.crees);
     const annules = PERMIS.filter((p) => aBureaux(p) && p.etat === "annule" && p.bureaux.crees >= 100);
-    document.getElementById("bureaux-note").textContent =
+    $("bureaux-note").textContent =
       `${projets.length} autorisations créent au moins 100 m² de bureaux, de la plus grande à la plus petite.` +
       (annules.length ? ` Non comptés car annulés : ${annules.map((p) => `${adresse(p)} (${m2(p.bureaux.crees)} en ${annee(p)})`).join(", ")}.` : "");
-    document.getElementById("bureaux-liste").innerHTML = projets.map((p) => `<li><a class="carte-permis" href="#fiche/${encodeURIComponent(p.id)}" style="--c:var(--c-${p.categorie})">
+    $("bureaux-liste").innerHTML = projets.map((p) => `<li><a class="carte-permis" href="#fiche/${encodeURIComponent(p.id)}" style="--c:var(--c-${p.categorie})">
         <div class="ligne-haut"><span>${esc(TYPES[p.type])} · ${dateFr(p.date_autorisation)}</span><span>${esc(ETATS[p.etat])}</span></div>
         <div class="adresse">${esc(adresse(p))}</div>
         <div class="demandeur">${esc(demandeur(p))}</div>
@@ -470,7 +474,7 @@
     if (pleineTerreFaite) return;
     pleineTerreFaite = true;
     if (MAJ_RELEVE || (window.CONFIG || {}).collecte) {
-      document.getElementById("pt-maj").textContent = `Résultats du relevé recalculés chaque nuit${MAJ_RELEVE ? `, dernière mise à jour le ${dateFr(MAJ_RELEVE, true)}` : ""}. Un terrain apparaît à partir de ${(window.CONFIG || {}).min_reponses || 3} réponses.`;
+      $("pt-maj").textContent = `Résultats du relevé recalculés chaque nuit${MAJ_RELEVE ? `, dernière mise à jour le ${dateFr(MAJ_RELEVE, true)}` : ""}. Un terrain apparaît à partir de ${(window.CONFIG || {}).min_reponses || 3} réponses.`;
     }
     if (!RELEVE || !RELEVE.terrains_releves) return; // relevé pas encore traité : la page n'affiche que l'explication
     const tuiles = [
@@ -479,7 +483,7 @@
       [nombre(RELEVE.terrains_releves), "terrains relevés"],
       [nombre(RELEVE.participants), `habitant${RELEVE.participants > 1 ? "s" : ""} ayant participé`],
     ];
-    document.getElementById("pt-tuiles").innerHTML = tuiles
+    $("pt-tuiles").innerHTML = tuiles
       .map(([v, l]) => `<div class="tuile"><div class="valeur">${esc(v)}</div><div class="libelle">${esc(l)}</div></div>`).join("");
     // Un terrain par ligne, rattaché à son autorisation la plus importante
     const principal = new Map();
@@ -490,13 +494,13 @@
       if (!m || (p.grand_projet && !m.p.grand_projet)) principal.set(r.cle, { p, r });
     });
     const lignes = [...principal.values()].sort((a, b) => a.r.evolution_m2 - b.r.evolution_m2);
-    document.getElementById("pt-resultats").innerHTML = lignes.length ? `<figure class="bloc graphique">
+    $("pt-resultats").innerHTML = lignes.length ? `<figure class="bloc graphique">
         <figcaption><h2>Pleine terre perdue ou gagnée, terrain par terrain</h2>
         <p class="note">Projets construits ou en chantier. Estimations des habitants sur les photos aériennes avant et après le projet (médiane des réponses). Cliquez sur un terrain pour voir sa fiche.</p></figcaption>
         <div class="legende-graphique"><span><i style="--c:var(--donnee-perte)"></i>Pleine terre perdue</span><span><i style="--c:var(--donnee-gain)"></i>Pleine terre créée</span></div>
         <div id="graphique-pleine-terre" class="graphique-zone"></div></figure>` : "";
     if (lignes.length) {
-      barresProjets(document.getElementById("graphique-pleine-terre"), lignes.map(({ p, r }) => ({
+      barresProjets($("graphique-pleine-terre"), lignes.map(({ p, r }) => ({
         id: p.id,
         valeur: arrondi(r.evolution_m2),
         libelle: adresse(p).length > 40 ? adresse(p).slice(0, 39) + "…" : adresse(p),
@@ -504,7 +508,7 @@
           `<br>${r.nb_reponses} réponse${r.nb_reponses > 1 ? "s" : ""}${r.desaccord ? " · avis divergents" : ""}`,
       })));
     }
-    document.getElementById("pt-lien-carte").hidden = !lignes.some(({ r }) => r.evolution_m2 < 0);
+    $("pt-lien-carte").hidden = !lignes.some(({ r }) => r.evolution_m2 < 0);
   }
 
   // ------------------------------------------------------------------ Carte
@@ -595,19 +599,19 @@
   }
 
   function listeCarte(liste) {
-    const ul = document.getElementById("carte-liste");
+    const ul = $("carte-liste");
     const affiches = liste.slice(0, 300);
     ul.innerHTML = affiches.map((p) => `<li>${carteHtml(p)}</li>`).join("") +
       (liste.length > affiches.length ? `<li class="note">… et ${liste.length - affiches.length} autres : affinez la recherche.</li>` : "") +
       (liste.length ? "" : `<li class="vide">Aucune autorisation ne correspond à ces filtres.</li>`);
   }
-  document.getElementById("carte-liste").addEventListener("mouseover", (e) => {
+  $("carte-liste").addEventListener("mouseover", (e) => {
     const a = e.target.closest(".carte-permis");
     if (!a || !carte) return;
     const m = marqueursParLieu.get(a.dataset.id);
     if (m) m.openTooltip();
   });
-  document.getElementById("carte-liste").addEventListener("click", (e) => {
+  $("carte-liste").addEventListener("click", (e) => {
     const a = e.target.closest(".carte-permis");
     if (!a || !carte || window.matchMedia("(max-width: 900px)").matches) return;
     const m = marqueursParLieu.get(a.dataset.id);
@@ -639,8 +643,8 @@
       const contour = L.geoJSON(DONNEES.commune, { style: { color: "#ffe100", weight: 2, dashArray: "6 4", fill: false }, interactive: false }).addTo(carteAutrefois);
       carteAutrefois.fitBounds(contour.getBounds(), { padding: [10, 10] });
     } else carteAutrefois.setView([48.8155, 2.3445], 15);
-    const curseur = document.getElementById("autrefois-curseur");
-    const ligne = document.getElementById("autrefois-ligne");
+    const curseur = $("autrefois-curseur");
+    const ligne = $("autrefois-ligne");
     // La couche ancienne n'est visible qu'à gauche du curseur (technique du « rideau »).
     function decouper() {
       const taille = carteAutrefois.getSize();
@@ -653,23 +657,23 @@
     carteAutrefois.on("move zoom resize", decouper);
     curseur.addEventListener("input", decouper);
     decouper();
-    document.getElementById("autrefois-epoque").addEventListener("change", (e) => {
+    $("autrefois-epoque").addEventListener("change", (e) => {
       carteAutrefois.removeLayer(ancien);
       ancien = anciens[e.target.value].addTo(carteAutrefois);
-      document.getElementById("autrefois-gauche").textContent = e.target.value === "etatmajor" ? "Vers 1820-1866" : "Années 1950";
+      $("autrefois-gauche").textContent = e.target.value === "etatmajor" ? "Vers 1820-1866" : "Années 1950";
       decouper();
     });
-    document.getElementById("autrefois-droite").textContent = recente ? `${recente.annee}` : "Aujourd'hui";
+    $("autrefois-droite").textContent = recente ? `${recente.annee}` : "Aujourd'hui";
     const lieux = LIEUX.map((i) => PAR_ID.get(i)).filter((p) => p && p.lat != null);
-    document.getElementById("autrefois-lieux").innerHTML = lieux.map((p, i) => `<li><button type="button" class="lieu" data-i="${i}">
+    $("autrefois-lieux").innerHTML = lieux.map((p, i) => `<li><button type="button" class="lieu" data-i="${i}">
         <span class="lieu-adresse">${esc(adresse(p))}</span>
         <span class="lieu-texte">${esc(p.quartier ? p.quartier + " · " : "")}${esc(TYPES[p.type])} accordé en ${annee(p)}${resume(p) ? " · " + esc(resume(p)) : ""}</span>
       </button> <a class="lieu-fiche" href="#fiche/${encodeURIComponent(p.id)}">Fiche du projet</a></li>`).join("");
-    document.getElementById("autrefois-lieux").addEventListener("click", (e) => {
+    $("autrefois-lieux").addEventListener("click", (e) => {
       const b = e.target.closest("button.lieu");
       if (!b) return;
       const p = lieux[+b.dataset.i];
-      document.getElementById("carte-autrefois").scrollIntoView({ behavior: "smooth", block: "center" });
+      $("carte-autrefois").scrollIntoView({ behavior: "smooth", block: "center" });
       carteAutrefois.flyTo([p.lat, p.lon], 18, { duration: 0.8 });
     });
   }
@@ -679,12 +683,12 @@
   function grandsProjets() {
     const anMax = +annees[annees.length - 1];
     const periodes = { recent: [`Depuis ${anMax - 5}`, (p) => +annee(p) >= anMax - 5], tous: [`Depuis ${annees[0]}`, () => true] };
-    const seg = document.getElementById("gp-periode");
+    const seg = $("gp-periode");
     seg.innerHTML = Object.entries(periodes).map(([k, [lib]]) => `<button type="button" data-periode="${k}" aria-pressed="${k === periodeGp}">${lib}</button>`).join("");
     const liste = PERMIS.filter((p) => p.grand_projet && periodes[periodeGp][1](p));
     const lgts = liste.filter((p) => p.etat !== "annule").reduce((s, p) => s + (p.logements || 0), 0);
     const s = META.seuils_grand_projet || { logements: 10, surface_m2: 1000 };
-    document.getElementById("gp-chapeau").textContent =
+    $("gp-chapeau").textContent =
       `${liste.length} opérations : permis d'au moins ${s.logements} logements ou ${nombre(s.surface_m2)} m², permis de démolir de sociétés ou collectivités, et permis d'aménager. ` +
       `Ensemble, hors permis annulés, elles prévoient ${nombre(lgts)} logements.`;
     const parQuartier = new Map();
@@ -700,12 +704,12 @@
         ${resume(p) ? `<div class="chiffres">${esc(resume(p))}</div>` : ""}
         <div style="margin-top:10px">${pastilles(p, false)}</div>
       </a></li>`;
-    document.getElementById("gp-liste").innerHTML = [...parQuartier.entries()]
+    $("gp-liste").innerHTML = [...parQuartier.entries()]
       .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0], "fr"))
       .map(([q, ps]) => `<li class="gp-quartier"><h2>${esc(q)} <small>${ps.length} opération${ps.length > 1 ? "s" : ""}</small></h2>
         <ul class="liste-cartes grille">${ps.map(carteGp).join("")}</ul></li>`).join("");
   }
-  document.getElementById("gp-periode").addEventListener("click", (e) => {
+  $("gp-periode").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-periode]");
     if (!b) return;
     periodeGp = b.dataset.periode;
@@ -728,7 +732,7 @@
       const cle = th.querySelector("button").dataset.tri;
       th.setAttribute("aria-sort", cle === tri.cle ? (tri.sens > 0 ? "ascending" : "descending") : "none");
     });
-    document.querySelector("#tableau tbody").innerHTML = tries.length
+    $q("#tableau tbody").innerHTML = tries.length
       ? tries.map((p) => `<tr data-id="${esc(p.id)}">
         <td class="date">${dateFr(p.date_autorisation)}</td>
         <td><a href="#fiche/${encodeURIComponent(p.id)}">${esc(adresse(p))}</a>${p.grand_projet ? '<span class="gp-marque">GRAND PROJET</span>' : ""}</td>
@@ -743,13 +747,13 @@
       </tr>`).join("")
       : `<tr><td colspan="${RELEVE ? 10 : 9}" class="vide">Aucune autorisation ne correspond à ces filtres.</td></tr>`;
   }
-  document.querySelector("#tableau thead").addEventListener("click", (e) => {
+  $q("#tableau thead").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-tri]");
     if (!b) return;
     tri = { cle: b.dataset.tri, sens: tri.cle === b.dataset.tri ? -tri.sens : (["adresse", "demandeur", "type", "etat", "quartier"].includes(b.dataset.tri) ? 1 : -1) };
     tableau(filtrer());
   });
-  document.querySelector("#tableau tbody").addEventListener("click", (e) => {
+  $q("#tableau tbody").addEventListener("click", (e) => {
     if (e.target.closest("a")) return;
     const tr = e.target.closest("tr[data-id]");
     if (tr) location.hash = `#fiche/${encodeURIComponent(tr.dataset.id)}`;
@@ -758,13 +762,14 @@
   // ------------------------------------------------------------------ Fiche
   let carteFiche;
   let cartesPhotos = [];
-  let vuePrecedente = "#carte";
+  let vuePrecedente = "/carte/";
+  try { vuePrecedente = sessionStorage.getItem("obs_prec") || vuePrecedente; } catch (e) { /* stockage indisponible */ }
   function ligne(lib, val) {
     return val === null || val === undefined || val === "" ? "" : `<tr><th scope="row">${lib}</th><td>${val}</td></tr>`;
   }
   function fiche(id) {
     const p = PAR_ID.get(id);
-    const zone = document.getElementById("fiche");
+    const zone = $("fiche");
     if (!p) {
       zone.innerHTML = `<a class="retour" href="#liste">← Retour</a><p class="vide">Cette autorisation n'existe pas ou n'est plus publiée.</p>`;
       return;
@@ -948,12 +953,12 @@
     const form = document.getElementById("form-commentaire");
     if (form) form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const texte = document.getElementById("com-texte").value.trim();
+      const texte = $("com-texte").value.trim();
       if (!texte) return;
-      const etatCom = document.getElementById("com-etat");
+      const etatCom = $("com-etat");
       etatCom.textContent = "Envoi…";
       try {
-        const rep = await fetch(window.CONFIG.collecte, { method: "POST", body: JSON.stringify({ type: "commentaire", permis: p.id, pseudo: document.getElementById("com-pseudo").value.trim(), texte }) });
+        const rep = await fetch(window.CONFIG.collecte, { method: "POST", body: JSON.stringify({ type: "commentaire", permis: p.id, pseudo: $("com-pseudo").value.trim(), texte }) });
         if (!rep.ok) throw new Error(rep.status);
         form.reset();
         etatCom.textContent = "Merci ! Votre commentaire sera relu, puis affiché dans la nuit suivante s'il respecte les règles de modération.";
@@ -994,6 +999,7 @@
   // ------------------------------------------------------------------ Navigation
   const TITRE = document.title;
   function rafraichir() {
+    try { sessionStorage.setItem("obs_filtres", JSON.stringify(filtres)); } catch (e) { /* stockage indisponible */ }
     const liste = filtrer();
     compteur(liste);
     const vue = document.querySelector(".vue:not([hidden])");
@@ -1026,16 +1032,25 @@
   function router() {
     const h = vueDemandee() || "accueil";
     const [nom, id] = h.startsWith("fiche/") ? ["fiche", h.slice(6)] : [h, null];
+    if (!document.querySelector(`.vue[data-vue="${nom}"]`)) {
+      if (VUES_URL.includes(nom)) { location.replace(`/${nom}/`); return; }
+      if (nom === "fiche") { location.replace(`/${location.hash}`); return; }
+      if (nom === "accueil" && location.pathname !== "/") { location.replace("/"); return; }
+    }
     const vue = document.querySelector(`.vue[data-vue="${nom}"]`) ? nom : "accueil";
     document.querySelectorAll(".vue").forEach((v) => (v.hidden = v.dataset.vue !== vue));
     document.querySelectorAll(".nav a").forEach((a) => {
       if (a.dataset.vue === vue) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
-    document.getElementById("nav").classList.remove("ouvert");
+    $("nav").classList.remove("ouvert");
     document.querySelector(".menu-bouton").setAttribute("aria-expanded", "false");
     cacherBulle();
-    if (vue !== "fiche") { vuePrecedente = `#${vue}`; if (!metasRubrique(vue)) document.title = TITRE; }
+    if (vue !== "fiche") {
+      vuePrecedente = vue === "accueil" ? "/" : `/${vue}/`;
+      try { sessionStorage.setItem("obs_prec", vuePrecedente); } catch (e) { /* stockage indisponible */ }
+      if (!metasRubrique(vue)) document.title = TITRE;
+    }
     if (vue === "fiche") fiche(id);
     if (vue === "carte") { initCarte(); setTimeout(() => carte && carte.invalidateSize(), 0); }
     if (vue === "grands-projets") grandsProjets();
@@ -1047,32 +1062,20 @@
   }
 
   document.querySelector(".menu-bouton").addEventListener("click", (e) => {
-    const nav = document.getElementById("nav");
+    const nav = $("nav");
     const ouvert = nav.classList.toggle("ouvert");
     e.currentTarget.setAttribute("aria-expanded", String(ouvert));
   });
 
   // Textes dépendant de la date des données.
   const maj = META.maj_source ? `Données mises à jour par le ministère le ${dateFr(META.maj_source, true)}, couvrant les autorisations jusqu'au ${dateFr(META.donnees_jusqu_au, true)}.` : "";
-  document.getElementById("apropos-maj").textContent = maj;
-  if (!RELEVE) document.getElementById("th-pleine-terre").remove();
+  $("apropos-maj").textContent = maj;
+  if (!RELEVE) $("th-pleine-terre").remove();
   if (META.seuils_grand_projet) {
     const s = META.seuils_grand_projet;
-    document.getElementById("apropos-seuils").textContent =
+    $("apropos-seuils").textContent =
       `Un permis de construire d'au moins ${s.logements} logements ou ${nombre(s.surface_m2)} m² de surface de plancher créée ou transformée, un permis de démolir déposé par une société ou une collectivité, ou un permis d'aménager.`;
   }
-
-  // Navigation sans rechargement avec de vraies adresses (la page affichée reste la même application).
-  document.querySelectorAll(".nav a[data-vue]").forEach((a) => {
-    a.addEventListener("click", (e) => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
-      e.preventDefault();
-      const v = a.dataset.vue;
-      history.pushState(null, "", v === "accueil" ? "/" : `/${v}/`);
-      router();
-    });
-  });
-  window.addEventListener("popstate", router);
 
   accueil();
   window.addEventListener("hashchange", router);

@@ -1,6 +1,7 @@
-"""Génère les adresses propres des rubriques (/carte/, /bureaux/, …), data/seo.js et sitemap.xml à partir de index.html.
-À relancer après toute modification de index.html : python scripts/generer_pages_rubriques.py
-Aucun contenu n'est ajouté : chaque page est la même application, avec sa rubrique affichée d'emblée, son titre, sa description et son adresse canonique."""
+"""Génère index.html et les pages des rubriques (/carte/, /bureaux/, …), data/seo.js et sitemap.xml à partir de scripts/gabarit_index.html.
+Chaque page ne contient QUE sa rubrique (contenu principal distinct, pas de doublon caché) ; l'accueil contient l'accueil et le cadre des fiches.
+À relancer après toute modification du gabarit : python scripts/generer_pages_rubriques.py
+Aucun contenu n'est ajouté (hors un titre h1 masqué pour la carte et la liste) : titre, description et adresse canonique propres à chaque page."""
 import json
 import pathlib
 import re
@@ -8,7 +9,6 @@ import subprocess
 
 R = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://urbanisme.observatoiregentilly.fr"
-IMAGE = BASE + "/assets/partage.png"
 
 RUBRIQUES = {
     "accueil": ("/", "Observatoire de l'urbanisme de Gentilly : permis, PLU et PLUi",
@@ -28,20 +28,14 @@ RUBRIQUES = {
     "a-propos": ("/a-propos/", "Sources, méthode et limites de l'Observatoire de l'urbanisme de Gentilly",
                  "D'où viennent les données de l'Observatoire (Sitadel, IGN, cadastre), comment elles sont traitées, leurs limites et comment signaler une erreur."),
 }
-AUTRES = {  # pages autonomes existantes : seules leurs métadonnées sont harmonisées à la main ; elles figurent dans le plan du site
-    "/patrimoine.html": "patrimoine.html", "/urbanisme.html": "urbanisme.html", "/releve-pleine-terre.html": "releve-pleine-terre.html",
-    "/mentions-legales.html": "mentions-legales.html", "/confidentialite.html": "confidentialite.html"}
+H1_CACHE = {"carte": "Carte des permis de construire à Gentilly", "liste": "Liste des permis de construire à Gentilly"}
+AUTRES = {"/patrimoine.html": ["patrimoine.html"], "/urbanisme.html": ["urbanisme.html", "data/urbanisme_donnees.js"], "/releve-pleine-terre.html": ["releve-pleine-terre.html"],
+          "/mentions-legales.html": ["mentions-legales.html"], "/confidentialite.html": ["confidentialite.html"]}
+DONNEES_RUBRIQUE = {"accueil": ["data/permis.json"], "carte": ["data/permis.json"], "liste": ["data/permis.json"], "bureaux": ["data/permis.json"], "grands-projets": ["data/permis.json"],
+                    "pleine-terre": ["data/releve_pleine_terre.json"], "autrefois": [], "a-propos": []}
 
-h = (R / "index.html").read_text(encoding="utf-8")
-
-
-def navigation(t):
-    """Menu et logo : vraies adresses (/carte/…) ; l'application les intercepte pour naviguer sans recharger."""
-    m = re.search(r'<nav id="nav".*?</nav>', t, re.S)
-    blk = re.sub(r'href="(?:#|/)([a-z-]*)/?" data-vue="([a-z-]+)"', lambda x: 'href="/" data-vue="accueil"' if x.group(2) == "accueil" else f'href="/{x.group(2)}/" data-vue="{x.group(2)}"', m.group(0))
-    t = t.replace(m.group(0), blk, 1)
-    return t.replace('<a class="marque" href="#accueil">', '<a class="marque" href="/">', 1)
-
+gab = (R / "scripts/gabarit_index.html").read_text(encoding="utf-8")
+gab = gab.replace('<meta name="robots" content="noindex">\n  ', "", 1)  # le gabarit lui-même n'est pas indexé ; les pages générées le sont
 
 
 def chemins_absolus(t):
@@ -51,44 +45,59 @@ def chemins_absolus(t):
     return t
 
 
+def navigation(t):
+    m = re.search(r'<nav id="nav".*?</nav>', t, re.S)
+    blk = re.sub(r'href="(?:#|/)[a-z-]*/?" data-vue="([a-z-]+)"', lambda x: 'href="/" data-vue="accueil"' if x.group(1) == "accueil" else f'href="/{x.group(1)}/" data-vue="{x.group(1)}"', m.group(0))
+    t = t.replace(m.group(0), blk, 1)
+    return t.replace('<a class="marque" href="#accueil">', '<a class="marque" href="/">', 1)
+
+
 def tete(t, titre, desc, url):
-    t = re.sub(r"<title>.*?</title>", lambda m: f"<title>{titre}</title>", t, count=1, flags=re.S)
-    t = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{desc}">', t, count=1)
-    t = re.sub(r'<link rel="canonical" href="[^"]*">', lambda m: f'<link rel="canonical" href="{url}">', t, count=1)
-    t = re.sub(r'<meta property="og:title" content="[^"]*">', lambda m: f'<meta property="og:title" content="{titre}">', t, count=1)
-    t = re.sub(r'<meta property="og:description" content="[^"]*">', lambda m: f'<meta property="og:description" content="{desc}">', t, count=1)
-    t = re.sub(r'<meta property="og:url" content="[^"]*">', lambda m: f'<meta property="og:url" content="{url}">', t, count=1)
+    for motif, nouveau in ((r"<title>.*?</title>", f"<title>{titre}</title>"), (r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{desc}">'),
+                           (r'<link rel="canonical" href="[^"]*">', f'<link rel="canonical" href="{url}">'), (r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{titre}">'),
+                           (r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{desc}">'), (r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{url}">')):
+        t = re.sub(motif, lambda m: nouveau, t, count=1, flags=re.S)
     return t
 
 
-# 1. page d'accueil : métadonnées cohérentes avec la table (le chemin racine reste index.html)
-t0, d0 = RUBRIQUES["accueil"][1:3]
-h_acc = tete(h, t0, d0, BASE + "/")
-h_acc = navigation(chemins_absolus(h_acc))
-(R / "index.html").write_text(h_acc, encoding="utf-8")
+SECTION = re.compile(r'[ \t]*<!--[^>]*-->\n[ \t]*<section class="vue" id="vue-([a-z-]+)" data-vue="[a-z-]+"(?: hidden)?>.*?</section>\n|[ \t]*<section class="vue" id="vue-([a-z-]+)" data-vue="[a-z-]+"(?: hidden)?>.*?</section>\n', re.S)
 
-# 2. pages des rubriques
+
+def garder(t, gardees, visible):
+    """Ne conserve que les rubriques `gardees` ; `visible` est affichée d'emblée."""
+    def f(m):
+        nom = m.group(1) or m.group(2)
+        if nom not in gardees:
+            return ""
+        bloc = m.group(0)
+        bloc = re.sub(r'(<section class="vue" id="vue-[a-z-]+" data-vue="[a-z-]+")(?: hidden)?>', lambda x: x.group(1) + ("" if nom == visible else " hidden") + ">", bloc, count=1)
+        return bloc
+    return SECTION.sub(f, t)
+
+
+base = navigation(chemins_absolus(gab))
+nav_courant = lambda t, cle: re.sub(r'(<a href="%s" data-vue="%s")' % ("/" if cle == "accueil" else f"/{cle}/", cle), r'\1 aria-current="page"', t.replace('aria-current="page"', ""), count=1)
+
+# accueil : accueil + cadre des fiches (affichées par #fiche/…)
+t0, d0 = RUBRIQUES["accueil"][1:3]
+acc = garder(tete(base, t0, d0, BASE + "/"), {"accueil", "fiche"}, "accueil")
+(R / "index.html").write_text(nav_courant(acc, "accueil"), encoding="utf-8")
+
+# pages des rubriques : une seule rubrique chacune
 for cle, (chemin, titre, desc) in RUBRIQUES.items():
     if cle == "accueil":
         continue
-    t = tete(h_acc, titre, desc, BASE + chemin)
-    # rubrique affichée d'emblée (sans JavaScript, le bon contenu est visible)
-    def vue(m):
-        nom = m.group(2)
-        return f'<section class="vue" id="vue-{nom}" data-vue="{nom}"' + ("" if nom == cle else " hidden") + ">"
-    t = re.sub(r'<section class="vue" id="vue-([a-z-]+)" data-vue="([a-z-]+)"(?: hidden)?>', lambda m: vue(m), t)
-    t = t.replace('aria-current="page"', "")
-    t = re.sub(r'(<a href="/%s/" data-vue="%s")' % (cle, cle), r'\1 aria-current="page"', t, count=1)
+    t = garder(tete(base, titre, desc, BASE + chemin), {cle}, cle)
+    if cle in H1_CACHE:
+        t = re.sub(r'(<section class="vue" id="vue-%s"[^>]*>)' % cle, lambda m: m.group(1) + f'\n      <h1 class="h1-cache">{H1_CACHE[cle]}</h1>', t, count=1)
     d = R / cle
     d.mkdir(exist_ok=True)
-    (d / "index.html").write_text(t, encoding="utf-8")
+    (d / "index.html").write_text(nav_courant(t, cle), encoding="utf-8")
 
-# 3. table lue par l'application (titre, description, adresse canonique par rubrique)
 seo = {k: {"titre": v[1], "description": v[2], "url": BASE + v[0]} for k, v in RUBRIQUES.items()}
 (R / "data/seo.js").write_text("/* Titres, descriptions et adresses canoniques des rubriques. Généré par scripts/generer_pages_rubriques.py. */\nwindow.SEO_PAGES = " + json.dumps(seo, ensure_ascii=False) + ";\n", encoding="utf-8")
 
 
-# 4. plan du site : uniquement des adresses réelles, avec la date de dernière modification connue de Git
 def date(*fichiers):
     d = ""
     for f in fichiers:
@@ -97,15 +106,14 @@ def date(*fichiers):
     return d
 
 
-lignes = []
-corps_accueil = date("index.html", "data/permis.json", "assets/app.js")
-for cle, (chemin, _, _) in RUBRIQUES.items():
-    lignes.append((BASE + chemin, corps_accueil))
-for chemin, f in AUTRES.items():
-    lignes.append((BASE + chemin, date(f, "data/urbanisme_donnees.js") if f == "urbanisme.html" else date(f)))
 xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-for u, dm in lignes:
-    xml += f"  <url><loc>{u}</loc>" + (f"<lastmod>{dm}</lastmod>" if dm else "") + "</url>\n"
+for cle, (chemin, _, _) in RUBRIQUES.items():
+    f_page = "scripts/gabarit_index.html"
+    dm = date(f_page, "assets/app.js", *DONNEES_RUBRIQUE[cle]) if cle != "a-propos" else date(f_page, "assets/app.js", "data/permis.json")
+    xml += f"  <url><loc>{BASE + chemin}</loc>" + (f"<lastmod>{dm}</lastmod>" if dm else "") + "</url>\n"
+for chemin, fs in AUTRES.items():
+    dm = date(*fs)
+    xml += f"  <url><loc>{BASE + chemin}</loc>" + (f"<lastmod>{dm}</lastmod>" if dm else "") + "</url>\n"
 xml += "</urlset>\n"
 (R / "sitemap.xml").write_text(xml, encoding="utf-8")
-print(len(RUBRIQUES) - 1, "pages de rubriques, data/seo.js et sitemap.xml (", len(lignes), "adresses )")
+print(len(RUBRIQUES) - 1, "pages de rubriques + accueil, data/seo.js et sitemap.xml")

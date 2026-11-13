@@ -14,4 +14,4 @@
 
 Le **nom** « Bien Commun pour Gentilly » et ses éventuels logos ne sont pas concédés : une copie du site ne peut pas se présenter sous ce nom ni laisser croire qu'elle est publiée par le groupe. Les **réponses, pseudos, commentaires et adresses** des participants ne font pas partie du dépôt et ne sont pas réutilisables.
 
-Contact : biencommunpourgentilly@gmail.com
+Contact : contact@observatoiregentilly.fr

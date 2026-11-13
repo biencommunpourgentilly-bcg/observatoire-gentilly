@@ -7,7 +7,7 @@ R = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://urbanisme.observatoiregentilly.fr"
 IMG = BASE + "/assets/partage.png"
 PAGES = {
-    "patrimoine.html": ("Patrimoine communal de Gentilly : parcelles et locaux de la Commune | Observatoire de l'urbanisme", None),
+    "patrimoine.html": ("Patrimoine communal de Gentilly : parcelles et locaux | Observatoire de l'urbanisme", None),
     "releve-pleine-terre.html": ("Relevé de la pleine terre à Gentilly | Observatoire de l'urbanisme", None),
     "mentions-legales.html": (None, None),
     "confidentialite.html": (None, None),

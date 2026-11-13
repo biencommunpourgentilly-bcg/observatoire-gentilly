@@ -21,7 +21,7 @@
       <p class="note">Ces deux choix sont séparés : la première case ne vous inscrit pas aux communications de l'association.</p>
       <button type="submit" class="bouton">M'inscrire</button> <span class="note etat"></span>
       <p class="note">Responsable : l'association Bien Commun pour Gentilly. Votre adresse, la date et vos choix sont enregistrés, jamais publiés, ni vendus, ni transmis. Vous pouvez vous désinscrire à tout moment, avec effet immédiat, ${EN_LIGNE ? "ci-dessous ou en écrivant à" : "en écrivant à"}
-        <a href="mailto:biencommunpourgentilly@gmail.com">biencommunpourgentilly@gmail.com</a> ; l'adresse est effacée dans les 30 jours. <a href="confidentialite.html">Confidentialité</a></p>
+        <a href="mailto:contact@observatoiregentilly.fr">contact@observatoiregentilly.fr</a> ; l'adresse est effacée dans les 30 jours. <a href="confidentialite.html">Confidentialité</a></p>
     </form>
     ${EN_LIGNE ? `<details class="desinscription"><summary>Se désinscrire</summary>
       <form class="form-desinscription">
@@ -45,7 +45,7 @@
         formOff.reset();
         etatOff.textContent = "C'est fait : vous ne recevrez plus rien. Votre adresse sera effacée dans les 30 jours.";
       } catch (err) {
-        etatOff.textContent = "La désinscription a échoué : écrivez à biencommunpourgentilly@gmail.com, nous la ferons aussitôt.";
+        etatOff.textContent = "La désinscription a échoué : écrivez à contact@observatoiregentilly.fr, nous la ferons aussitôt.";
       }
     });
     const etat = form.querySelector(".etat");

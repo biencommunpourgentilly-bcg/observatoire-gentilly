@@ -273,3 +273,4 @@ button.bouton:disabled { opacity: .5; }
 .bandeau-lancement { background: var(--vert-clair); border-bottom: 1px solid var(--trait-fort); }
 .bandeau-lancement p { max-width: 1120px; margin: 0 auto; padding: 10px 16px; font-size: .92rem; color: var(--encre); }
 .bandeau-lancement a { color: var(--foret); font-weight: 600; }
+.h1-cache { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
