@@ -862,6 +862,35 @@
         </form>` : ""}</div>` : "";
 
     const lies = (p.lies || []).map((i) => PAR_ID.get(i)).filter(Boolean);
+    // Règles d'urbanisme actuelles (PLUi) du terrain : données générées par le dépôt observatoire-plu (data/regles_urbanisme.js)
+    const reglesHtml = (() => {
+      const RU = window.REGLES_URBANISME || null;
+      if (!RU || !(p.parcelles || []).length) return "";
+      const lis = p.parcelles.slice(0, 4).map((k) => {
+        const r = RU[k];
+        if (!r) return `<li><strong>Parcelle ${esc(k)}</strong> : non retrouvée dans le cadastre actuel (parcelle supprimée, divisée ou renumérotée) ; règles <strong>non déterminées</strong>. Voir le Géoportail de l'urbanisme.</li>`;
+        const alertes = [];
+        if (r.ch) alertes.push(`terrain à cheval sur plusieurs zones (${esc(r.zp)} % dans la zone indiquée) : résultat <strong>non déterminé</strong> pour l'ensemble`);
+        if (r.car !== "hors zonage") alertes.push(`anciennes carrières : zone ${esc(r.car)}${r.cinc ? " (limite à moins de 3 m : incertain)" : ""}`);
+        if (r.arg && r.arg !== "non disponible") alertes.push(`argiles : exposition ${esc(r.arg)}`);
+        if (r.sup) alertes.push(`${r.sup} servitude(s) d'utilité publique (abords de monuments, etc.)`);
+        if (r.supn) alertes.push(`${r.supn} servitude(s) à moins de 5 m : <strong>non déterminé</strong>`);
+        return `<li><strong>Parcelle ${esc(k)}</strong> (${nombre(r.s)} m²) : zone <code>${esc(r.z)}</code>${r.nat ? ` (${esc(r.nat)})` : ""}${r.az ? `, ancienne zone ${esc(r.az)}` : ""}
+          <ul>
+            <li>Hauteur maximale : ${esc(r.h)}</li>
+            <li>Emprise au sol : ${esc(r.e)}${r.ea ? ` (${esc(r.ea)} en cas d'amélioration du bâti existant)` : ""}</li>
+            <li>Pleine terre : ${esc(r.pt)} minimum</li>
+            ${r.exc.length ? `<li>Exceptions du règlement : ${r.exc.map(esc).join(" ; ")}</li>` : ""}
+            ${alertes.length ? `<li>À savoir : ${alertes.join(" ; ")}</li>` : ""}
+          </ul>
+          <span class="note">Comparaison avec l'ancien PLU : ${esc(r.niv)}.</span></li>`;
+      }).join("");
+      return `<div class="bloc"><h2>Règles d'urbanisme actuelles du terrain</h2>
+        <p class="note">PLUi en vigueur depuis le 21 février 2026. Ces règles ne sont pas celles qui s'appliquaient à la date de ce permis. Première version, sujette à erreurs : règles générales seulement, le règlement et les documents graphiques officiels font foi ; ce n'est pas un conseil juridique.</p>
+        <ul>${lis}</ul>
+        <p class="note">Les règles s'appliquent à l'unité foncière (parcelles contiguës d'un même propriétaire), que ce site ne connaît pas.</p></div>`;
+    })();
+
     const liesHtml = lies.length
       ? `<div class="bloc"><h2>Sur les mêmes parcelles</h2><ul class="liste-cartes compacte">${lies.map((q) => `<li>${carteHtml(q)}</li>`).join("")}</ul></div>`
       : "";
@@ -900,6 +929,7 @@
           ${ptHtml}
           <div class="bloc"><h2>Détails déclarés</h2><table class="details"><tbody>${details}</tbody></table>
             <p class="note" style="margin-top:10px">Chiffres déclarés par le demandeur à la date de l'autorisation initiale, sans les éventuels permis modificatifs.</p></div>
+          ${reglesHtml}
           ${liesHtml}
           ${comHtml}
         </div>
