@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://urbanisme.observatoiregentilly.fr/</loc></url>
-  <url><loc>https://urbanisme.observatoiregentilly.fr/releve-pleine-terre.html</loc></url>
-  <url><loc>https://urbanisme.observatoiregentilly.fr/patrimoine.html</loc></url>
-  <url><loc>https://urbanisme.observatoiregentilly.fr/mentions-legales.html</loc></url>
-  <url><loc>https://urbanisme.observatoiregentilly.fr/confidentialite.html</loc></url>
-  <url><loc>https://urbanisme.observatoiregentilly.fr/urbanisme.html</loc></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/carte/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/bureaux/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/pleine-terre/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/grands-projets/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/liste/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/autrefois/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/a-propos/</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/patrimoine.html</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/urbanisme.html</loc><lastmod>2026-11-13</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/releve-pleine-terre.html</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/mentions-legales.html</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://urbanisme.observatoiregentilly.fr/confidentialite.html</loc><lastmod>2026-11-10</lastmod></url>
 </urlset>

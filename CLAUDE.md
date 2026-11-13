@@ -31,3 +31,9 @@ Code sous AGPL v3 (`LICENSE`), contenus sous CC BY-SA 4.0, détail dans `LICENCE
 
 ## Domaine
 `urbanisme.observatoiregentilly.fr` (CNAME vers GitHub), `observatoiregentilly.fr` redirigé par le dépôt `observatoiregentilly-accueil` (page d'accueil provisoire, futurs autres observatoires).
+
+## Référencement (adresses propres des rubriques)
+- Les rubriques ont de vraies adresses (`/carte/`, `/bureaux/`, `/pleine-terre/`, `/grands-projets/`, `/liste/`, `/autrefois/`, `/a-propos/`) en plus des liens `#…` qui continuent de fonctionner. Ce sont des copies générées de `index.html` (même application, rubrique affichée d'emblée, titre, description et adresse canonique propres).
+- **Après toute modification de `index.html`**, lancer `python scripts/generer_pages_rubriques.py` : il régénère ces pages, `data/seo.js` (titres et descriptions lus par `assets/app.js`) et `sitemap.xml` (dates de dernière modification tirées de Git). Les titres et descriptions se changent dans ce script (dictionnaire `RUBRIQUES`).
+- Les pages autonomes (`patrimoine.html`, `releve-pleine-terre.html`, `mentions-legales.html`, `confidentialite.html`) reçoivent leurs métadonnées et leur navigation par `scripts/seo_pages_statiques.py` ; `urbanisme.html` est produite par le dépôt de comparaison.
+- Image de partage : `assets/partage.png` (1200 x 630). Aucune donnée structurée autre que `WebSite` sur l'accueil.

@@ -5,41 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://data.geopf.fr https://cdnjs.cloudflare.com https://*.goatcounter.com; font-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.goatcounter.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Observatoire de l'urbanisme de Gentilly</title>
-  <meta name="description" content="L'Observatoire de l'urbanisme de Gentilly : tous les permis de construire, de démolir et d'aménager publiés par l'État depuis 2013.">
+  <title>Observatoire de l'urbanisme de Gentilly : permis, PLU et PLUi</title>
+  <meta name="description" content="Permis de construire, de démolir et d'aménager à Gentilly depuis 2013, règles du PLU et du PLUi, anciennes carrières et patrimoine communal : une carte pour les habitants.">
   <meta name="theme-color" content="#304e43">
   <link rel="canonical" href="https://urbanisme.observatoiregentilly.fr/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Observatoire de l'urbanisme de Gentilly">
-  <meta property="og:title" content="Observatoire de l'urbanisme de Gentilly">
-  <meta property="og:description" content="Tous les permis de construire, de démolir et d'aménager accordés à Gentilly depuis 2013, sur une carte et dans une liste.">
+  <meta property="og:title" content="Observatoire de l'urbanisme de Gentilly : permis, PLU et PLUi">
+  <meta property="og:description" content="Permis de construire, de démolir et d'aménager à Gentilly depuis 2013, règles du PLU et du PLUi, anciennes carrières et patrimoine communal : une carte pour les habitants.">
   <meta property="og:url" content="https://urbanisme.observatoiregentilly.fr/">
   <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="https://urbanisme.observatoiregentilly.fr/assets/partage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Observatoire de l'urbanisme de Gentilly : permis de construire, PLU et PLUi, anciennes carrières, patrimoine communal">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Observatoire de l'urbanisme de Gentilly","url":"https://urbanisme.observatoiregentilly.fr/","inLanguage":"fr","publisher":{"@type":"Organization","name":"Bien Commun pour Gentilly"}}</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23304e43%22/%3E%3Cpath d=%22M6 7h8v7H6zM17 7h9v5h-9zM6 17h6v8H6zM15 15h11v10H15z%22 fill=%22%23dfeadd%22 opacity=%22.9%22/%3E%3Cpath d=%22M17 18h5v4h-5z%22 fill=%22%23658c79%22/%3E%3Cpath d=%22M15.5 13.5 26 13.5%22 stroke=%22%23304e43%22 stroke-width=%221.2%22/%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
-  <link rel="stylesheet" href="assets/style.css">
-  <link rel="stylesheet" href="assets/observatoire-vert-equilibre.css">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/observatoire-vert-equilibre.css">
 </head>
 <body>
   <a class="evitement" href="#contenu">Aller au contenu</a>
   <header class="entete">
     <div class="entete-int">
-      <a class="marque" href="#accueil">
+      <a class="marque" href="/">
         <svg class="marque-picto" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#304e43"/><path d="M6 7h8v7H6zM17 7h9v5h-9zM6 17h6v8H6zM15 15h11v10H15z" fill="#dfeadd" opacity=".9"/><path d="M17 18h5v4h-5z" fill="#658c79"/><path d="M15.5 13.5 26 13.5" stroke="#304e43" stroke-width="1.2"/></svg><span class="marque-titre"><strong>Observatoire de l'urbanisme de Gentilly</strong><small class="signature-entete">Réalisé par les membres du Bien Commun pour Gentilly</small></span>
       </a>
       <button class="menu-bouton" aria-expanded="false" aria-controls="nav">Menu</button>
       <nav id="nav" class="nav" aria-label="Navigation principale">
-        <a href="#accueil" data-vue="accueil">Accueil</a>
-        <a href="#carte" data-vue="carte">Carte</a>
-        <a href="#bureaux" data-vue="bureaux">Bureaux</a>
-        <a href="#pleine-terre" data-vue="pleine-terre">Pleine terre</a>
-        <a href="releve-pleine-terre.html" class="nav-participer">Participer</a>
-        <a href="patrimoine.html">Patrimoine</a>
-        <a href="#grands-projets" data-vue="grands-projets">Grands projets</a>
-        <a href="#liste" data-vue="liste">Liste</a>
-        <a href="urbanisme.html">Règles du PLUi</a>
-        <a href="#autrefois" data-vue="autrefois">Autrefois</a>
-        <a href="#a-propos" data-vue="a-propos">À propos</a>
+        <a href="/" data-vue="accueil">Accueil</a>
+        <a href="/carte/" data-vue="carte">Carte</a>
+        <a href="/bureaux/" data-vue="bureaux">Bureaux</a>
+        <a href="/pleine-terre/" data-vue="pleine-terre">Pleine terre</a>
+        <a href="/releve-pleine-terre.html" class="nav-participer">Participer</a>
+        <a href="/patrimoine.html">Patrimoine</a>
+        <a href="/grands-projets/" data-vue="grands-projets">Grands projets</a>
+        <a href="/liste/" data-vue="liste">Liste</a>
+        <a href="/urbanisme.html">Règles du PLUi</a>
+        <a href="/autrefois/" data-vue="autrefois">Autrefois</a>
+        <a href="/a-propos/" data-vue="a-propos">À propos</a>
       </nav>
     </div>
   </header>
@@ -86,7 +92,7 @@
             <h2>Participez au relevé de la pleine terre</h2>
             <p>Regardez les photos aériennes avant et après un projet, estimez la part de pleine terre, donnez votre avis. Cinq minutes suffisent, sur téléphone ou ordinateur, sans inscription.</p>
           </div>
-          <a class="bouton" href="releve-pleine-terre.html">Participer au relevé</a>
+          <a class="bouton" href="/releve-pleine-terre.html">Participer au relevé</a>
         </div>
 
         <div class="participer">
@@ -94,7 +100,7 @@
             <h2>Parcelles et locaux de la Commune</h2>
             <p>Une carte des parcelles et des locaux recensés au nom de la Commune de Gentilly dans les fichiers fiscaux, de 2019 à 2025, avec la méthode et ses limites.</p>
           </div>
-          <a class="bouton" href="patrimoine.html">Voir la carte</a>
+          <a class="bouton" href="/patrimoine.html">Voir la carte</a>
         </div>
 
         <div class="grille-accueil">
@@ -177,7 +183,7 @@
           <p><strong>Avec des habitants, nous la relevons terrain par terrain.</strong> Pour chaque terrain où un permis a été accordé depuis 2013, plusieurs personnes regardent les photos aériennes de l'IGN avant et après le projet, estiment la part du terrain en pleine terre et dessinent les zones disparues ou créées. Les résultats seront publiés sur cette page.</p>
           <p><strong>Les chiffres exacts sont dans les dossiers de permis</strong> : plan de masse et respect des règles de pleine terre du plan local d'urbanisme. Nous les demandons à la mairie.</p>
         </div>
-        <p class="lien-carte"><a class="bouton" href="releve-pleine-terre.html">Participer au relevé</a></p>
+        <p class="lien-carte"><a class="bouton" href="/releve-pleine-terre.html">Participer au relevé</a></p>
         <p class="lien-carte" id="pt-lien-carte" hidden><a class="bouton" href="#carte" data-theme="pleine_terre">Voir les terrains concernés sur la carte</a></p>
       </div>
     </section>
@@ -234,7 +240,7 @@
         <div class="liste-entete">
           <p class="compteur" data-compteur></p>
           <div class="telechargements">
-            Télécharger : <a href="data/permis.csv" download>tableur (CSV)</a> · <a href="data/permis.json" download>JSON</a>
+            Télécharger : <a href="/data/permis.csv" download>tableur (CSV)</a> · <a href="/data/permis.json" download>JSON</a>
           </div>
         </div>
         <div class="table-defile">
@@ -319,18 +325,18 @@
         <h2>Inscription aux informations</h2>
         <p>Vous pouvez, si vous le souhaitez, laisser une adresse e-mail pour être prévenu de la publication des résultats de l'observatoire et, avec une case distincte, recevoir les informations de l'association Bien Commun pour Gentilly. Aucune case n'est cochée d'avance, et l'adresse n'est jamais demandée pour répondre au relevé ni pour commenter.</p>
         <ul>
-          <li><strong>Responsable :</strong> l'association Bien Commun pour Gentilly (<a href="mentions-legales.html">mentions légales</a>).</li>
+          <li><strong>Responsable :</strong> l'association Bien Commun pour Gentilly (<a href="/mentions-legales.html">mentions légales</a>).</li>
           <li><strong>Usage :</strong> uniquement ce que vous avez coché. L'adresse laissée pour les résultats de l'observatoire n'est pas utilisée pour les communications de l'association, sauf si vous avez aussi coché la seconde case.</li>
           <li><strong>Désinscription :</strong> immédiate, par e-mail à l'adresse de contact ; l'adresse est effacée dans les 30 jours.</li>
-          <li><strong>Vos droits et le détail :</strong> voir la <a href="confidentialite.html">politique de confidentialité</a>.</li>
+          <li><strong>Vos droits et le détail :</strong> voir la <a href="/confidentialite.html">politique de confidentialité</a>.</li>
         </ul>
 
         <h2>Données personnelles</h2>
-        <p>La base Sitadel ne publie pas le nom des particuliers : seuls les demandeurs qui sont des sociétés, des associations ou des organismes publics sont nommés. Si une fiche vous concerne et que vous souhaitez qu'elle soit retirée de ce site, écrivez à l'adresse ci-dessous. Détail : <a href="confidentialite.html">politique de confidentialité</a>.</p>
+        <p>La base Sitadel ne publie pas le nom des particuliers : seuls les demandeurs qui sont des sociétés, des associations ou des organismes publics sont nommés. Si une fiche vous concerne et que vous souhaitez qu'elle soit retirée de ce site, écrivez à l'adresse ci-dessous. Détail : <a href="/confidentialite.html">politique de confidentialité</a>.</p>
 
         <h2>Réutilisation et licences</h2>
         <p>Le code de ce site est publié sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.fr.html" target="_blank" rel="noopener">GNU AGPL v3</a>, et ses textes et sa mise en forme sous <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" target="_blank" rel="noopener">Creative Commons BY-SA 4.0</a> : vous pouvez les réutiliser en citant « Observatoire de l'urbanisme de Gentilly, Bien Commun pour Gentilly » et en partageant votre version dans les mêmes conditions. Le nom et les logos du Bien Commun pour Gentilly ne sont pas concédés. <a href="https://github.com/biencommunpourgentilly-bcg/observatoire-gentilly/blob/main/LICENCE.md" target="_blank" rel="noopener">Détail des licences</a>.</p>
-        <p>Les données Sitadel et les fichiers fiscaux de la page <a href="patrimoine.html">Patrimoine</a> (DGFiP) sont sous <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence/" target="_blank" rel="noopener">Licence Ouverte 2.0</a> : vous pouvez les réutiliser en citant la source. Les fichiers de ce site sont téléchargeables depuis la page <a href="#liste">Toutes les autorisations</a>.</p>
+        <p>Les données Sitadel et les fichiers fiscaux de la page <a href="/patrimoine.html">Patrimoine</a> (DGFiP) sont sous <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence/" target="_blank" rel="noopener">Licence Ouverte 2.0</a> : vous pouvez les réutiliser en citant la source. Les fichiers de ce site sont téléchargeables depuis la page <a href="#liste">Toutes les autorisations</a>.</p>
 
         <h2>Contact</h2>
         <p>Pour signaler une erreur, apporter un document ou une photo : <a href="mailto:biencommunpourgentilly@gmail.com">biencommunpourgentilly@gmail.com</a>.</p>
@@ -341,22 +347,23 @@
   <footer class="pied">
     <div class="pied-int">
       <p class="signature">Observatoire de l'urbanisme de Gentilly — Une initiative du Bien Commun pour Gentilly.</p>
-      <p>Observatoire de l'urbanisme de Gentilly · Données : Sitadel (ministère de la Transition écologique), IGN, Base Adresse Nationale · <span id="pied-maj"></span> · <a href="#a-propos">À propos et contact</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a></p>
+      <p>Observatoire de l'urbanisme de Gentilly · Données : Sitadel (ministère de la Transition écologique), IGN, Base Adresse Nationale · <span id="pied-maj"></span> · <a href="#a-propos">À propos et contact</a> · <a href="/mentions-legales.html">Mentions légales</a> · <a href="/confidentialite.html">Confidentialité</a></p>
     </div>
   </footer>
 
   <div class="infobulle" id="infobulle" role="status" hidden></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
-  <script src="data/permis.js"></script>
-  <script src="data/complements.js"></script>
-  <script src="data/config.js"></script>
-  <script src="data/releve_pleine_terre.js"></script>
-  <script src="data/commentaires.js"></script>
-  <script src="data/regles_urbanisme.js"></script>
-  <script src="assets/adresses.js"></script>
-  <script src="assets/abonnement.js"></script>
-  <script src="assets/mesure.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="/data/permis.js"></script>
+  <script src="/data/complements.js"></script>
+  <script src="/data/config.js"></script>
+  <script src="/data/releve_pleine_terre.js"></script>
+  <script src="/data/commentaires.js"></script>
+  <script src="/data/regles_urbanisme.js"></script>
+  <script src="/assets/adresses.js"></script>
+  <script src="/assets/abonnement.js"></script>
+  <script src="/assets/mesure.js"></script>
+  <script src="/data/seo.js"></script>
+  <script src="/assets/app.js"></script>
 </body>
 </html>

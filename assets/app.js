@@ -1002,8 +1002,29 @@
     if (vue.dataset.vue === "liste") tableau(liste);
   }
 
+  // Adresses propres des rubriques (/carte/, /bureaux/…) en plus des liens existants en #ancre (qui continuent de fonctionner).
+  const VUES_URL = ["carte", "bureaux", "pleine-terre", "autrefois", "grands-projets", "liste", "a-propos"];
+  function vueDemandee() {
+    const h = decodeURIComponent(location.hash.replace(/^#/, ""));
+    if (h) return h;
+    const seg = location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0];
+    return VUES_URL.includes(seg) ? seg : "accueil";
+  }
+  // Titre, description et adresse canonique suivent la rubrique affichée (table générée dans data/seo.js).
+  function metasRubrique(vue) {
+    const m = (window.SEO_PAGES || {})[vue];
+    if (!m) return false;
+    document.title = m.titre;
+    const d = document.querySelector('meta[name="description"]'); if (d) d.setAttribute("content", m.description);
+    const c = document.querySelector('link[rel="canonical"]'); if (c) c.setAttribute("href", m.url);
+    [["og:title", m.titre], ["og:description", m.description], ["og:url", m.url]].forEach(([p, v]) => {
+      const e = document.querySelector(`meta[property="${p}"]`); if (e) e.setAttribute("content", v);
+    });
+    return true;
+  }
+
   function router() {
-    const h = decodeURIComponent(location.hash.replace(/^#/, "")) || "accueil";
+    const h = vueDemandee() || "accueil";
     const [nom, id] = h.startsWith("fiche/") ? ["fiche", h.slice(6)] : [h, null];
     const vue = document.querySelector(`.vue[data-vue="${nom}"]`) ? nom : "accueil";
     document.querySelectorAll(".vue").forEach((v) => (v.hidden = v.dataset.vue !== vue));
@@ -1014,7 +1035,7 @@
     document.getElementById("nav").classList.remove("ouvert");
     document.querySelector(".menu-bouton").setAttribute("aria-expanded", "false");
     cacherBulle();
-    if (vue !== "fiche") { vuePrecedente = `#${vue}`; document.title = TITRE; }
+    if (vue !== "fiche") { vuePrecedente = `#${vue}`; if (!metasRubrique(vue)) document.title = TITRE; }
     if (vue === "fiche") fiche(id);
     if (vue === "carte") { initCarte(); setTimeout(() => carte && carte.invalidateSize(), 0); }
     if (vue === "grands-projets") grandsProjets();
@@ -1040,6 +1061,18 @@
     document.getElementById("apropos-seuils").textContent =
       `Un permis de construire d'au moins ${s.logements} logements ou ${nombre(s.surface_m2)} m² de surface de plancher créée ou transformée, un permis de démolir déposé par une société ou une collectivité, ou un permis d'aménager.`;
   }
+
+  // Navigation sans rechargement avec de vraies adresses (la page affichée reste la même application).
+  document.querySelectorAll(".nav a[data-vue]").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      e.preventDefault();
+      const v = a.dataset.vue;
+      history.pushState(null, "", v === "accueil" ? "/" : `/${v}/`);
+      router();
+    });
+  });
+  window.addEventListener("popstate", router);
 
   accueil();
   window.addEventListener("hashchange", router);
