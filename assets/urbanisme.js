@@ -9,6 +9,7 @@ const L19 = C.a2019;
 
 let STATS2;
 
+
 P.features.forEach(f=>{const q=f.properties,c=MOTEUR.cmp(q,REG);q.xh=c.h.ev;q.xe=c.e.ev;q.xp=c.pt.ev;q.dfh=c.h.diffs.length?1:0;q.dfe=c.e.diffs.length?1:0;q.dfp=c.pt.diffs.length?1:0;q.nh=c.h.niv;q.ne=c.e.niv;q.np=c.pt.niv;q.nv=MOTEUR.nivGlobal(c)});
 const FAM = {UC:'#c46b6b',UA:'#e8a0a0',UM:'#f0b27a',UR:'#d9b99b',UH:'#f6dcae',UI:'#b9a3d6',UE:'#8fc9c9',N:'#9bd18b',U3:'#bbb',UG:'#bbb'};
 const FAMLIB = {UC:'Cœur de ville',UA:'Grands axes',UM:'Mixte',UR:'Habitat collectif',UH:'Habitat individuel',UI:'Activités',UE:'Équipements',N:'Naturel'};
@@ -360,6 +361,20 @@ function couchenum(m){
  document.getElementById('csvubum').onclick=()=>{const L=['parcelle;adresses;surface_m2;faitage_ancien_vers_PLUi;egout_ancien_vers_PLUi;emprise_ancien_vers_PLUi;pleine_terre_ancien_vers_PLUi'].concat(lig.map(x=>[x.r[0],x.r[2],x.r[3],x.h,x.g,x.e,x.p].join(';')));
   const b=new Blob(['\ufeff'+L.join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='gentilly_UB2_vers_UM.csv';a.click()};
 })();
+// ===== Onglet anciennes ZAC =====
+let mzc=null;
+function initZ(){
+ if(mzc){mzc.invalidateSize();return}
+ mzc=L.map('mz',{scrollWheelZoom:true}).setView([48.8135,2.3455],14);
+ L.tileLayer('https://data.geopf.fr/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',{maxZoom:18,attribution:'Fond : © IGN (Plan IGN)'}).addTo(mzc);
+ const C={perimetre:'#c0392b',UZa:'#8e44ad',UZb:'#2f6db5','UZb*':'#16a085'};
+ const L1=L.geoJSON({type:'FeatureCollection',features:ZAC.features.filter(f=>f.properties.type==='perimetre')},{style:()=>({color:C.perimetre,weight:2.5,dashArray:'6 4',fillColor:C.perimetre,fillOpacity:.1}),onEachFeature:(f,l)=>l.bindPopup(`<strong>${f.properties.nom}</strong><br>${f.properties.lieu}<br>${String(f.properties.ha).replace('.',',')} ha`)}).addTo(mzc);
+ const L2=L.geoJSON({type:'FeatureCollection',features:ZAC.features.filter(f=>f.properties.type==='zone')},{style:f=>({color:C[f.properties.code],weight:2,fillColor:C[f.properties.code],fillOpacity:.4}),onEachFeature:(f,l)=>l.bindPopup(`<strong>${f.properties.nom}</strong><br>${f.properties.lieu}<br>${String(f.properties.ha).replace('.',',')} ha`)}).addTo(mzc);
+ mzc.fitBounds(L1.getBounds().extend(L2.getBounds()),{padding:[20,20]});
+ document.getElementById('clez').innerHTML=`<span><span class="pastille" style="background:${C.perimetre};opacity:.5"></span> périmètre de ZAC (information, ancien PLU)</span><span><span class="pastille" style="background:${C.UZa}"></span> zone UZa</span><span><span class="pastille" style="background:${C.UZb}"></span> zone UZb</span><span><span class="pastille" style="background:${C['UZb*']}"></span> secteur UZb*</span>`;
+}
+document.getElementById('zac-ha').textContent=ZAC.lignes.filter(l=>/Périmètre/.test(l.type)).reduce((a,l)=>a+l.ha,0).toFixed(1).replace('.',',');
+document.querySelector('#tz tbody').innerHTML=ZAC.lignes.map(l=>`<tr><td><strong>${l.nom}</strong><br><span class="note">${l.type}</span></td><td>${l.lieu}</td><td>${String(l.ha).replace('.',',')} ha</td><td>${Object.entries(l.devenir).map(([k,v])=>`${k} ${v} %`).join(' · ')||'—'}</td></tr>`).join('');
 // ===== Onglet droit de préemption renforcé =====
 let md=null,dcalque=null,dparc=null;
 function initD(){
@@ -425,7 +440,7 @@ mq.addEventListener('change',compact);addEventListener('resize',compact);compact
 
 document.getElementById('gq').oninput=e=>{const nf=x=>x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');const q=nf(e.target.value);let n=0;document.querySelectorAll('#pg .gl').forEach(d=>{const ok=!q||nf(d.textContent).includes(q);d.style.display=ok?'':'none';if(ok)n++});document.querySelectorAll('#pg .gt').forEach(h=>{let x=h.nextElementSibling,v=false;while(x&&x.classList.contains('gl')){if(x.style.display!=='none')v=true;x=x.nextElementSibling}h.style.display=v?'':'none'});document.getElementById('gn').textContent=q?(n+' résultat'+(n>1?'s':'')):''};
 function versGloss(id){document.querySelector('button[data-p="pg"]').click();setTimeout(()=>{const el=document.getElementById(id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('cible');setTimeout(()=>el.classList.remove('cible'),2500)}},60)}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.pan').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));if(b.dataset.p==='pc')setTimeout(()=>map.invalidateSize(),50);if(b.dataset.p==='pk')setTimeout(initK,60);if(b.dataset.p==='pd')setTimeout(initD,60)});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.pan').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));if(b.dataset.p==='pc')setTimeout(()=>map.invalidateSize(),50);if(b.dataset.p==='pk')setTimeout(initK,60);if(b.dataset.p==='pd')setTimeout(initD,60);if(b.dataset.p==='pz')setTimeout(initZ,60)});
 // chiffres
 (function(){const F=P.features.map(f=>f.properties),T=F.length,n=(k,v)=>F.filter(q=>q[k]===v).length,ha=(k,v)=>F.filter(q=>q[k]===v).reduce((a,q)=>a+q.s,0)/1e4,pc=x=>(Math.round(1000*x/T)/10).toLocaleString('fr-FR')+' %',fr=x=>x.toLocaleString('fr-FR',{maximumFractionDigits:1});
  const petits=F.filter(q=>q.az==='UB2'&&/^UM/.test(q.z)&&q.s<150&&q.xe==='baisse').length;
